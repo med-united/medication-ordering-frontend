@@ -1,0 +1,14 @@
+{
+    "name": "medication-ordering-frontend",
+    "private": true,
+    "version": "1.0.0",
+    "author": "SAP SE",
+    "description": "Medication Ordering Frontend",
+    "scripts": {
+      "start": "ui5 serve",
+      "build": "ui5 build"
+    },
+    "devDependencies": {
+      "@ui5/cli": "^2.0.0"
+    }
+  }
