@@ -1,0 +1,36 @@
+<mvc:View controllerName="webapp.controller.medication" xmlns:l="sap.ui.layout" xmlns:html="http://www.w3.org/1999/xhtml" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
+	<html:style>
+		.sapMIBar {
+			border: none !important;
+		}
+		.sapMITBTextOnly .sapMITBFilter {
+			padding: 0 2rem;
+		}
+ 	</html:style>
+	<tnt:ToolHeader width="100%">
+		<ToolbarSpacer width="3rem"/>
+		<Text text="MED - UNITED" wrapping="false" />
+		<ToolbarSpacer width="2rem"/>
+		<MenuButton text="Pflegeeinrichtung" type="Emphasized" />
+		<ToolbarSpacer />
+		<Button icon="sap-icon://search" type="Transparent" />
+		<Button icon="sap-icon://co" type="Transparent" />
+		<Button icon="sap-icon://bell" type="Transparent" />
+		<Avatar src="images/Avatar-Sizes-Custom-1.png" displaySize="XS" press=".onAvatarPressed" />
+		<ToolbarSpacer width="3rem"/>
+	</tnt:ToolHeader>
+	<tnt:ToolHeader>
+		<ToolbarSpacer width="3rem"/>
+		<IconTabHeader  mode="Inline" >
+			<items>
+				<IconTabFilter key="start" text="Start" />
+				<IconTabFilter key="patienten" text="Patienten" />
+				<IconTabFilter key="medikationsplan" text="Medikationsplan" />
+				<IconTabFilter key="verordnung" text="Verordnung"/>
+				<IconTabFilter key="rechnung" text="Rechnung"/>
+			</items>
+		</IconTabHeader>
+
+	</tnt:ToolHeader>
+
+</mvc:View>

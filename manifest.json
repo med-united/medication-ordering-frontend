@@ -1,0 +1,37 @@
+{
+	"sap.app": {
+		"id": "webapp",
+		"applicationVersion": {
+			"version": "1.0.0"
+		}
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "webapp.view.medication",
+			"type": "XML",
+			"async": true
+		},
+		"dependencies": {
+			"libs": {
+				"sap.ui.core": {},
+				"sap.tnt": {},
+				"sap.m": {}
+			}
+		},
+		"config": {
+			"sample": {
+				"stretch": true,
+				"files": [
+					"medication.view.xml",
+					"medication.controller.js",
+					"manifest.json"
+				]
+			}
+		},
+		"resources": {
+			"css": [{
+				"uri": "webapp/css/style.css"
+				}]
+		}
+	}
+}
