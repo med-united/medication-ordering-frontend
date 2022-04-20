@@ -1,4 +1,4 @@
-<mvc:View controllerName="webapp.controller.medication" xmlns:l="sap.ui.layout" xmlns:html="http://www.w3.org/1999/xhtml" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
+<mvc:View controllerName="webapp.controller.medication" xmlns:l="sap.ui.layout" xmlns:html="http://www.w3.org/1999/xhtml" xmlns="sap.uxap" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
 	<html:style>
 		.sapMIBar {
 			border: none !important;
@@ -8,29 +8,58 @@
 		}
  	</html:style>
 	<tnt:ToolHeader width="100%">
-		<ToolbarSpacer width="3rem" />
-		<Text text="MED - UNITED" wrapping="false" />
-		<ToolbarSpacer width="2rem" />
-		<MenuButton text="Pflegeeinrichtung" type="Emphasized" />
-		<ToolbarSpacer />
-		<Button icon="sap-icon://search" type="Transparent" />
-		<Button icon="sap-icon://co" type="Transparent" />
-		<Button icon="sap-icon://bell" type="Transparent" />
-		<Avatar src="images/Avatar-Sizes-Custom-1.png" displaySize="XS" press=".onAvatarPressed" />
-		<ToolbarSpacer width="3rem" />
+		<m:ToolbarSpacer width="3rem" />
+		<m:Text text="MED - UNITED" wrapping="false" />
+		<m:ToolbarSpacer width="2rem" />
+		<m:MenuButton text="Pflegeeinrichtung" type="Emphasized" />
+		<m:ToolbarSpacer />
+		<m:Button icon="sap-icon://search" type="Transparent" />
+		<m:Button icon="sap-icon://co" type="Transparent" />
+		<m:Button icon="sap-icon://bell" type="Transparent" />
+		<m:Avatar src="images/Avatar-Sizes-Custom-1.png" displaySize="XS" press=".onAvatarPressed" />
+		<m:ToolbarSpacer width="3rem" />
 	</tnt:ToolHeader>
 	<tnt:ToolHeader>
-		<ToolbarSpacer width="3rem" />
-		<IconTabHeader mode="Inline">
-			<items>
-				<IconTabFilter key="start" text="Start" />
-				<IconTabFilter key="patienten" text="Patienten" />
-				<IconTabFilter key="medikationsplan" text="Medikationsplan" />
-				<IconTabFilter key="verordnung" text="Verordnung" />
-				<IconTabFilter key="rechnung" text="Rechnung" />
-			</items>
-		</IconTabHeader>
+		<m:ToolbarSpacer width="3rem" />
+		<m:IconTabHeader mode="Inline">
+			<m:items>
+				<m:IconTabFilter key="start" text="Start" />
+				<m:IconTabFilter key="patienten" text="Patienten" />
+				<m:IconTabFilter key="medikationsplan" text="Medikationsplan" />
+				<m:IconTabFilter key="verordnung" text="Verordnung" />
+				<m:IconTabFilter key="rechnung" text="Rechnung" />
+			</m:items>
+		</m:IconTabHeader>
 
 	</tnt:ToolHeader>
+
+	<m:App>
+		<m:pages>
+			<m:Page title="Pflegeeinrichtung" class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer">
+				<m:headerContent>
+					<m:Button text="E-Rezepte Anfordern" type="Emphasized" />
+					<m:Button text="Alle Medikamente bestellen" type="Ghost" />
+				</m:headerContent>
+				<m:subHeader>
+					<m:OverflowToolbar></m:OverflowToolbar>
+				</m:subHeader>
+				<m:content>
+					<m:FlexBox height="100px" alignItems="Start" justifyContent="SpaceBetween">
+						<m:Text text="Medikamentmanagement" />
+						<m:Toolbar>
+							<m:SearchField width="100%" placeholder="Suchen" />
+						</m:Toolbar>
+						<m:Button icon="sap-icon://paste" type="Transparent" />
+						<m:Button icon="sap-icon://filter" type="Transparent" />
+						<m:Button icon="sap-icon://group-2" type="Transparent" />
+						<m:Button icon="sap-icon://action-settings" type="Transparent" />
+						<m:Button icon="sap-icon://print" type="Transparent" />
+						<m:Button icon="sap-icon://full-screen" type="Transparent" />
+						
+					</m:FlexBox>
+				</m:content>
+			</m:Page>
+		</m:pages>
+	</m:App>
 
 </mvc:View>
