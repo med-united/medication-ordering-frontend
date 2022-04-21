@@ -1,9 +1,9 @@
 # medication-ordering-frontend
 
-In order to start the application, install the UI5 Command Line Interface:
+In order to start the application, install npm packages:
 
 ```
-npm install --global @ui5/cli
+npm install
 ```
 
 Serve the application with:
