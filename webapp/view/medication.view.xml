@@ -1,4 +1,4 @@
-<mvc:View controllerName="webapp.controller.medication" xmlns:l="sap.ui.layout" xmlns:html="http://www.w3.org/1999/xhtml" xmlns="sap.uxap" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
+<mvc:View controllerName="webapp.controller.medication" xmlns:l="sap.ui.layout" xmlns:smartTable="sap.ui.comp.smarttable" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.f" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
 	<html:style>
 		.sapMIBar {
 			border: none !important;
@@ -9,9 +9,15 @@
  	</html:style>
 	<tnt:ToolHeader width="100%">
 		<m:ToolbarSpacer width="3rem" />
-		<m:Text text="MED - UNITED" wrapping="false" />
+		<m:Image src="./images/logo_med-united_white[79].png" width="118px"></m:Image>
 		<m:ToolbarSpacer width="2rem" />
-		<m:MenuButton text="Pflegeeinrichtung" type="Emphasized" />
+		<m:MenuButton text="Pflegeeinrichtung" type="Emphasized">
+			<m:menu>
+				<m:Menu>
+					<m:MenuItem text="Apotheke" />
+				</m:Menu>
+			</m:menu>
+		</m:MenuButton>
 		<m:ToolbarSpacer />
 		<m:Button icon="sap-icon://search" type="Transparent" />
 		<m:Button icon="sap-icon://co" type="Transparent" />
@@ -55,11 +61,12 @@
 						<m:Button icon="sap-icon://action-settings" type="Transparent" />
 						<m:Button icon="sap-icon://print" type="Transparent" />
 						<m:Button icon="sap-icon://full-screen" type="Transparent" />
-						
+
 					</m:FlexBox>
 				</m:content>
 			</m:Page>
 		</m:pages>
 	</m:App>
+
 
 </mvc:View>
