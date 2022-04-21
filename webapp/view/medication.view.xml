@@ -67,26 +67,4 @@
 			</m:Page>
 		</m:pages>
 	</m:App>
-
-	<smartFilterBar:SmartFilterBar id="smartFilterBar" entitySet="LineItemsSet" persistencyKey="SmartFilter_Explored">
-		<smartFilterBar:controlConfiguration>
-			<smartFilterBar:ControlConfiguration key="Bukrs">
-			<smartFilterBar:defaultFilterValues>
-					<smartFilterBar:SelectOption low="0001">
-					</smartFilterBar:SelectOption>
-				</smartFilterBar:defaultFilterValues>
-			</smartFilterBar:ControlConfiguration>
-			<smartFilterBar:ControlConfiguration key="Gjahr">
-				<smartFilterBar:defaultFilterValues>
-					<smartFilterBar:SelectOption low="2014">
-					</smartFilterBar:SelectOption>
-				</smartFilterBar:defaultFilterValues>
-			</smartFilterBar:ControlConfiguration>
-		</smartFilterBar:controlConfiguration>
-	</smartFilterBar:SmartFilterBar>
-
-	<smartTable:SmartTable entitySet="LineItemsSet" smartFilterId="smartFilterBar" tableType="ResponsiveTable" placeToolbarInTable="true" useExportToExcel="true" beforeExport="onBeforeExport" useVariantManagement="false" useTablePersonalisation="true" header="Line Items" showRowCount="true" persistencyKey="SmartTableAnalytical_Explored" enableAutoBinding="true" demandPopin="true" class="sapUiResponsiveContentPadding" >
-		<m:Table sticky="ColumnHeaders,HeaderToolbar" />
-	</smartTable:SmartTable>
-
 </mvc:View>

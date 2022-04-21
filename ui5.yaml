@@ -9,3 +9,4 @@ framework:
     - name: sap.ui.core
     - name: sap.m
     - name: themelib_sap_fiori_3
+    - name: sap.tnt
