@@ -1,4 +1,4 @@
-<mvc:View controllerName="webapp.controller.medication" xmlns:l="sap.ui.layout" xmlns:smartTable="sap.ui.comp.smarttable" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.f" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
+<mvc:View controllerName="webapp.controller.Medication" xmlns:l="sap.ui.layout" xmlns:smartTable="sap.ui.comp.smarttable" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.f" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
 	<html:style>
 		.sapMIBar {
 			border: none !important;
@@ -68,5 +68,25 @@
 		</m:pages>
 	</m:App>
 
+	<smartFilterBar:SmartFilterBar id="smartFilterBar" entitySet="LineItemsSet" persistencyKey="SmartFilter_Explored">
+		<smartFilterBar:controlConfiguration>
+			<smartFilterBar:ControlConfiguration key="Bukrs">
+			<smartFilterBar:defaultFilterValues>
+					<smartFilterBar:SelectOption low="0001">
+					</smartFilterBar:SelectOption>
+				</smartFilterBar:defaultFilterValues>
+			</smartFilterBar:ControlConfiguration>
+			<smartFilterBar:ControlConfiguration key="Gjahr">
+				<smartFilterBar:defaultFilterValues>
+					<smartFilterBar:SelectOption low="2014">
+					</smartFilterBar:SelectOption>
+				</smartFilterBar:defaultFilterValues>
+			</smartFilterBar:ControlConfiguration>
+		</smartFilterBar:controlConfiguration>
+	</smartFilterBar:SmartFilterBar>
+
+	<smartTable:SmartTable entitySet="LineItemsSet" smartFilterId="smartFilterBar" tableType="ResponsiveTable" placeToolbarInTable="true" useExportToExcel="true" beforeExport="onBeforeExport" useVariantManagement="false" useTablePersonalisation="true" header="Line Items" showRowCount="true" persistencyKey="SmartTableAnalytical_Explored" enableAutoBinding="true" demandPopin="true" class="sapUiResponsiveContentPadding" >
+		<m:Table sticky="ColumnHeaders,HeaderToolbar" />
+	</smartTable:SmartTable>
 
 </mvc:View>

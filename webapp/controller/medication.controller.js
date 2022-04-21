@@ -4,7 +4,15 @@ sap.ui.define([
 ], function (Controller, MessageToast) {
 	"use strict";
 
-	return Controller.extend("webapp.controller.medication", {
+	return Controller.extend("webapp.controller.Medication", {
+
+		onInit: function(){
+			this.initializeRouter();
+		},
+
+		initializeRouter: function(){
+			this.oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+		},
 
 		onAvatarPressed: function () {
 			MessageToast.show("Avatar pressed!");

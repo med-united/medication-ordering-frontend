@@ -18,7 +18,7 @@
 	},
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "webapp.view.medication",
+			"viewName": "webapp.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "app"
@@ -31,6 +31,10 @@
 				"sap.m": {}
 			}
 		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
 		"config": {
 			"invoiceLocal": "/Invoices.json"
 		},
@@ -40,6 +44,30 @@
 					"uri": "css/style.css"
 				}
 			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "webapp.view",
+				"controlId": "app",
+				"controlAggregation": "pages",
+				"transition": "slide"
+			},
+			"routes": [
+				{
+					"pattern": "",
+					"name": "medication",
+					"target": "medication"
+				}
+			],
+			"targets": {
+				"medication": {
+					"viewName": "Medication",
+					"viewId": "medication",
+					"viewLevel": 1
+				}
+			}
 		}
 	}
 }

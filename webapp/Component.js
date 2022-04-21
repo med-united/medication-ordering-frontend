@@ -6,7 +6,13 @@ sap.ui.define([
 	return UIComponent.extend("webapp.Component", {
 
 		metadata : {
+			interfaces: ["sap.ui.core.IAsyncContentCreation"],
 			manifest: "json"
+		},
+
+		init: function() {
+			UIComponent.prototype.init.apply(this, arguments);
+			this.getRouter().initialize();
 		}
 	});
 
