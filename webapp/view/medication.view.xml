@@ -41,29 +41,84 @@
 
 	<m:App>
 		<m:pages>
-			<m:Page title="Pflegeeinrichtung" class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer">
+			<m:Page class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer">
 				<m:headerContent>
 					<m:Button text="E-Rezepte Anfordern" type="Emphasized" />
 					<m:Button text="Alle Medikamente bestellen" type="Ghost" />
 				</m:headerContent>
-				<m:subHeader>
-					<m:OverflowToolbar></m:OverflowToolbar>
-				</m:subHeader>
+
+				<m:customHeader>
+					<m:Bar class="bar">
+						<m:contentLeft>
+							<m:Text text="Pflegeeinrichtung" class="pflegeTitel"></m:Text>
+						</m:contentLeft>
+
+						<m:contentMiddle></m:contentMiddle>
+
+						<m:contentRight>
+							<m:Button text="E-Rezepte Anfordern" type="Emphasized" />
+							<m:Button text="Alle Medikamente bestellen" type="Ghost" />
+						</m:contentRight>
+					</m:Bar>
+				</m:customHeader>
 				<m:content>
-					<m:FlexBox height="100px" alignItems="Start" justifyContent="SpaceBetween">
-						<m:Text text="Medikamentmanagement" />
-						<m:Toolbar>
-							<m:SearchField width="100%" placeholder="Suchen" />
-						</m:Toolbar>
-						<m:Button icon="sap-icon://paste" type="Transparent" />
-						<m:Button icon="sap-icon://filter" type="Transparent" />
-						<m:Button icon="sap-icon://group-2" type="Transparent" />
-						<m:Button icon="sap-icon://action-settings" type="Transparent" />
-						<m:Button icon="sap-icon://print" type="Transparent" />
-						<m:Button icon="sap-icon://full-screen" type="Transparent" />
+					<m:FlexBox height="50px" alignItems="Center" justifyContent="SpaceBetween" class="medicamentBox">
+						<m:Text text="Medikamentmanagement" class="mediumFont" />
+						<m:HBox>
+							<m:Toolbar>
+								<m:SearchField width="100%" placeholder="Suchen" />
+							</m:Toolbar>
+							<m:Button icon="sap-icon://paste" type="Transparent" />
+							<m:Button icon="sap-icon://filter" type="Transparent" />
+							<m:Button icon="sap-icon://group-2" type="Transparent" />
+							<m:Button icon="sap-icon://action-settings" type="Transparent" />
+							<m:Button icon="sap-icon://print" type="Transparent" />
+							<m:Button icon="sap-icon://full-screen" type="Transparent" />
+						</m:HBox>
 
 					</m:FlexBox>
+
+					<m:Table>
+						<m:columns>
+							<m:Column>
+								<m:Label text="Medikament" />
+							</m:Column>
+							<m:Column>
+								<m:Label text="PZN" />
+							</m:Column>
+							<m:Column>
+								<m:Label text="Datum" />
+							</m:Column>
+							<m:Column>
+								<m:Label text="Bestand" />
+							</m:Column>
+							<m:Column>
+								<m:Label text="Vsl. Verbrauch bis" />
+							</m:Column>
+							<m:Column>
+								<m:Label text="Vsl. Verbrauch in Tagen" />
+							</m:Column>
+							<m:Column>
+								<m:Label text="Verbrauch bis heute" />
+							</m:Column>
+							<m:Column>
+								<m:Label text="Arzt" />
+							</m:Column>
+							<m:Column>
+								<m:Label text="Apotheke" />
+							</m:Column>
+							<m:Column>
+								<m:Label text="Aktiv" />
+							</m:Column>
+						</m:columns>
+						<m:items>
+
+
+						</m:items>
+					</m:Table>
+
 				</m:content>
+
 			</m:Page>
 		</m:pages>
 	</m:App>
