@@ -14,7 +14,7 @@
 		<m:MenuButton text="Pflegeeinrichtung" type="Emphasized">
 			<m:menu>
 				<m:Menu>
-					<m:MenuItem text="Apotheke" />
+					<m:MenuItem text="Apotheke" press=".goToPharmacy" />
 				</m:Menu>
 			</m:menu>
 		</m:MenuButton>

@@ -74,19 +74,29 @@
 				"viewPath": "webapp.view",
 				"controlId": "app",
 				"controlAggregation": "pages",
-				"transition": "slide"
+				"transition": "show"
 			},
 			"routes": [
 				{
 					"pattern": "",
 					"name": "medication",
 					"target": "medication"
+				},
+				{
+					"pattern": "/pharmacy",
+					"name": "pharmacy",
+					"target": "pharmacy"
 				}
 			],
 			"targets": {
 				"medication": {
 					"viewName": "Medication",
 					"viewId": "medication",
+					"viewLevel": 1
+				},
+				"pharmacy": {
+					"viewName": "Pharmacy",
+					"viewId": "pharmacy",
 					"viewLevel": 1
 				}
 			}

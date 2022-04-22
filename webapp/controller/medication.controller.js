@@ -16,7 +16,11 @@ sap.ui.define([
 
 		onAvatarPressed: function () {
 			MessageToast.show("Avatar pressed!");
-		}
+		},
 
+		goToPharmacy: function() {
+			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+			oRouter.navTo("pharmacy");
+		}
 	});
 });
