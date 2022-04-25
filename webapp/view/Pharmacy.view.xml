@@ -1,0 +1,33 @@
+<mvc:View controllerName="webapp.controller.Pharmacy" xmlns:l="sap.ui.layout" xmlns:smartTable="sap.ui.comp.smarttable" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.f" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
+	<tnt:ToolHeader width="100%">
+		<m:ToolbarSpacer width="3rem" />
+		<m:Image src="./images/logo_med-united_white[79].png" width="118px"></m:Image>
+		<m:ToolbarSpacer width="2rem" />
+		<m:MenuButton text="Apotheke" type="Emphasized">
+			<m:menu>
+				<m:Menu>
+					<m:MenuItem text="Pflegeeinrichtung" press=".goToMedication" />
+				</m:Menu>
+			</m:menu>
+		</m:MenuButton>
+		<m:ToolbarSpacer />
+		<m:Button icon="sap-icon://search" type="Transparent" />
+		<m:Button icon="sap-icon://co" type="Transparent" />
+		<m:Button icon="sap-icon://bell" type="Transparent" />
+		<m:Avatar src="images/Avatar-Sizes-Custom-1.png" displaySize="XS" press=".onAvatarPressed" />
+		<m:ToolbarSpacer width="3rem" />
+	</tnt:ToolHeader>
+	<tnt:ToolHeader>
+		<m:ToolbarSpacer width="3rem" />
+		<m:IconTabHeader mode="Inline">
+			<m:items>
+				<m:IconTabFilter key="nichtBereit" text="Nicht bereit" />
+				<m:IconTabFilter key="rezeptkontrolle" text="Rezeptkontrolle" />
+				<m:IconTabFilter key="rezeptbox" text="Rezeptbox" />
+				<m:IconTabFilter key="abgerechnet" text="Abgerechnet" />
+			</m:items>
+		</m:IconTabHeader>
+
+	</tnt:ToolHeader>
+
+</mvc:View>
