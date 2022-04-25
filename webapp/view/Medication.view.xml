@@ -7,38 +7,6 @@
 			padding: 0 2rem;
 		}
  	</html:style>
-	<tnt:ToolHeader width="100%">
-		<m:ToolbarSpacer width="3rem" />
-		<m:Image src="./images/logo_med-united_white[79].png" width="118px"></m:Image>
-		<m:ToolbarSpacer width="2rem" />
-		<m:MenuButton text="Pflegeeinrichtung" type="Emphasized">
-			<m:menu>
-				<m:Menu>
-					<m:MenuItem text="Apotheke" press=".goToPharmacy" />
-				</m:Menu>
-			</m:menu>
-		</m:MenuButton>
-		<m:ToolbarSpacer />
-		<m:Button icon="sap-icon://search" type="Transparent" />
-		<m:Button icon="sap-icon://co" type="Transparent" />
-		<m:Button icon="sap-icon://bell" type="Transparent" />
-		<m:Avatar src="images/Avatar-Sizes-Custom-1.png" displaySize="XS" press=".onAvatarPressed" />
-		<m:ToolbarSpacer width="3rem" />
-	</tnt:ToolHeader>
-	<tnt:ToolHeader>
-		<m:ToolbarSpacer width="3rem" />
-		<m:IconTabHeader mode="Inline" selectedKey="medikationsplan" select="changeView">
-			<m:items>
-				<m:IconTabFilter key="start" text="Start" />
-				<m:IconTabFilter key="patienten" text="Patienten" />
-				<m:IconTabFilter key="medication" text="Medikationsplan" />
-				<m:IconTabFilter key="verordnung" text="Verordnung" />
-				<m:IconTabFilter key="rechnung" text="Rechnung" />
-			</m:items>
-		</m:IconTabHeader>
-
-	</tnt:ToolHeader>
-
 	<m:App>
 		<m:pages>
 			<m:Page class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer">

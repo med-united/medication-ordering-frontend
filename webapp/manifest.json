@@ -78,35 +78,25 @@
 			},
 			"routes": [
 				{
-					"pattern": "/medication",
-					"name": "medication",
-					"target": "medication"
-				},
-				{
 					"pattern": "/pharmacy",
 					"name": "pharmacy",
 					"target": "pharmacy"
 				},
 				{
 					"pattern": "",
-					"name": "start",
-					"target": "start"
+					"name": "overview",
+					"target": "overview"
 				}
 			],
 			"targets": {
-				"medication": {
-					"viewName": "Medication",
-					"viewId": "medication",
-					"viewLevel": 1
-				},
 				"pharmacy": {
 					"viewName": "Pharmacy",
 					"viewId": "pharmacy",
 					"viewLevel": 1
 				},
-				"start": {
-					"viewName": "Start",
-					"viewId": "start",
+				"overview": {
+					"viewName": "Overview",
+					"viewId": "overview",
 					"viewLevel": 1
 				}
 			}
