@@ -1,26 +1,20 @@
 sap.ui.define([
 	'sap/ui/core/mvc/Controller',
-	'sap/m/MessageToast'
-], function (Controller, MessageToast) {
+], function (Controller) {
 	"use strict";
 
-	return Controller.extend("webapp.controller.Medication", {
+	return Controller.extend("webapp.controller.Start", {
 
-		onInit: function(){
+		onInit: function () {
 			this.initializeRouter();
 		},
 
-		initializeRouter: function(){
+		initializeRouter: function () {
 			this.oRouter = sap.ui.core.UIComponent.getRouterFor(this);
 		},
 
 		onAvatarPressed: function () {
 			MessageToast.show("Avatar pressed!");
-		},
-
-		goToPharmacy: function() {
-			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-			oRouter.navTo("pharmacy");
 		},
 
 		changeView: function (oEvent) {

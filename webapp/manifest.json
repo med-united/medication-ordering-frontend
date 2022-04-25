@@ -74,11 +74,11 @@
 				"viewPath": "webapp.view",
 				"controlId": "app",
 				"controlAggregation": "pages",
-				"transition": "show"
+				"transition": "flip"
 			},
 			"routes": [
 				{
-					"pattern": "",
+					"pattern": "/medication",
 					"name": "medication",
 					"target": "medication"
 				},
@@ -86,6 +86,11 @@
 					"pattern": "/pharmacy",
 					"name": "pharmacy",
 					"target": "pharmacy"
+				},
+				{
+					"pattern": "",
+					"name": "start",
+					"target": "start"
 				}
 			],
 			"targets": {
@@ -97,6 +102,11 @@
 				"pharmacy": {
 					"viewName": "Pharmacy",
 					"viewId": "pharmacy",
+					"viewLevel": 1
+				},
+				"start": {
+					"viewName": "Start",
+					"viewId": "start",
 					"viewLevel": 1
 				}
 			}

@@ -27,11 +27,11 @@
 	</tnt:ToolHeader>
 	<tnt:ToolHeader>
 		<m:ToolbarSpacer width="3rem" />
-		<m:IconTabHeader mode="Inline">
+		<m:IconTabHeader mode="Inline" selectedKey="medikationsplan" select="changeView">
 			<m:items>
 				<m:IconTabFilter key="start" text="Start" />
 				<m:IconTabFilter key="patienten" text="Patienten" />
-				<m:IconTabFilter key="medikationsplan" text="Medikationsplan" />
+				<m:IconTabFilter key="medication" text="Medikationsplan" />
 				<m:IconTabFilter key="verordnung" text="Verordnung" />
 				<m:IconTabFilter key="rechnung" text="Rechnung" />
 			</m:items>
@@ -111,10 +111,7 @@
 								<m:Label text="Aktiv" />
 							</m:Column>
 						</m:columns>
-						<m:items>
-
-
-						</m:items>
+						<m:items></m:items>
 					</m:Table>
 
 				</m:content>
