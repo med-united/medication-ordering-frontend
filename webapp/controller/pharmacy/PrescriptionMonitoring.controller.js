@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Controller) {
 	"use strict";
 
-	return Controller.extend("webapp.controller.PrescriptionMonitoring", {
+	return Controller.extend("webapp.controller.pharmacy.PrescriptionMonitoring", {
 
 	});
 });

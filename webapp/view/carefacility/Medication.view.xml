@@ -1,4 +1,4 @@
-<mvc:View controllerName="webapp.controller.Medication" xmlns:l="sap.ui.layout" xmlns:smartTable="sap.ui.comp.smarttable" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.f" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
+<mvc:View controllerName="webapp.controller.carefacility.Medication" xmlns:l="sap.ui.layout" xmlns:smartTable="sap.ui.comp.smarttable" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.f" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
 	<m:App>
 		<m:pages>
 			<m:Page class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer">
