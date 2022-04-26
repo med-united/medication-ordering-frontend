@@ -38,8 +38,8 @@
 
 	</tnt:ToolHeader>
 
-	<m:Panel id="viewContainer" width="100%" height="100%">
+	<m:ScrollContainer id="viewContainer" width="100%" height="88%">
         <mvc:XMLView viewName="webapp.view.pharmacy.NotReady" />
-    </m:Panel>
+    </m:ScrollContainer>
 
 </mvc:View>
