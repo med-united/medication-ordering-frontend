@@ -10,7 +10,7 @@
 				<m:customHeader>
 					<m:Bar class="bar">
 						<m:contentLeft>
-							<m:Text text="Pflegeeinrichtung" class="pflegeTitel"></m:Text>
+							<m:Text text="{i18n>medicationsTitle}" class="tabsTitel"></m:Text>
 						</m:contentLeft>
 
 						<m:contentMiddle></m:contentMiddle>

@@ -6,7 +6,7 @@
                 <m:customHeader>
                     <m:Bar class="bar">
                         <m:contentLeft>
-                            <m:Text text="Bill view (to implement)" class="pflegeTitel"></m:Text>
+                            <m:Text text="Bill view (to implement)" class="tabsTitel"></m:Text>
                         </m:contentLeft>
                     </m:Bar>
                 </m:customHeader>
