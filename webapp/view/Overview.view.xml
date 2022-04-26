@@ -40,7 +40,7 @@
     </tnt:ToolHeader>
 
     <m:Panel id="viewContainer" width="100%" height="100%">
-        <mvc:XMLView viewName="webapp.view.Start" />
+        <mvc:XMLView viewName="webapp.view.carefacility.Start" />
     </m:Panel>
-    />
+    
 </mvc:View>

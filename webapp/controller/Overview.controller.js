@@ -24,7 +24,7 @@ sap.ui.define([
 			container.removeAllContent();
 			container.addContent(
 				new sap.ui.view({
-					viewName: "webapp.view." + sKey,
+					viewName: "webapp.view.carefacility." + sKey,
 					type: "XML"
 				})
 			);
