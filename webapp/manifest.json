@@ -55,7 +55,13 @@
 						"_total": "accurate"
 					}
 				}
-			}
+			},
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+				  "bundleName": "webapp.i18n.i18n"
+				}
+			  }
 		},
 		"config": {
 			"invoiceLocal": "/Invoices.json"

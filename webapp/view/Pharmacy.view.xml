@@ -1,4 +1,12 @@
 <mvc:View controllerName="webapp.controller.Pharmacy" xmlns:l="sap.ui.layout" xmlns:smartTable="sap.ui.comp.smarttable" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.f" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
+	<html:style>
+        .sapMIBar {
+            border: none !important;
+        }
+        .sapMITBTextOnly .sapMITBFilter {
+            padding: 0 2rem;
+        }
+    </html:style>
 	<tnt:ToolHeader width="100%">
 		<m:ToolbarSpacer width="3rem" />
 		<m:Image src="./images/logo_med-united_white[79].png" width="118px"></m:Image>
@@ -21,10 +29,10 @@
 		<m:ToolbarSpacer width="3rem" />
 		<m:IconTabHeader mode="Inline">
 			<m:items>
-				<m:IconTabFilter key="nichtBereit" text="Nicht bereit" />
-				<m:IconTabFilter key="rezeptkontrolle" text="Rezeptkontrolle" />
-				<m:IconTabFilter key="rezeptbox" text="Rezeptbox" />
-				<m:IconTabFilter key="abgerechnet" text="Abgerechnet" />
+				<m:IconTabFilter key="nichtBereit" text="{i18n>notReadyTabFilter}" />
+				<m:IconTabFilter key="rezeptkontrolle" text="{i18n>prescriptionControlTabFilter}" />
+				<m:IconTabFilter key="rezeptbox" text="{i18n>prescriptionBoxTabFilter}" />
+				<m:IconTabFilter key="abgerechnet" text="{i18n>billedTabFilter}" />
 			</m:items>
 		</m:IconTabHeader>
 

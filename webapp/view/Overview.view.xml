@@ -11,10 +11,10 @@
         <m:ToolbarSpacer width="3rem" />
         <m:Image src="./images/logo_med-united_white[79].png" width="118px"></m:Image>
         <m:ToolbarSpacer width="2rem" />
-        <m:MenuButton text="Pflegeeinrichtung" type="Emphasized">
+        <m:MenuButton text="{i18n>careFacilityView}" type="Emphasized">
             <m:menu>
                 <m:Menu>
-                    <m:MenuItem text="Apotheke" press=".goToPharmacy" />
+                    <m:MenuItem text="{i18n>pharmacyView}" press=".goToPharmacy" />
                 </m:Menu>
             </m:menu>
         </m:MenuButton>
@@ -30,11 +30,11 @@
         <m:ToolbarSpacer width="3rem" />
         <m:IconTabHeader mode="Inline" selectedKey="start" select=".changeTab">
             <m:items>
-                <m:IconTabFilter key="start" text="Start"></m:IconTabFilter>
-                <m:IconTabFilter key="patient" text="Patienten" />
-                <m:IconTabFilter key="medication" text="Medikationsplan"></m:IconTabFilter>
-                <m:IconTabFilter key="prescription" text="Verordnung" />
-                <m:IconTabFilter key="bill" text="Rechnung" />
+                <m:IconTabFilter key="start" text="{i18n>startTabFilter}"></m:IconTabFilter>
+                <m:IconTabFilter key="patient" text="{i18n>patientsTabFilter}" />
+                <m:IconTabFilter key="medication" text="{i18n>medicationTabFilter}"></m:IconTabFilter>
+                <m:IconTabFilter key="prescription" text="{i18n>prescriptionTabFilter}" />
+                <m:IconTabFilter key="bill" text="{i18n>billTabFilter}" />
             </m:items>
         </m:IconTabHeader>
     </tnt:ToolHeader>
