@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Controller) {
 	"use strict";
 
-	return Controller.extend("webapp.controller.Medication", {
+	return Controller.extend("webapp.controller.carefacility.Medication", {
 
 		goToPharmacy: function() {
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);

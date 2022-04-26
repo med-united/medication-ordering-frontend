@@ -11,10 +11,10 @@
 		<m:ToolbarSpacer width="3rem" />
 		<m:Image src="./images/logo_med-united_white[79].png" width="118px"></m:Image>
 		<m:ToolbarSpacer width="2rem" />
-		<m:MenuButton text="Apotheke" type="Emphasized">
+		<m:MenuButton text="{i18n>pharmacyView}" type="Emphasized">
 			<m:menu>
 				<m:Menu>
-					<m:MenuItem text="Pflegeeinrichtung" press=".goToMedication" />
+					<m:MenuItem text="{i18n>careFacilityView}" press=".goToMedication" />
 				</m:Menu>
 			</m:menu>
 		</m:MenuButton>
@@ -27,15 +27,19 @@
 	</tnt:ToolHeader>
 	<tnt:ToolHeader>
 		<m:ToolbarSpacer width="3rem" />
-		<m:IconTabHeader mode="Inline">
+		<m:IconTabHeader mode="Inline" select=".changeTab">
 			<m:items>
-				<m:IconTabFilter key="nichtBereit" text="{i18n>notReadyTabFilter}" />
-				<m:IconTabFilter key="rezeptkontrolle" text="{i18n>prescriptionControlTabFilter}" />
-				<m:IconTabFilter key="rezeptbox" text="{i18n>prescriptionBoxTabFilter}" />
-				<m:IconTabFilter key="abgerechnet" text="{i18n>billedTabFilter}" />
+				<m:IconTabFilter key="notReady" text="{i18n>notReadyTabFilter}" />
+				<m:IconTabFilter key="prescriptionMonitoring" text="{i18n>prescriptionControlTabFilter}" />
+				<m:IconTabFilter key="prescriptionBox" text="{i18n>prescriptionBoxTabFilter}" />
+				<m:IconTabFilter key="billed" text="{i18n>billedTabFilter}" />
 			</m:items>
 		</m:IconTabHeader>
 
 	</tnt:ToolHeader>
+
+	<m:Panel id="viewContainer" width="100%" height="100%">
+        <mvc:XMLView viewName="webapp.view.pharmacy.NotReady" />
+    </m:Panel>
 
 </mvc:View>

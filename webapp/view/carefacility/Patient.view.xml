@@ -1,4 +1,4 @@
-<mvc:View xmlns:internal="sap.landvisz.internal" controllerName="webapp.controller.Patient" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:smartTable="sap.ui.comp.smarttable" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.f" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
+<mvc:View xmlns:internal="sap.landvisz.internal" controllerName="webapp.controller.carefacility.Patient" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:smartTable="sap.ui.comp.smarttable" xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.f" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:tnt="sap.tnt" height="100%">
 
     <m:App>
         <m:pages>
@@ -6,7 +6,7 @@
                 <m:customHeader>
                     <m:Bar class="bar">
                         <m:contentLeft>
-                            <m:Text text="Patients view (to implement)" class="pflegeTitel"></m:Text>
+                            <m:Text text="Patients view (to implement)" class="tabsTitel"></m:Text>
                         </m:contentLeft>
                     </m:Bar>
                 </m:customHeader>
