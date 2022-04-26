@@ -38,7 +38,7 @@
 
 					</m:FlexBox>
 
-					<m:Table>
+					<m:Table items="{/Patient}">
 						<m:columns>
 							<m:Column>
 								<m:Label text="Medikament" />
@@ -71,7 +71,11 @@
 								<m:Label text="Aktiv" />
 							</m:Column>
 						</m:columns>
-						<m:items></m:items>
+						<m:items>
+							<m:ColumnListItem>
+								<m:Text text="{name/0/given/0}" />
+							</m:ColumnListItem>
+						</m:items>
 					</m:Table>
 
 				</m:content>

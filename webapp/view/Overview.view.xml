@@ -30,11 +30,11 @@
         <m:ToolbarSpacer width="3rem" />
         <m:IconTabHeader mode="Inline" selectedKey="start" select=".changeTab">
             <m:items>
-                <m:IconTabFilter key="start" text="{i18n>startTabFilter}"></m:IconTabFilter>
-                <m:IconTabFilter key="patient" text="{i18n>patientsTabFilter}" />
-                <m:IconTabFilter key="medication" text="{i18n>medicationTabFilter}"></m:IconTabFilter>
-                <m:IconTabFilter key="prescription" text="{i18n>prescriptionTabFilter}" />
-                <m:IconTabFilter key="bill" text="{i18n>billTabFilter}" />
+                <m:IconTabFilter key="Start" text="{i18n>startTabFilter}"></m:IconTabFilter>
+                <m:IconTabFilter key="Patient" text="{i18n>patientsTabFilter}" />
+                <m:IconTabFilter key="Medication" text="{i18n>medicationTabFilter}"></m:IconTabFilter>
+                <m:IconTabFilter key="Prescription" text="{i18n>prescriptionTabFilter}" />
+                <m:IconTabFilter key="Bill" text="{i18n>billTabFilter}" />
             </m:items>
         </m:IconTabHeader>
     </tnt:ToolHeader>
