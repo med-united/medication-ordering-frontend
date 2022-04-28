@@ -9,7 +9,7 @@
 		"title": "{{appTitle}}",
 		"dataSources": {
 			"fhir": {
-				"uri": "http://hapi.fhir.org/baseR4/",
+				"uri": "http://localhost:8080/fhir",
 				"type": "FHIR"
 			}
 		}
