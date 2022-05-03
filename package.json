@@ -5,7 +5,7 @@
     "author": "SAP SE",
     "description": "Medication Ordering Frontend",
     "scripts": {
-        "start": "ui5 serve",
+        "start": "ui5 serve -o index.html --accept-remote-connections",
         "build": "ui5 build"
     },
     "devDependencies": {
