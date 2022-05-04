@@ -16,6 +16,18 @@ spec:
     spec:
       containers:
       - name: care
-        image: 765415433338.dkr.ecr.eu-central-1.amazonaws.com/registry:care
+        image: 765415433338.dkr.ecr.eu-central-1.amazonaws.com/care:latest
         ports:
         - containerPort: 80
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: care
+spec:
+  selector:
+    app: care
+  ports:
+    - port: 80
