@@ -32,7 +32,7 @@ spec:
         image: 765415433338.dkr.ecr.eu-central-1.amazonaws.com/care:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 80
+        - containerPort: 8080
 
 ---
 
@@ -44,7 +44,7 @@ spec:
   selector:
     app: care
   ports:
-    - port: 80
+    - port: 8080
 
 ---
 
@@ -69,5 +69,5 @@ spec:
             service:
               name: care
               port:
-                number: 80
+                number: 8080
   
