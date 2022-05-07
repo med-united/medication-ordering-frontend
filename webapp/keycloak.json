@@ -1,0 +1,8 @@
+{
+    "realm": "med-united",
+    "auth-server-url": "https://id.med-united.health",
+    "ssl-required": "external",
+    "resource": "fhir",
+    "public-client": true,
+    "confidential-port": 0
+}
