@@ -1,0 +1,121 @@
+{
+	"_version": "1.21.0",
+	"sap.app": {
+		"id": "medunited.care",
+		"type": "application",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{appTitle}}",
+		"dataSources": {
+			"fhir": {
+				"uri": "https://fhir.med-united.health/fhir",
+				"type": "FHIR"
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "medunited.care.view.App",
+			"type": "XML",
+			"async": true,
+			"id": "app"
+		},
+		"dependencies": {
+			"minUI5Version": "1.98.0",
+			"libs": {
+				"sap.ui.core": {
+					
+				},
+				"sap.tnt": {},
+				"sap.m": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"": {
+				"type": "sap.fhir.model.r4.FHIRModel",
+				"dataSource": "fhir",
+				"settings" : {
+					"groupProperties": {
+						"patientDetails": {
+							"submit": "Batch"
+						}
+					},
+					"defaultQueryParameters": {
+						"_total": "accurate"
+					}
+				}
+			},
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+				  "bundleName": "medunited.care.i18n.i18n"
+				}
+			  }
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "medunited.care.view",
+				"controlId": "fcl",
+				"transition": "slide"
+			},
+			"routes": [
+				{
+					"pattern": "patient/:layout:",
+					"name": "patient-master",
+					"target": [
+						"patient-master",
+						"patient-detail"
+					]
+				},
+				{
+					"pattern": "patient/search/:query:",
+					"name": "patient-search",
+					"target": [
+						"patient-master",
+						"patient-detail"
+					]
+				},
+				{
+					"pattern": "patient/{patient}/{layout}",
+					"name": "patient-detail",
+					"target": [
+						"patient-master",
+						"patient-detail"
+					]
+				}
+			],
+			"targets": {
+				"patient-master": {
+					"viewName": "patient/Master",
+					"controlAggregation": "beginColumnPages"
+				},
+				"patient-detail": {
+					"viewName": "patient/Detail",
+					"controlAggregation": "midColumnPages"
+				}
+			}
+		}
+	}
+}

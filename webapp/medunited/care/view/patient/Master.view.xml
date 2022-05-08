@@ -1,0 +1,64 @@
+<mvc:View displayBlock="true"
+	controllerName="medunited.care.controller.patient.Master" height="100%"
+	xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
+	<f:DynamicPage id="dynamicPageId"
+		toggleHeaderOnTitleClick="false">
+		<!-- DynamicPage Title -->
+		<f:title>
+			<f:DynamicPageTitle>
+				<f:heading>
+					<Title text="{i18n>Patients}" />
+				</f:heading>
+			</f:DynamicPageTitle>
+		</f:title>
+
+		<!-- DynamicPage Content -->
+		<f:content>
+			<Table id="patientTable" inset="false"
+				items="{/Patient}"
+				class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true">
+				<headerToolbar>
+					<OverflowToolbar>
+						<ToolbarSpacer />
+						<SearchField search="onSearch" width="17.5rem" />
+						<OverflowToolbarButton
+							icon="sap-icon://sort" type="Transparent" press="onSort" />
+					</OverflowToolbar>
+				</headerToolbar>
+				<columns>
+					<Column width="20%" importance="Medium" autoPopinWidth="10">
+						<Text text="{i18n>GivenName}" />
+					</Column>
+					<Column width="20%" importance="High">
+						<Text text="{i18n>FamilyName}" />
+					</Column>
+					<Column width="20%" importance="High">
+						<Text text="{i18n>BirthDate}" />
+					</Column>
+					<Column width="20%" importance="Medium">
+						<Text text="{i18n>GeneralPractitioner}" />
+					</Column>
+					<Column width="20%" importance="Low">
+						<Text text="{i18n>ManagingOrganization}" />
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Navigation"
+						press="onListItemPress">
+						<cells>
+							<Text
+								text="{name/0/given}" />
+							<Text
+								text="{name/0/family}" />
+							<Text text="{path: 'birthDate', formatOptions: {style: 'short'}}" />
+							<Text
+								text="{GeneralPractitioner}" />
+							<Text
+								text="{ManagingOrganization}" />
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</f:content>
+	</f:DynamicPage>
+</mvc:View>

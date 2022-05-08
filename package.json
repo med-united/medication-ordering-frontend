@@ -1,8 +1,8 @@
 {
-    "name": "medication-ordering-frontend",
+    "name": "care.med-united.health",
     "private": true,
     "version": "1.0.0",
-    "author": "SAP SE",
+    "author": "Incentergy GmbH",
     "description": "Medication Ordering Frontend",
     "scripts": {
         "start": "ui5 serve -o index.html --accept-remote-connections",

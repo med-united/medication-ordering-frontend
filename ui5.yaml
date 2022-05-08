@@ -1,6 +1,6 @@
 specVersion: '2.6'
 metadata:
-  name: medication-ordering-frontend
+  name: care.med-united.health 
 type: application
 framework:
   name: OpenUI5
