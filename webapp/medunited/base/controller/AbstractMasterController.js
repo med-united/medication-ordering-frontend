@@ -15,13 +15,13 @@ sap.ui.define([
 			this.oRouter = this.getOwnerComponent().getRouter();
 			
 			this.oRouter.attachRouteMatched(function(oEvent) {
-				if(oEvent.getParameter("name") == "add") {
+				if(oEvent.getParameter("name") == this.getEntityName().toLowerCase()+"-add") {
 					this.onRouteAddMatched(oEvent);
 				}
 			}.bind(this));
 			
 			this.oRouter.attachRouteMatched(function(oEvent) {
-				if(oEvent.getParameter("name") == "search") {
+				if(oEvent.getParameter("name") == this.getEntityName().toLowerCase()+"-search") {
 					this.onRouteSearchMatched(oEvent);
 				}
 			}.bind(this));
@@ -39,7 +39,7 @@ sap.ui.define([
 				let sValue = aPart[1];
 				aFilters.push(new Filter({path: sField, operator: FilterOperator.EQ, value1: sValue}));
 			}
-			this.byId(this.getEntityName()+"Table").getBinding("items").filter(aFilters, FilterType.Application);
+			this.byId(this.getEntityName().toLowerCase()+"Table").getBinding("items").filter(aFilters, FilterType.Application);
 		},
 		onListItemPress: function (oEvent) {
 			var oNextUIState = this.getOwnerComponent().getHelper().getNextUIState(1),
@@ -47,8 +47,8 @@ sap.ui.define([
 				entity = entityPath.split("/").slice(-1).pop();
 
 			var oParams = {layout: oNextUIState.layout};
-			oParams[this.getEntityName()] = entity;
-			this.oRouter.navTo(this.getEntityName()+"-detail", oParams);
+			oParams[this.getEntityName().toLowerCase()] = entity;
+			this.oRouter.navTo(this.getEntityName().toLowerCase()+"-detail", oParams);
 		},
 		onSearch: function (oEvent) {
 			var oTableSearchState = [],
@@ -57,24 +57,23 @@ sap.ui.define([
 			if (sQuery && sQuery.length > 0) {
 				oTableSearchState = this.getFilter(sQuery);
 			}
-
-			this.getView().byId(this.getEntityName()+"Table").getBinding("items").filter(oTableSearchState, "Application");
+			this.getView().byId(this.getEntityName().toLowerCase()+"Table").getBinding("items").filter(oTableSearchState, "Application");
 		},
 		getFilter: function(sQuery) {
 			return [new Filter(this.getSearchField(), FilterOperator.Contains, sQuery)];
 		},
 		onAdd: function (oEvent) {
-			this.oRouter.navTo("add");
+			this.oRouter.navTo(this.getEntityName().toLowerCase()+"-add");
 		},
 		onRouteAddMatched: function(oEvent) {
 			var oView = this.getView();
 
 			// create dialog lazily
-			if (!this.byId("createAndEditDialog")) {
+			if (!this.byId("createDialog")) {
 				// load asynchronous XML fragment
 				Fragment.load({
 					id: oView.getId(),
-					name: "medunited.care.view."+this.getEntityName()+".CreateAndEditDialog",
+					name: "medunited.care.view."+this.getEntityName().toLowerCase()+".CreateDialog",
 					controller: this
 				}).then(function (oDialog) {
 					// connect dialog to the root view of this component (models, lifecycle)
@@ -82,11 +81,11 @@ sap.ui.define([
 					this._openCreateDialog(oDialog);
 				}.bind(this));
 			} else {
-				this._openCreateDialog(this.byId("createAndEditDialog"));
+				this._openCreateDialog(this.byId("createDialog"));
 			}
 		},
 		getPackageName: function() {
-			return this.getEntityName();
+			return this.getEntityName().toLowerCase();
 		},
 		getEntityName : function () {
 			throw new Error("getEntityName must be implemented by derived class");
@@ -94,7 +93,7 @@ sap.ui.define([
 		_openCreateDialog: function (oDialog, sEntityName) {
 			oDialog.open();
 			
-			if(sEntityName === undefined) {				
+			if(sEntityName === undefined) {	
 				sEntityName = this.getEntityName();
 				sEntityName = sEntityName[0].toUpperCase() + sEntityName.slice(1);
 			}
@@ -103,30 +102,21 @@ sap.ui.define([
 			oDialog.setBindingContext(oContext);
 		},
 		_createContextFromModel: function (sEntityName) {
-			return this.getOwnerComponent().getModel().createEntry("/"+sEntityName+"s")
+			var sEntityId = this.getView().getModel().create(sEntityName, {}, "patientDetails");
+			return this.getOwnerComponent().getModel().bindContext("/"+sEntityName+"/"+sEntityId);
 		},
 		onSave: function (oEvent) {
-			/*this.getOwnerComponent().getModel().submitChanges({
-				"success": function (oData) {
-					if("__batchResponses" in oData) {
-						var aErrors = oData.__batchResponses.filter(function (oResponse) {
-							return "message" in oResponse;
-						})
-						if(aErrors.length > 0) {
-							MessageBox.error(this.translate("ErrorDuringCreating_"+this.getEntityName(), [aErrors[0].response.statusText, aErrors[0].response.body]));
-						} else {
-							MessageToast.show(this.translate("SuccessfullyCreated_"+this.getEntityName()));
-							this.byId("createAndEditDialog").close();
-						}
-					} else {						
-						MessageToast.show(this.translate("SuccessfullyCreated_"+this.getEntityName()));
-						this.byId("createAndEditDialog").close();
-					}
-				}.bind(this),
-				"error": function (oError) {
-					MessageBox.error(this.translate("ErrorDuringCreating_"+this.getEntityName(), [oError]));
-				}.bind(this)
-			});*/
+			var fnSuccess = function(oData){
+                this.enableEditMode(false);
+                MessageToast.show(this.translate(this, "msgPatientSaved"));
+            }.bind(this);
+
+            var fnError = function(oError){
+                this.enableEditMode(false);
+                MessageBox.show(this.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
+            }.bind(this);
+
+            var oRequest = this.getView().getModel().submitChanges(this.getEntityName().toLowerCase()+"Details", fnSuccess, fnError);
 		},
 		onCancel: function (oEvent) {
 			this.getOwnerComponent().getModel().resetChanges();
@@ -135,7 +125,7 @@ sap.ui.define([
 		onSort: function (oEvent) {
 			this._bDescendingSort = !this._bDescendingSort;
 			var oView = this.getView(),
-				oTable = oView.byId(this.getEntityName()+"Table"),
+				oTable = oView.byId(this.getEntityName().toLowerCase()+"Table"),
 				oBinding = oTable.getBinding("items"),
 				oSorter = new Sorter(this.getSortField(), this._bDescendingSort);
 

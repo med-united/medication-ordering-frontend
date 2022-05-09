@@ -7,7 +7,7 @@ sap.ui.define([
 
 	return AbstractMasterController.extend("medunited.care.controller.patient.Master", {
 		getEntityName: function() {
-			return "patient";
+			return "Patient";
 		},
 		getFilter: function(sQuery) {
 			return [new Filter({

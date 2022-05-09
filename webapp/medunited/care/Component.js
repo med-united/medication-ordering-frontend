@@ -14,7 +14,7 @@ sap.ui.define([
 
 		init: function() {
 			UIComponent.prototype.init.apply(this, arguments);
-			this.getRouter().initialize();
+
 			var oRouter = this.getRouter();
 			const keycloak = new Keycloak();
 
@@ -22,7 +22,7 @@ sap.ui.define([
 			this.setModel(oJwtModel, "JWT");
 
 			const me = this;
-
+			
             keycloak.init({"onLoad":"login-required"}).then(function(authenticated) {
                 console.log(authenticated ? 'authenticated' : 'not authenticated');
 				if(authenticated) {
@@ -33,7 +33,7 @@ sap.ui.define([
 						headers: { 'Authorization': 'Bearer ' + keycloak.token }
 					});
 					oJwtModel.setData(me.parseJwt(keycloak.token));
-					oRouter.navTo("patient-master");
+					oRouter.initialize();
 				}
             }).catch(function(e) {
                 console.log('failed to initialize');

@@ -9,6 +9,9 @@
 				<f:heading>
 					<Title text="{i18n>Patients}" />
 				</f:heading>
+				<f:actions>
+					<Button type="Emphasized" text="{i18n>Create}" press="onAdd" />
+				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>
 

@@ -1,11 +1,18 @@
 sap.ui.define([
 	"medunited/base/controller/AbstractDetailController",
-], function (AbstractDetailController) {
+	"../../utils/Formatter"
+], function (AbstractDetailController, Formatter) {
 	"use strict";
 
 	return AbstractDetailController.extend("medunited.care.controller.patient.Detail", {
+		formatter: Formatter,
 		getEntityName : function () {
-			return "patient";
+			return "Patient";
+		},
+		getBindElementParams : function() {
+			return {
+				groupId : "patientDetails"
+			};
 		}
 	});
 }, true);

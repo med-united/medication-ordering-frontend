@@ -11,8 +11,8 @@ sap.ui.define([
 		onInit: function () {
 			this.oRouter = this.getOwnerComponent().getRouter();
 
-			this.oRouter.getRoute(this.getEntityName()+"-master").attachPatternMatched(this._onMatched, this);
-			this.oRouter.getRoute(this.getEntityName()+"-detail").attachPatternMatched(this._onMatched, this);
+			// this.oRouter.getRoute(this.getEntityName().toLowerCase()+"-master").attachPatternMatched(this._onMatched, this);
+			this.oRouter.getRoute(this.getEntityName().toLowerCase()+"-detail").attachPatternMatched(this._onMatched, this);
 		},
 		handleFullScreen: function () {
 			this.navToLayoutProperty("/actionButtonsInfo/midColumn/fullScreen");
@@ -21,8 +21,8 @@ sap.ui.define([
 			var oLayoutModel = this.getOwnerComponent().getModel("Layout");
 			var sNextLayout = oLayoutModel.getProperty(sLayoutProperty);
 			var oParams = {layout: sNextLayout};
-			oParams[this.getEntityName()] = this._entity;
-			this.oRouter.navTo(this.getEntityName()+"-detail", oParams);
+			oParams[this.getEntityName().toLowerCase()] = this._entity;
+			this.oRouter.navTo(this.getEntityName().toLowerCase()+"-detail", oParams);
 		},
 		handleExitFullScreen: function () {
 			this.navToLayoutProperty("/actionButtonsInfo/midColumn/exitFullScreen");
@@ -30,56 +30,30 @@ sap.ui.define([
 		handleClose: function () {
 			var oLayoutModel = this.getOwnerComponent().getModel("Layout");
 			var sNextLayout = oLayoutModel.getProperty("/actionButtonsInfo/midColumn/closeColumn");
-			this.oRouter.navTo(this.getEntityName()+"-master", {layout: sNextLayout});
+			this.oRouter.navTo(this.getEntityName().toLowerCase()+"-master", {layout: sNextLayout});
 		},
-		onEdit: function() {
-			var oView = this.getView();
-			// create dialog lazily
-			if (!this.byId("createAndEditDialog")) {
-				// load asynchronous XML fragment
-				Fragment.load({
-					id: oView.getId(),
-					name: "medunited.care.view."+this.getEntityName()+".CreateAndEditDialog",
-					controller: this
-				}).then(function (oDialog) {
-					// connect dialog to the root view of this component (models, lifecycle)
-					oView.addDependent(oDialog);
-					this._openCreateDialog(oDialog);
-				}.bind(this));
-			} else {
-				this._openCreateDialog(this.byId("createAndEditDialog"));
-			}
-		},
-		_openCreateDialog: function (oDialog) {
-			oDialog.open();
-		},
+		onEdit: function(){
+            this.enableEditMode(true);
+        },
 		onSave: function (oEvent) {
-            // TODO
-			/*this.getOwnerComponent().getModel().submitChanges({
-				"success": function (oData) {
-					if("__batchResponses" in oData) {
-						var aErrors = oData.__batchResponses.filter(function (oResponse) {
-							return "message" in oResponse;
-						})
-						if(aErrors.length > 0) {
-							MessageBox.error(this.translate("ErrorDuringSaving_"+this.getEntityName(), [aErrors[0].response.statusText, aErrors[0].response.body]));
-						} else {
-							MessageToast.show(this.translate("SuccessfullySaved_"+this.getEntityName()));
-							this.byId("createAndEditDialog").close();
-						}
-					} else {						
-						MessageToast.show(this.translate("SuccessfullySaved_"+this.getEntityName()));
-						this.byId("createAndEditDialog").close();
-					}
-				}.bind(this),
-				"error": function (oError) {
-					MessageBox.error(this.translate("ErrorDuringSaving_"+this.getEntityName(), [oError]));
-				}.bind(this)
-			});*/
+            var fnSuccess = function(oData){
+                this.enableEditMode(false);
+                MessageToast.show(this.translate(this, "msgPatientSaved"));
+            }.bind(this);
+
+            var fnError = function(oError){
+                this.enableEditMode(false);
+                MessageBox.show(this.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
+            }.bind(this);
+
+            var oRequest = this.getView().getModel().submitChanges(this.getEntityName().toLowerCase()+"Details", fnSuccess, fnError);
+            if(!oRequest){
+                this.enableEditMode(false);
+            }
 		},
 		onCancel: function(oEvent) {
-			// this.getOwnerComponent().getModel().resetChanges();
-			this.byId("createAndEditDialog").close();
+			this.enableEditMode(false);
+            this.getView().getModel().resetChanges();
 		},
 		onDelete: function (oEvent) {
 			/*this.getOwnerComponent().getModel().remove(this.getView().getBindingContext().getPath(), {
@@ -91,9 +65,9 @@ sap.ui.define([
 			
 		},
 		_onMatched: function (oEvent) {
-			this._entity = oEvent.getParameter("arguments")[this.getEntityName()];
+			this._entity = oEvent.getParameter("arguments")[this.getEntityName().toLowerCase()];
 			this.getView().bindElement({
-				path: "/" + this._entity,
+				path: "/" + this.getEntityName() + "/" + this._entity,
 				parameters: this.getBindElementParams()
 			});
 		},
@@ -104,8 +78,11 @@ sap.ui.define([
 			throw new Error("getEntityName must be implemented by derived class");
 		},
 		onExit: function () {
-			this.oRouter.getRoute(this.getEntityName()+"-master").detachPatternMatched(this._onMatched, this);
-			this.oRouter.getRoute(this.getEntityName()+"-detail").detachPatternMatched(this._onMatched, this);
-		}
+			this.oRouter.getRoute(this.getEntityName().toLowerCase()+"-master").detachPatternMatched(this._onMatched, this);
+			this.oRouter.getRoute(this.getEntityName().toLowerCase()+"-detail").detachPatternMatched(this._onMatched, this);
+		},
+		enableEditMode: function(bEditMode){
+            this.getView().getModel("appState").setProperty("/editMode", bEditMode);
+        }
 	});
 }, true);
