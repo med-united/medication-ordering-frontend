@@ -1,7 +1,8 @@
 sap.ui.define([
 	"medunited/base/controller/AbstractMasterController",
 	'sap/ui/model/Filter',
-	'sap/ui/model/FilterOperator'
+	'sap/ui/model/FilterOperator',
+	'medunited/care/libs/jquery-csv'
 ], function (AbstractMasterController, Filter, FilterOperator) {
 	"use strict";
 
@@ -33,66 +34,81 @@ sap.ui.define([
 			var reader = new FileReader();
 			var t = this;
 
+
 			reader.onload = function (e) {
-				var strCSV = e.target.result;
-				var arrCSV = strCSV.match(/[\w .]+(?=,?)/g);
-				var noOfCols = 3;
+				let data = $.csv.toObjects(e.target.result);
 
-				// To ignore the first row which is header
-				var hdrRow = arrCSV.splice(0, noOfCols);
+				var patientTemplate = t.getView().getModel("patient");
+				var medicationTemplate = t.getView().getModel("medicationStatement");
+				var practitionerTemplate = t.getView().getModel("practitioner");
+				var organizationTemplate = t.getView().getModel("organization");
 
-				var data = [];
-				while (arrCSV.length > 0) {
-					var obj = {};
-					// extract remaining rows one by one
-					var row = arrCSV.splice(0, noOfCols)
-					for (var i = 0; i < row.length; i++) {
-						obj[hdrRow[i]] = row[i].trim()
-					}
-					// push row to an array
-					data.push(obj)
+				var bundle = {
+					"resourceType": "Bundle",
+					"type": "transaction",
+					"entry": []
 				}
-				let template = {
-					"resourceType": "Patient",
-					"text": {
-						"div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><h1>Sidharth ramesh</h1></div>",
-						"status": "generated"
-					},
-					"name": [
-						{
-							"use": "official",
-							"given": [
-								"Sidhart"
-							],
-							"family": "Ramesh"
-						}
-					],
-					"gender": "male",
-					"birthDate": "1997-09-08",
-					"telecom": [
-						{
-							"value": "98173981",
-							"use": "mobile",
-							"system": "phone"
-						},
-						{
-							"system": "email",
-							"value": "tornado@gmail.com"
-						}
-					]
-				};
+
 				for (let row in data) {
-					template.name[0].given[0] = data[row]["PatientGivenName"];
-					template.name[0].family = data[row]["PatientFamilyName"];
+					patientTemplate.setProperty("/name/0/given/0", data[row]["PatientGivenName"]);
+					patientTemplate.setProperty("/name/0/family", data[row]["PatientFamilyName"]);
+					patientTemplate.setProperty("/birthDate", data[row]["PatientBirthdate"]);
+					medicationTemplate.setProperty("/medicationCodeableConcept/coding/0/display", data[row]["MedicationName"]);
+					medicationTemplate.setProperty("/medicationCodeableConcept/coding/0/code",    data[row]["MedicationPZN"]);
+					//medicationTemplate.setProperty("/medicationCodeableConcept/coding/0/display", data[row]["MedicationSize"]);
+					medicationTemplate.setProperty("/dosage/0/text",          data[row]["MedicationDosage"]);
+					practitionerTemplate.setProperty("/name/0/given/0",       data[row]["PractitionerGivenName"]);
+					practitionerTemplate.setProperty("/name/0/family",        data[row]["PractitionerFamilyName"]);
+					practitionerTemplate.setProperty("/address/0/line/0",     data[row]["PractitionerAddress"]);
+					practitionerTemplate.setProperty("/address/0/postalCode", data[row]["PractitionerPostalCode"]);
+					practitionerTemplate.setProperty("/address/0/city",       data[row]["PractitionerCity"]);
+					practitionerTemplate.setProperty("/telecom/0/value",      data[row]["PractitionerPhone"]);
+					practitionerTemplate.setProperty("/telecom/1/value",      data[row]["PractitionerEMail"]);
+					organizationTemplate.setProperty("/name",                 data[row]["PharmacyName"]);
+					organizationTemplate.setProperty("/address/0/line/0",     data[row]["PharmacyAddress"]);
+					organizationTemplate.setProperty("/address/0/postalCode", data[row]["PharmacyPostalCode"]);
+					organizationTemplate.setProperty("/address/0/city",       data[row]["PharmacyCity"]);
+					organizationTemplate.setProperty("/telecom/0/value",      data[row]["PharmacyPhone"]);
+					organizationTemplate.setProperty("/telecom/1/value",      data[row]["PharmacyEMail"]);
 				};
-				fetch('https://localhost:8081/fhir/Patient', {
+
+				bundle.entry.push({
+					"resource":patientTemplate.getData(),
+					"request": {
+						"method": "POST",
+						"url": "Patient"
+					}
+				});
+				bundle.entry.push({
+					"resource":practitionerTemplate.getData(),
+					"request": {
+						"method": "POST",
+						"url": "Practitioner"
+					}
+				});
+				bundle.entry.push({
+					"resource":medicationTemplate.getData(),
+					"request": {
+						"method": "POST",
+						"url": "MedicationStatement"
+					}
+				});
+				bundle.entry.push({
+					"resource":organizationTemplate.getData(),
+					"request": {
+						"method": "POST",
+						"url": "Organization"
+					}
+				});
+
+				fetch('http://localhost:8080/fhir', {
 					method: 'POST',
 					headers: {
 						'Accept': 'application/json',
 						'Content-Type': 'application/json',
-						'Authorization': ''
+						'Authorization': 'Bearer ' + t.getOwnerComponent().jwtToken
 					},
-					body: JSON.stringify(template)
+					body: JSON.stringify(bundle)
 				});
 			};
 			reader.readAsBinaryString(file);
