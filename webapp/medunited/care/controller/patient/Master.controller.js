@@ -84,13 +84,16 @@ sap.ui.define([
 				for (let row in data) {
 					template.name[0].given[0] = data[row]["PatientGivenName"];
 					template.name[0].family = data[row]["PatientFamilyName"];
-					template.birthDate = data[row]["PatientBirthdate"];
 				};
-				// Bind the data to the Table
-				var oModel = new sap.ui.model.json.JSONModel();
-				oModel.setData(data);
-				var oTable = t.byId("patientTable");
-				oTable.setModel(oModel);
+				fetch('https://localhost:8081/fhir/Patient', {
+					method: 'POST',
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+						'Authorization': ''
+					},
+					body: JSON.stringify(template)
+				});
 			};
 			reader.readAsBinaryString(file);
 
