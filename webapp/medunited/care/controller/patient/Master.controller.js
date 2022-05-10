@@ -21,6 +21,10 @@ sap.ui.define([
 		},
 		getSortField: function() {
 			return "family";
+		},
+
+		onUploadFile : function() {
+			
 		}
 	});
 }, true);

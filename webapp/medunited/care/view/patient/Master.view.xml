@@ -1,7 +1,12 @@
-<mvc:View displayBlock="true"
-	controllerName="medunited.care.controller.patient.Master" height="100%"
-	xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
-	<f:DynamicPage id="patientPageId"
+<mvc:View controllerName="medunited.care.controller.patient.Master" 
+	xmlns="sap.m" 
+	xmlns:f="sap.f" 
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:u="sap.ui.unified"
+	xmlns:l="sap.ui.layout.form"
+	height="100%"
+	displayBlock="true">
+	<f:DynamicPage id="dynamicPageId"
 		toggleHeaderOnTitleClick="false">
 		<!-- DynamicPage Title -->
 		<f:title>
@@ -10,7 +15,17 @@
 					<Title text="{i18n>Patients}" />
 				</f:heading>
 				<f:actions>
-					<Button type="Emphasized" text="{i18n>Create}" press="onAdd" />
+					<l:SimpleForm editable="true">
+						<l:content>
+							<Label text="File Name"/>
+							<u:FileUploader id="idfileUploader" width="50%"
+								sameFilenameAllowed="false" buttonText="" fileType="CSV"
+								placeholder="Choose a CSV file" style="Emphasized">
+							</u:FileUploader>
+							<Button icon="sap-icon://upload" text="{i18n>buttonUploadFile}" press="onUploadFile" type="Accept" class="sapUiSmallMarginEnd"/>
+						</l:content>
+					</l:SimpleForm>
+					<Button type="Emphasized" text="{i18n>CreatePatient}" press="onAdd" />
 				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>
