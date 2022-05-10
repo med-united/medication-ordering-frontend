@@ -103,6 +103,7 @@ sap.ui.define([
 		},
 		_createContextFromModel: function (sEntityName) {
 			var sEntityId = this.getView().getModel().create(sEntityName, {}, "patientDetails");
+			this.onSave();
 			return this.getOwnerComponent().getModel().bindContext("/"+sEntityName+"/"+sEntityId);
 		},
 		onSave: function (oEvent) {

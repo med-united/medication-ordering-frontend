@@ -97,6 +97,13 @@
 			},
 			"routes": [
 				{
+					"pattern": "",
+					"name": "home",
+					"target": [
+						"patient-master"
+					]
+				},
+				{
 					"pattern": "patient/action/add",
 					"name": "patient-add",
 					"target": [
@@ -127,6 +134,22 @@
 						"patient-master",
 						"patient-detail"
 					]
+				},
+				{
+					"pattern": "practitioner/:layout:",
+					"name": "practitioner-master",
+					"target": [
+						"practitioner-master",
+						"practitioner-detail"
+					]
+				},
+				{
+					"pattern": "practitioner/{practitioner}/{layout}",
+					"name": "practitioner-detail",
+					"target": [
+						"practitioner-master",
+						"practitioner-detail"
+					]
 				}
 			],
 			"targets": {
@@ -136,6 +159,14 @@
 				},
 				"patient-detail": {
 					"viewName": "patient/Detail",
+					"controlAggregation": "midColumnPages"
+				},
+				"practitioner-master": {
+					"viewName": "practitioner/Master",
+					"controlAggregation": "beginColumnPages"
+				},
+				"practitioner-detail": {
+					"viewName": "practitioner/Detail",
 					"controlAggregation": "midColumnPages"
 				}
 			}
