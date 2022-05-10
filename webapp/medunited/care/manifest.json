@@ -155,19 +155,23 @@
 			"targets": {
 				"patient-master": {
 					"viewName": "patient/Master",
-					"controlAggregation": "beginColumnPages"
+					"controlAggregation": "beginColumnPages",
+					"clearControlAggregation": true
 				},
 				"patient-detail": {
 					"viewName": "patient/Detail",
-					"controlAggregation": "midColumnPages"
+					"controlAggregation": "midColumnPages",
+					"clearControlAggregation": true
 				},
 				"practitioner-master": {
 					"viewName": "practitioner/Master",
-					"controlAggregation": "beginColumnPages"
+					"controlAggregation": "beginColumnPages",
+					"clearControlAggregation": true
 				},
 				"practitioner-detail": {
 					"viewName": "practitioner/Detail",
-					"controlAggregation": "midColumnPages"
+					"controlAggregation": "midColumnPages",
+					"clearControlAggregation": true
 				}
 			}
 		}
