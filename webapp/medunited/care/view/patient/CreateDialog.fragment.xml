@@ -10,9 +10,9 @@
 			singleContainerFullSize="true">
 			<form:content>
 				<Label text="{i18n>GivenName}" />
-				<Input type="text" value="{given}" />
+				<Input type="text" value="{name/0/given/0}" />
 				<Label text="{i18n>FamilyName}" />
-				<Input type="text" value="{family}" />
+				<Input type="text" value="{name/0/family}" />
 				<Label text="{i18n>Birthdate}" />
 				<DatePicker value="{birthdate}" />
 			</form:content>
@@ -21,7 +21,7 @@
 			<Button type="Reject" text="{i18n>cancel}" press="onCancel" />
 		</beginButton>
 		<endButton>
-			<Button type="Accept" text="{i18n>Create}" press="onCreate" />
+			<Button type="Accept" text="{i18n>Create}" press="onSave" />
 		</endButton>
 	</Dialog>
 </core:FragmentDefinition>

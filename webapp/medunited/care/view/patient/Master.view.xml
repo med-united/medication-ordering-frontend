@@ -1,7 +1,7 @@
 <mvc:View displayBlock="true"
 	controllerName="medunited.care.controller.patient.Master" height="100%"
 	xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
-	<f:DynamicPage id="dynamicPageId"
+	<f:DynamicPage id="patientPageId"
 		toggleHeaderOnTitleClick="false">
 		<!-- DynamicPage Title -->
 		<f:title>
@@ -19,7 +19,7 @@
 		<f:content>
 			<Table id="patientTable" inset="false"
 				items="{/Patient}"
-				class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true">
+				class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
 				<headerToolbar>
 					<OverflowToolbar>
 						<ToolbarSpacer />
@@ -63,5 +63,11 @@
 				</items>
 			</Table>
 		</f:content>
+		<f:footer>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button type="Reject" text="{i18n>DeleteSelected}" press="onDeleteSelected" />
+			</OverflowToolbar>
+		</f:footer>
 	</f:DynamicPage>
 </mvc:View>

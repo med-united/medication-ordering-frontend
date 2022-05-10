@@ -1,7 +1,7 @@
 <mvc:View displayBlock="true"
 	controllerName="medunited.care.controller.practitioner.Master" height="100%"
 	xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
-	<f:DynamicPage id="dynamicPageId"
+	<f:DynamicPage id="practitionerPageId"
 		toggleHeaderOnTitleClick="false">
 		<!-- DynamicPage Title -->
 		<f:title>

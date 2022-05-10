@@ -98,26 +98,26 @@ sap.ui.define([
 				sEntityName = sEntityName[0].toUpperCase() + sEntityName.slice(1);
 			}
 			
-			var oContext = this._createContextFromModel(sEntityName);
-			oDialog.setBindingContext(oContext);
+			var sContextPath = this._createContextPathFromModel(sEntityName);
+			oDialog.bindElement(sContextPath);
 		},
-		_createContextFromModel: function (sEntityName) {
-			var sEntityId = this.getView().getModel().create(sEntityName, {}, "patientDetails");
-			this.onSave();
-			return this.getOwnerComponent().getModel().bindContext("/"+sEntityName+"/"+sEntityId);
+		_createContextPathFromModel: function (sEntityName) {
+			const oModel = this.getView().getModel();
+			const sEntityId = oModel.create(sEntityName, {}, this.getEntityName().toLowerCase()+"Details");
+			return "/"+sEntityName+"/"+sEntityId;
 		},
 		onSave: function (oEvent) {
 			var fnSuccess = function(oData){
-                this.enableEditMode(false);
                 MessageToast.show(this.translate(this, "msgPatientSaved"));
-            }.bind(this);
-
+			}.bind(this);
+			
             var fnError = function(oError){
-                this.enableEditMode(false);
-                MessageBox.show(this.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
+				MessageBox.show(this.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
             }.bind(this);
-
+			
             var oRequest = this.getView().getModel().submitChanges(this.getEntityName().toLowerCase()+"Details", fnSuccess, fnError);
+			this.byId("createDialog").close()
+			
 		},
 		onCancel: function (oEvent) {
 			this.getOwnerComponent().getModel().resetChanges();
@@ -137,6 +137,27 @@ sap.ui.define([
 		},
 		getSortField: function () {
 			return "Name";
+		},
+		onDeleteSelected: function() {
+			const aResources = this.byId(this.getEntityName().toLowerCase()+"Table").getSelectedItems().map(oItem => oItem.getBindingContext().getPath());
+			const iCount = aResources.length;
+			const oModel = this.getView().getModel();
+			const me = this;
+			oModel.remove(aResources);
+
+			oModel.submitChanges(function () {
+				MessageToast.show(me.translate(me, "msgCountDeleted", iCount));
+			}, function (oError) {
+				MessageBox.show(me.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
+			});
+		},
+		onSelectionChange: function(oEvent) {
+			const bShow = oEvent.getSource().getSelectedItems(true).length > 0;
+			const sPageId = this.getEntityName().toLowerCase()+"PageId";
+			const oPage = this.byId(sPageId);
+			if(oPage.getShowFooter() !== bShow) {
+				oPage.setShowFooter(bShow);
+			}
 		}
 	});
 }, true);
