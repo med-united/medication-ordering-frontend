@@ -9,7 +9,7 @@
 		"title": "{{appTitle}}",
 		"dataSources": {
 			"fhir": {
-				"uri": "https://fhir.med-united.health/fhir",
+				"uri": "http://localhost:8081/fhir",
 				"type": "FHIR",
 				"settings" : {
 					"groupProperties": {
@@ -21,6 +21,10 @@
 			},
 			"app-state": {
 				"uri": "../../resources/local/state.json",
+				"type": "JSON"
+			},
+			"patient": {
+				"uri": "../../resources/local/patient.json",
 				"type": "JSON"
 			}
 		}
@@ -77,6 +81,10 @@
 			},
 			"appState": {
 				"dataSource": "app-state",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"patient": {
+				"dataSource": "patient",
 				"type": "sap.ui.model.json.JSONModel"
 			}
 		},
