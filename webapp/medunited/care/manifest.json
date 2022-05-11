@@ -34,6 +34,10 @@
 			"practitioner": {
 				"uri": "../../resources/local/practitioner.json",
 				"type": "JSON"
+			},
+			"organization": {
+				"uri": "../../resources/local/organization.json",
+				"type": "JSON"
 			}
 		}
 	},
@@ -101,6 +105,10 @@
 			},
 			"practitioner": {
 				"dataSource": "practitioner",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"organization": {
+				"dataSource": "organization",
 				"type": "sap.ui.model.json.JSONModel"
 			}
 		},
