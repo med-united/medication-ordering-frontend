@@ -1,7 +1,8 @@
 sap.ui.define([
 	"medunited/base/controller/AbstractMasterController",
 	'sap/ui/model/Filter',
-	'sap/ui/model/FilterOperator'
+	'sap/ui/model/FilterOperator',
+	'medunited/care/libs/jquery-csv'
 ], function (AbstractMasterController, Filter, FilterOperator) {
 	"use strict";
 
@@ -34,24 +35,8 @@ sap.ui.define([
 			var t = this;
 
 			reader.onload = function (e) {
-				var strCSV = e.target.result;
-				var arrCSV = strCSV.match(/[\w .]+(?=,?)/g);
-				var noOfCols = 3;
+				let data = $.csv.toObjects(e.target.result);
 
-				// To ignore the first row which is header
-				var hdrRow = arrCSV.splice(0, noOfCols);
-
-				var data = [];
-				while (arrCSV.length > 0) {
-					var obj = {};
-					// extract remaining rows one by one
-					var row = arrCSV.splice(0, noOfCols)
-					for (var i = 0; i < row.length; i++) {
-						obj[hdrRow[i]] = row[i].trim()
-					}
-					// push row to an array
-					data.push(obj)
-				}
 				let template = {
 					"resourceType": "Patient",
 					"text": {
