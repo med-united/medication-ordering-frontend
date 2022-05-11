@@ -84,13 +84,14 @@ sap.ui.define([
 				for (let row in data) {
 					template.name[0].given[0] = data[row]["PatientGivenName"];
 					template.name[0].family = data[row]["PatientFamilyName"];
-				};
-				fetch('https://localhost:8081/fhir/Patient', {
+				}
+				
+				fetch('http://localhost:8081/fhir/Patient', {
 					method: 'POST',
 					headers: {
 						'Accept': 'application/json',
 						'Content-Type': 'application/json',
-						'Authorization': ''
+						'Authorization': 'Bearer ' + window.jwtToken
 					},
 					body: JSON.stringify(template)
 				});
