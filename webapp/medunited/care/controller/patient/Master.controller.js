@@ -47,23 +47,21 @@ sap.ui.define([
 					"entry": []
 				}
 
-				var patientRequest = {
-					"request": {
-						"method": "POST",
-						"url": "Patient"
-					}
-				}
-
 				for (let row in data) {
 					template.setProperty("/name/0/given/0", data[row]["PatientGivenName"]);
 					template.setProperty("/name/0/family", data[row]["PatientFamilyName"]);
 					template.setProperty("/birthDate", data[row]["PatientBirthdate"]);
 				}
 
-				bundle.entry.push(template.getData());
-				bundle.entry.push(patientRequest);
+				bundle.entry.push({
+					"resource":template.getData(),
+					"request": {
+						"method": "POST",
+						"url": "Patient"
+					}
+				});
 
-				fetch('http://localhost:8081/fhir', {
+				fetch('http://localhost:8080/fhir', {
 					method: 'POST',
 					headers: {
 						'Accept': 'application/json',
