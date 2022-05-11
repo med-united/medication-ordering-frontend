@@ -9,7 +9,7 @@
 		"title": "{{appTitle}}",
 		"dataSources": {
 			"fhir": {
-				"uri": "http://localhost:8081/fhir",
+				"uri": "http://localhost:8080/fhir",
 				"type": "FHIR",
 				"settings" : {
 					"groupProperties": {
@@ -25,6 +25,14 @@
 			},
 			"patient": {
 				"uri": "../../resources/local/patient.json",
+				"type": "JSON"
+			},
+			"medicationStatement": {
+				"uri": "../../resources/local/medicationStatement.json",
+				"type": "JSON"
+			},
+			"practitioner": {
+				"uri": "../../resources/local/practitioner.json",
 				"type": "JSON"
 			}
 		}
@@ -85,6 +93,14 @@
 			},
 			"patient": {
 				"dataSource": "patient",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"medicationStatement": {
+				"dataSource": "medicationStatement",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"practitioner": {
+				"dataSource": "practitioner",
 				"type": "sap.ui.model.json.JSONModel"
 			}
 		},

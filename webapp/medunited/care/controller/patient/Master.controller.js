@@ -34,12 +34,16 @@ sap.ui.define([
 			var reader = new FileReader();
 			var t = this;
 
-			window.template = this.getView().getModel("patient");
+			window.patientTemplate = this.getView().getModel("patient");
+			window.medicationTemplate = this.getView().getModel("medicationStatement");
+			window.practitionerTemplate = this.getView().getModel("practitioner");
 
 			reader.onload = function (e) {
 				let data = $.csv.toObjects(e.target.result);
 
-				var template = window.template;
+				var patientTemplate = window.patientTemplate;
+				var medicationTemplate = window.medicationTemplate;
+				var practitionerTemplate = window.practitionerTemplate;
 
 				var bundle = {
 					"resourceType": "Bundle",
@@ -48,13 +52,24 @@ sap.ui.define([
 				}
 
 				for (let row in data) {
-					template.setProperty("/name/0/given/0", data[row]["PatientGivenName"]);
-					template.setProperty("/name/0/family", data[row]["PatientFamilyName"]);
-					template.setProperty("/birthDate", data[row]["PatientBirthdate"]);
+					patientTemplate.setProperty("/name/0/given/0", data[row]["PatientGivenName"]);
+					patientTemplate.setProperty("/name/0/family", data[row]["PatientFamilyName"]);
+					patientTemplate.setProperty("/birthDate", data[row]["PatientBirthdate"]);
+					medicationTemplate.setProperty("/medicationCodeableConcept/coding/0/display", data[row]["MedicationName"]);
+					medicationTemplate.setProperty("/medicationCodeableConcept/coding/0/code", data[row]["MedicationPZN"]);
+					//medicationTemplate.setProperty("/medicationCodeableConcept/coding/0/display", data[row]["MedicationSize"]);
+					medicationTemplate.setProperty("/dosage/0/text", data[row]["MedicationDosage"]);
+					practitionerTemplate.setProperty("/name/0/given/0", data[row]["PractitionerGivenName"]);
+					practitionerTemplate.setProperty("/name/0/family", data[row]["PractitionerFamilyName"]);
+					practitionerTemplate.setProperty("/address/0/line/0", data[row]["PractitionerAddress"]);
+					practitionerTemplate.setProperty("/address/0/postalCode", data[row]["PractitionerPostalCode"]);
+					practitionerTemplate.setProperty("/address/0/city", data[row]["PractitionerCity"]);
+					practitionerTemplate.setProperty("/telecom/1/value", data[row]["PractitionerPhone"]);
+					practitionerTemplate.setProperty("/telecom/0/value", data[row]["PractitionerEMail"]);
 				}
 
 				bundle.entry.push({
-					"resource":template.getData(),
+					"resource":patientTemplate.getData(),
 					"request": {
 						"method": "POST",
 						"url": "Patient"
