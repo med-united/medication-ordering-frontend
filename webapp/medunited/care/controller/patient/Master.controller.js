@@ -34,52 +34,43 @@ sap.ui.define([
 			var reader = new FileReader();
 			var t = this;
 
+			window.template = this.getView().getModel("patient");
+
 			reader.onload = function (e) {
 				let data = $.csv.toObjects(e.target.result);
 
-				let template = {
-					"resourceType": "Patient",
-					"text": {
-						"div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><h1>Sidharth ramesh</h1></div>",
-						"status": "generated"
-					},
-					"name": [
-						{
-							"use": "official",
-							"given": [
-								"Sidhart"
-							],
-							"family": "Ramesh"
-						}
-					],
-					"gender": "male",
-					"birthDate": "1997-09-08",
-					"telecom": [
-						{
-							"value": "98173981",
-							"use": "mobile",
-							"system": "phone"
-						},
-						{
-							"system": "email",
-							"value": "tornado@gmail.com"
-						}
-					]
-				};
-				for (let row in data) {
-					template.name[0].given[0] = data[row]["PatientGivenName"];
-					template.name[0].family = data[row]["PatientFamilyName"];
-					template.birthDate = data[row]["PatientBirthdate"];
+				var template = window.template;
+
+				var bundle = {
+					"resourceType": "Bundle",
+					"type": "transaction",
+					"entry": []
 				}
-				
-				fetch('http://localhost:8081/fhir/Patient', {
+
+				var patientRequest = {
+					"request": {
+						"method": "POST",
+						"url": "Patient"
+					}
+				}
+
+				for (let row in data) {
+					template.setProperty("/name/0/given/0", data[row]["PatientGivenName"]);
+					template.setProperty("/name/0/family", data[row]["PatientFamilyName"]);
+					template.setProperty("/birthDate", data[row]["PatientBirthdate"]);
+				}
+
+				bundle.entry.push(template.getData());
+				bundle.entry.push(patientRequest);
+
+				fetch('http://localhost:8081/fhir', {
 					method: 'POST',
 					headers: {
 						'Accept': 'application/json',
 						'Content-Type': 'application/json',
 						'Authorization': 'Bearer ' + window.jwtToken
 					},
-					body: JSON.stringify(template)
+					body: JSON.stringify(bundle)
 				});
 			};
 			reader.readAsBinaryString(file);
