@@ -1,3 +1,3 @@
-PatientGivenName,PatientFamilyName
-"Juanita471","DuBuque215"
-"Juanita472","DuBuque214"
+PatientGivenName,PatientFamilyName,PatientBirthdate
+"Juanita471","DuBuque215","2022-05-10"
+"Juanita472","DuBuque214","2022-05-09"

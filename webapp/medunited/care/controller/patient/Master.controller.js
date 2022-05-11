@@ -69,6 +69,7 @@ sap.ui.define([
 				for (let row in data) {
 					template.name[0].given[0] = data[row]["PatientGivenName"];
 					template.name[0].family = data[row]["PatientFamilyName"];
+					template.birthDate = data[row]["PatientBirthdate"];
 				}
 				
 				fetch('http://localhost:8081/fhir/Patient', {
