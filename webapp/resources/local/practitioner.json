@@ -21,37 +21,31 @@
     "active": true,
     "name": [
         {
-            "family": "Carter549",
-            "given": [
-                "Bernard308"
-            ],
-            "prefix": [
-                "Dr."
-            ]
+            "family": "",
+            "given": [""],
+            "prefix": [""]
         }
     ],
     "telecom": [
         {
-            "system": "email",
-            "value": "Bernard308.Carter549@example.com",
+            "system": "phone",
+            "value": "",
             "use": "work"
         },
         {
-            "system": "phone",
-            "value": "123456789",
+            "system": "email",
+            "value": "",
             "use": "work"
         }
     ],
     "address": [
         {
-            "line": [
-                "30 LOCUST STREET"
-            ],
-            "city": "NORTHAMPTON",
-            "state": "MA",
-            "postalCode": "01060",
-            "country": "US"
+            "line": [""],
+            "city": "",
+            "state": "",
+            "postalCode": "",
+            "country": "DE"
         }
     ],
-    "gender": "male"
+    "gender": ""
 }
