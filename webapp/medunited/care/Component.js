@@ -34,7 +34,7 @@ sap.ui.define([
 					});
 					oJwtModel.setData(me.parseJwt(keycloak.token));
 					oRouter.initialize();
-					window.jwtToken = keycloak.token;
+					me.jwtToken = keycloak.token;
 				}
             }).catch(function(e) {
                 console.log('failed to initialize');

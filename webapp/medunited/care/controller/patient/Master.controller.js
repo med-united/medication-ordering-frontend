@@ -34,18 +34,14 @@ sap.ui.define([
 			var reader = new FileReader();
 			var t = this;
 
-			window.patientTemplate = this.getView().getModel("patient");
-			window.medicationTemplate = this.getView().getModel("medicationStatement");
-			window.practitionerTemplate = this.getView().getModel("practitioner");
-			window.organizationTemplate = this.getView().getModel("organization");
 
 			reader.onload = function (e) {
 				let data = $.csv.toObjects(e.target.result);
 
-				var patientTemplate = window.patientTemplate;
-				var medicationTemplate = window.medicationTemplate;
-				var practitionerTemplate = window.practitionerTemplate;
-				var organizationTemplate = window.organizationTemplate;
+				var patientTemplate = t.getView().getModel("patient");
+				var medicationTemplate = t.getView().getModel("medicationStatement");
+				var practitionerTemplate = t.getView().getModel("practitioner");
+				var organizationTemplate = t.getView().getModel("organization");
 
 				var bundle = {
 					"resourceType": "Bundle",
@@ -110,7 +106,7 @@ sap.ui.define([
 					headers: {
 						'Accept': 'application/json',
 						'Content-Type': 'application/json',
-						'Authorization': 'Bearer ' + window.jwtToken
+						'Authorization': 'Bearer ' + t.getOwnerComponent().jwtToken
 					},
 					body: JSON.stringify(bundle)
 				});
