@@ -51,9 +51,9 @@
 							<Text
 								text="{name/0/family}" />
 							<Text
-								text="{telecom/email}" />
+								text="{telecom/1/value}" />
 							<Text
-								text="{telecom/phone}" />
+								text="{telecom/0/value}" />
 						</cells>
 					</ColumnListItem>
 				</items>
