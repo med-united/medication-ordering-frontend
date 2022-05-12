@@ -47,14 +47,12 @@
 						press="onListItemPress">
 						<cells>
 							<Text
-								text="{name/0/given}" />
+								text="{medicationCodeableConcept/coding/0/display}" />
 							<Text
-								text="{name/0/family}" />
-							<Text text="{path: 'birthDate', formatOptions: {style: 'short'}}" />
+								text="{medicationCodeableConcept/coding/0/code}" />
+							<Text text="" />
 							<Text
-								text="{GeneralPractitioner}" />
-							<Text
-								text="{ManagingOrganization}" />
+								text="{dosage/0/text}" />
 						</cells>
 					</ColumnListItem>
 				</items>
