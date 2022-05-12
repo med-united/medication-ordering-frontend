@@ -7,7 +7,7 @@
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:heading>
-					<Title text="{i18n>practitionerTabFilter}" />
+					<Title text="{i18n>practitionerTabTitle}" />
 				</f:heading>
 				<f:actions>
 					<Button type="Emphasized" text="{i18n>Create}" press="onAdd" />
