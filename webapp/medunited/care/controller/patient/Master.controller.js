@@ -38,12 +38,12 @@ sap.ui.define([
 			reader.onload = function (e) {
 				let data = $.csv.toObjects(e.target.result);
 
-				var patientTemplate = t.getView().getModel("patient");
-				var medicationTemplate = t.getView().getModel("medicationStatement");
-				var practitionerTemplate = t.getView().getModel("practitioner");
-				var organizationTemplate = t.getView().getModel("organization");
+				let patientTemplate = t.getView().getModel("patient");
+				let medicationTemplate = t.getView().getModel("medicationStatement");
+				let practitionerTemplate = t.getView().getModel("practitioner");
+				let organizationTemplate = t.getView().getModel("organization");
 
-				var bundle = {
+				let bundle = {
 					"resourceType": "Bundle",
 					"type": "transaction",
 					"entry": []
