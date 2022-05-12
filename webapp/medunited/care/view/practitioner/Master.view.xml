@@ -7,7 +7,7 @@
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:heading>
-					<Title text="{i18n>Practitioners}" />
+					<Title text="{i18n>practitionerTabFilter}" />
 				</f:heading>
 				<f:actions>
 					<Button type="Emphasized" text="{i18n>Create}" press="onAdd" />
@@ -29,16 +29,16 @@
 					</OverflowToolbar>
 				</headerToolbar>
 				<columns>
-					<Column width="20%" importance="Medium" autoPopinWidth="10">
+					<Column width="30%" importance="Medium" autoPopinWidth="10">
 						<Text text="{i18n>GivenName}" />
 					</Column>
-					<Column width="20%" importance="High">
+					<Column width="30%" importance="High">
 						<Text text="{i18n>FamilyName}" />
 					</Column>
-					<Column width="20%" importance="Medium">
+					<Column width="30%" importance="Medium">
 						<Text text="{i18n>EMail}" />
 					</Column>
-					<Column width="20%" importance="Low">
+					<Column width="30%" importance="Low">
 						<Text text="{i18n>Telephone}" />
 					</Column>
 				</columns>

@@ -29,16 +29,16 @@
 					</OverflowToolbar>
 				</headerToolbar>
 				<columns>
-					<Column width="20%" importance="High" autoPopinWidth="10">
+					<Column width="30%" importance="High" autoPopinWidth="10">
 						<Text text="{i18n>medicationName}" />
 					</Column>
-					<Column width="20%" importance="High">
+					<Column width="30%" importance="High">
 						<Text text="{i18n>medicationPZN}" />
 					</Column>
-					<Column width="20%" importance="High">
+					<Column width="30%" importance="High">
 						<Text text="{i18n>medicationSize}" />
 					</Column>
-					<Column width="20%" importance="High">
+					<Column width="30%" importance="High">
 						<Text text="{i18n>medicationDosage}" />
 					</Column>
 				</columns>
