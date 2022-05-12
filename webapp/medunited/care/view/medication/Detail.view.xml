@@ -1,0 +1,6 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:uxap="sap.uxap" xmlns:name="medunited.care.SharedBlocks.name" xmlns:address="medunited.care.SharedBlocks.address" controllerName="medunited.care.controller.medication.Detail" xmlns:html="http://www.w3.org/1999/xhtml">
+    <Page showHeader="false">
+        <content></content>
+        <footer></footer>
+    </Page>
+</mvc:View>
