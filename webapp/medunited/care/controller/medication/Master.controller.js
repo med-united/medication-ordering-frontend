@@ -5,9 +5,9 @@ sap.ui.define([
 ], function (AbstractMasterController, Filter, FilterOperator) {
 	"use strict";
 
-	return AbstractMasterController.extend("medunited.care.controller.medications.Master", {
+	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
 		getEntityName: function() {
-			return "Medications";
+			return "Medication";
 		},
 		getFilter: function(sQuery) {
 			return [new Filter({
