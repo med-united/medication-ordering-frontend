@@ -9,7 +9,7 @@
 		"title": "{{appTitle}}",
 		"dataSources": {
 			"fhir": {
-				"uri": "https://fhir.med-united.health/fhir",
+				"uri": "http://localhost:8081/fhir",
 				"type": "FHIR",
 				"settings" : {
 					"groupProperties": {
@@ -150,6 +150,22 @@
 						"practitioner-master",
 						"practitioner-detail"
 					]
+				},
+				{
+					"pattern": "medication/:layout:",
+					"name": "medication-master",
+					"target": [
+						"medication-master",
+						"medication-detail"
+					]
+				},
+				{
+					"pattern": "medication/{medication}/{layout}",
+					"name": "medication-detail",
+					"target": [
+						"medication-master",
+						"medication-detail"
+					]
 				}
 			],
 			"targets": {
@@ -170,6 +186,16 @@
 				},
 				"practitioner-detail": {
 					"viewName": "practitioner/Detail",
+					"controlAggregation": "midColumnPages",
+					"clearControlAggregation": true
+				},
+				"medication-master": {
+					"viewName": "medication/Master",
+					"controlAggregation": "beginColumnPages",
+					"clearControlAggregation": true
+				},
+				"medication-detail": {
+					"viewName": "medication/Detail",
 					"controlAggregation": "midColumnPages",
 					"clearControlAggregation": true
 				}
