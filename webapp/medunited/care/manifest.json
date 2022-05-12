@@ -153,16 +153,7 @@
 					"pattern": "medication/:layout:",
 					"name": "medication-master",
 					"target": [
-						"medication-master",
-						"medication-detail"
-					]
-				},
-				{
-					"pattern": "medication/{medication}/{layout}",
-					"name": "medication-detail",
-					"target": [
-						"medication-master",
-						"medication-detail"
+						"medication-master"
 					]
 				},
 				{
@@ -206,11 +197,6 @@
 				"medication-master": {
 					"viewName": "medication/Master",
 					"controlAggregation": "beginColumnPages",
-					"clearControlAggregation": true
-				},
-				"medication-detail": {
-					"viewName": "medication/Detail",
-					"controlAggregation": "midColumnPages",
 					"clearControlAggregation": true
 				},
 				"pharmacy-master": {
