@@ -38,7 +38,11 @@
 			"organization": {
 				"uri": "../../resources/local/organization.json",
 				"type": "JSON"
-			}
+			},
+			"medication": {
+				"uri": "../../resources/local/medication.json",
+				"type": "JSON"
+			}			
 		}
 	},
 	"sap.ui": {
@@ -108,7 +112,12 @@
 			"organization": {
 				"dataSource": "organization",
 				"type": "sap.ui.model.json.JSONModel"
+			},
+			"medication": {
+				"dataSource": "medication",
+				"type": "sap.ui.model.json.JSONModel"
 			}
+
 		},
 		"resources": {
 			"css": [
