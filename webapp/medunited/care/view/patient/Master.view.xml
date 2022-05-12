@@ -12,7 +12,7 @@
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:heading>
-					<Title text="{i18n>Patients}" />
+					<Title text="{i18n>pageTitlePatients}" />
 				</f:heading>
 				<f:actions>
 					<l:SimpleForm editable="true">
@@ -64,15 +64,11 @@
 					<ColumnListItem type="Navigation"
 						press="onListItemPress">
 						<cells>
-							<Text
-								text="{name/0/given}" />
-							<Text
-								text="{name/0/family}" />
+							<Text text="{name/0/given}" />
+							<Text text="{name/0/family}" />
 							<Text text="{path: 'birthDate', formatOptions: {style: 'short'}}" />
-							<Text
-								text="{GeneralPractitioner}" />
-							<Text
-								text="{ManagingOrganization}" />
+							<Text text="{GeneralPractitioner}" />
+							<Text text="{ManagingOrganization}" />
 						</cells>
 					</ColumnListItem>
 				</items>
