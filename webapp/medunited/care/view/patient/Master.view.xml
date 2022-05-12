@@ -77,7 +77,7 @@
 		<f:footer>
 			<OverflowToolbar>
 				<ToolbarSpacer/>
-				<Button type="Reject" text="{i18n>DeleteSelected}" press="onDeleteSelected" />
+				<Button type="Reject" text="{i18n>btnDeleteSelected}" press="onDeleteSelected" />
 			</OverflowToolbar>
 		</f:footer>
 	</f:DynamicPage>
