@@ -51,6 +51,15 @@ sap.ui.define([
 				}
 
 				for (let dataRow of data) {
+
+					bundle.entry.push({
+						"resource": structuredClone(medicationTemplate.getData()),
+						"request": {
+							"method": "POST",
+							"url": "Medication"
+						}
+					});
+
 					let resourceFound = false;
 					for (let bundleEntry of bundle.entry) {
 						resourceFound = bundleEntry.resource.resourceType === "Organization"
