@@ -8,19 +8,6 @@ sap.ui.define([
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
 		getEntityName: function() {
 			return "Medication";
-		},
-		getFilter: function(sQuery) {
-			return [new Filter({
-				filters: [
-					new Filter("given", FilterOperator.Contains, sQuery),
-					new Filter("family", FilterOperator.Contains, sQuery)
-				],
-				and: false
-				}
-			)];
-		},
-		getSortField: function() {
-			return "family";
 		}
 	});
 }, true);
