@@ -22,6 +22,22 @@
 			"app-state": {
 				"uri": "../../resources/local/state.json",
 				"type": "JSON"
+			},
+			"patient": {
+				"uri": "../../resources/local/patient.json",
+				"type": "JSON"
+			},
+			"medicationStatement": {
+				"uri": "../../resources/local/medicationStatement.json",
+				"type": "JSON"
+			},
+			"practitioner": {
+				"uri": "../../resources/local/practitioner.json",
+				"type": "JSON"
+			},
+			"organization": {
+				"uri": "../../resources/local/organization.json",
+				"type": "JSON"
 			}
 		}
 	},
@@ -77,6 +93,22 @@
 			},
 			"appState": {
 				"dataSource": "app-state",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"patient": {
+				"dataSource": "patient",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"medicationStatement": {
+				"dataSource": "medicationStatement",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"practitioner": {
+				"dataSource": "practitioner",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"organization": {
+				"dataSource": "organization",
 				"type": "sap.ui.model.json.JSONModel"
 			}
 		},
@@ -152,19 +184,19 @@
 					]
 				},
 				{
-					"pattern": "medication/:layout:",
-					"name": "medication-master",
+					"pattern": "pharmacy/:layout:",
+					"name": "pharmacy-master",
 					"target": [
-						"medication-master",
-						"medication-detail"
+						"pharmacy-master",
+						"pharmacy-detail"
 					]
 				},
 				{
-					"pattern": "medication/{medication}/{layout}",
-					"name": "medication-detail",
+					"pattern": "pharmacy/{pharmacy}/{layout}",
+					"name": "pharmacy-detail",
 					"target": [
-						"medication-master",
-						"medication-detail"
+						"pharmacy-master",
+						"pharmacy-detail"
 					]
 				}
 			],
@@ -189,13 +221,13 @@
 					"controlAggregation": "midColumnPages",
 					"clearControlAggregation": true
 				},
-				"medication-master": {
-					"viewName": "medication/Master",
+				"pharmacy-master": {
+					"viewName": "pharmacy/Master",
 					"controlAggregation": "beginColumnPages",
 					"clearControlAggregation": true
 				},
-				"medication-detail": {
-					"viewName": "medication/Detail",
+				"pharmacy-detail": {
+					"viewName": "pharmacy/Detail",
 					"controlAggregation": "midColumnPages",
 					"clearControlAggregation": true
 				}
