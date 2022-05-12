@@ -11,7 +11,7 @@
 			"fhir": {
 				"uri": "https://fhir.med-united.health/fhir",
 				"type": "FHIR",
-				"settings" : {
+				"settings": {
 					"groupProperties": {
 						"patientDetails": {
 							"submit": "Batch"
@@ -43,9 +43,7 @@
 		"dependencies": {
 			"minUI5Version": "1.98.0",
 			"libs": {
-				"sap.ui.core": {
-					
-				},
+				"sap.ui.core": {},
 				"sap.tnt": {},
 				"sap.m": {}
 			}
@@ -58,7 +56,7 @@
 			"": {
 				"type": "sap.fhir.model.r4.FHIRModel",
 				"dataSource": "fhir",
-				"settings" : {
+				"settings": {
 					"groupProperties": {
 						"patientDetails": {
 							"submit": "Batch"
@@ -166,6 +164,22 @@
 						"medication-master",
 						"medication-detail"
 					]
+				},
+				{
+					"pattern": "pharmacy/:layout:",
+					"name": "pharmacy-master",
+					"target": [
+						"pharmacy-master",
+						"pharmacy-detail"
+					]
+				},
+				{
+					"pattern": "pharmacy/{pharmacy}/{layout}",
+					"name": "pharmacy-detail",
+					"target": [
+						"pharmacy-master",
+						"pharmacy-detail"
+					]
 				}
 			],
 			"targets": {
@@ -196,6 +210,16 @@
 				},
 				"medication-detail": {
 					"viewName": "medication/Detail",
+					"controlAggregation": "midColumnPages",
+					"clearControlAggregation": true
+				},
+				"pharmacy-master": {
+					"viewName": "pharmacy/Master",
+					"controlAggregation": "beginColumnPages",
+					"clearControlAggregation": true
+				},
+				"pharmacy-detail": {
+					"viewName": "pharmacy/Detail",
 					"controlAggregation": "midColumnPages",
 					"clearControlAggregation": true
 				}

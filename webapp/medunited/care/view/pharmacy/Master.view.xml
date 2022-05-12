@@ -1,0 +1,60 @@
+<mvc:View displayBlock="true" controllerName="medunited.care.controller.pharmacy.Master" height="100%" xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
+	<f:DynamicPage id="pharmacyPageId" toggleHeaderOnTitleClick="false">
+		<!-- DynamicPage Title -->
+		<f:title>
+			<f:DynamicPageTitle>
+				<f:heading>
+					<Title text="{i18n>Pharmacies}" />
+				</f:heading>
+				<f:actions>
+					<Button type="Emphasized" text="{i18n>Create}" press="onAdd" />
+				</f:actions>
+			</f:DynamicPageTitle>
+		</f:title>
+
+		<!-- DynamicPage Content -->
+		<f:content>
+			<Table id="pharmacyTable" inset="false" items="{/Organization}" class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true">
+				<headerToolbar>
+					<OverflowToolbar>
+						<ToolbarSpacer />
+						<SearchField search="onSearch" width="17.5rem" />
+						<OverflowToolbarButton icon="sap-icon://sort" type="Transparent" press="onSort" />
+					</OverflowToolbar>
+				</headerToolbar>
+				<columns>
+					<Column width="20%" importance="High" autoPopinWidth="10">
+						<Text text="{i18n>PharmacyName}" />
+					</Column>
+					<Column width="20%" importance="High">
+						<Text text="{i18n>PharmacyAddress}" />
+					</Column>
+					<Column width="20%" importance="High">
+						<Text text="{i18n>PharmacyPostalCode}" />
+					</Column>
+					<Column width="20%" importance="High">
+						<Text text="{i18n>PharmacyCity}" />
+					</Column>
+					<Column width="20%" importance="High">
+						<Text text="{i18n>PharmacyPhone}" />
+					</Column>
+					<Column width="20%" importance="High">
+						<Text text="{i18n>PharmacyEmail}" />
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Navigation" press="onListItemPress">
+						<cells>
+							<Text text="{name}" />
+							<Text text="{address/0/line}" />
+							<Text text="{address/0/postalCode}" />
+							<Text text="{address/0/city}" />
+							<Text text="{telecom/0/value}" />
+							<Text text="{telecom/1/value}" />
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</f:content>
+	</f:DynamicPage>
+</mvc:View>

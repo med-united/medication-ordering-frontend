@@ -1,0 +1,42 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:form="sap.ui.layout.form">
+   	<form:SimpleForm id="pharmacyFormRead"
+		editable="false"
+		layout="ResponsiveGridLayout"
+		labelSpanXL="3"
+		labelSpanL="3"
+		labelSpanM="3"
+		labelSpanS="12"
+		emptySpanXL="4"
+		emptySpanL="4"
+		emptySpanM="4"
+		emptySpanS="0"
+		columnsXL="2"
+		columnsL="2"
+		columnsM="2"
+		visible="{= !${appState>/editMode}}">
+		<form:content>
+			<Label text="{i18n>labelPharmacyName}" labelFor="pharmacyNameText"/>
+            <Text id="pharmacyNameText" text="{name}" />
+		</form:content>
+    </form:SimpleForm>
+	<form:SimpleForm id="pharmacyFormEdit"
+		editable="true"
+		layout="ResponsiveGridLayout"
+		labelSpanXL="3"
+		labelSpanL="3"
+		labelSpanM="3"
+		labelSpanS="12"
+		emptySpanXL="4"
+		emptySpanL="4"
+		emptySpanM="4"
+		emptySpanS="0"
+		columnsXL="2"
+		columnsL="2"
+		columnsM="2"
+		visible="{appState>/editMode}">
+		<form:content>
+			<Label text="{i18n>labelPharmacyNname}" labelFor="pharmacyNameInput"/>
+			<Input id="pharmacyNameInput" value="{name}" />
+		</form:content>
+    </form:SimpleForm>
+</mvc:View>
