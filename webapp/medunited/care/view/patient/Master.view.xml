@@ -19,7 +19,7 @@
 		<f:content>
 			<Table id="patientTable" inset="false"
 				items="{/Patient}"
-				class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
+				class="sapFDynamicPageAlignContent" width="auto" growing="true" growingScrollToLoad="true" growingThreshold="10" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
 				<headerToolbar>
 					<OverflowToolbar>
 						<ToolbarSpacer />
