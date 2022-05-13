@@ -43,8 +43,7 @@
 					</Column>
 				</columns>
 				<items>
-					<ColumnListItem type="Navigation"
-						press="onListItemPress">
+					<ColumnListItem>
 						<cells>
 							<Text
 								text="{medicationCodeableConcept/coding/0/display}" />
