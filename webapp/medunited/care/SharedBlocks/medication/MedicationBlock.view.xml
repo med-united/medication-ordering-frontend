@@ -21,7 +21,7 @@
              <ColumnListItem>
                 <cells>
                     <Input value="{subscriberId}" enabled="{appState>/editMode}"/>
-                    <DatePicker value="{effectiveDateTime}" enabled="{appState>/editMode}"/>
+                    <DatePicker value="{path: 'effectiveDateTime', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyy-MM-dd'}}}" enabled="{appState>/editMode}"/>
                     <Input value="{identifier/0/value}" enabled="{appState>/editMode}"/>
                     <Input value="{dosage/0/text}" enabled="{appState>/editMode}"/>
                 </cells>
