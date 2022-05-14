@@ -1,8 +1,9 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/model/json/JSONModel",
-	"sap/f/FlexibleColumnLayoutSemanticHelper"
-], function (UIComponent, JSONModel, FlexibleColumnLayoutSemanticHelper) {
+	"sap/f/FlexibleColumnLayoutSemanticHelper",
+	"sap/fhir/model/r4/FHIRListBinding"
+], function (UIComponent, JSONModel, FlexibleColumnLayoutSemanticHelper, FHIRListBinding) {
 	"use strict";
 
 	return UIComponent.extend("medunited.care.Component", {
@@ -13,6 +14,7 @@ sap.ui.define([
 		},
 
 		init: function() {
+			this.fixPagingOfFhirModel();
 			UIComponent.prototype.init.apply(this, arguments);
 
 			var oRouter = this.getRouter();
@@ -42,6 +44,121 @@ sap.ui.define([
 			var oModel = new JSONModel();
 			this.setModel(oModel, "Layout");
 
+		},
+
+		fixPagingOfFhirModel: function() {
+			// Copied from: https://github.com/SAP/openui5-fhir/blob/v2.2.8/src/sap/fhir/model/r4/FHIRListBinding.js#L180
+			// Directly use sNextLink
+			FHIRListBinding.prototype.getContexts = function(iStartIndex, iLength) {
+				if (!this.iLength && iLength !== undefined){
+					this.iLength = iLength > this.oModel.iSizeLimit ? this.oModel.iSizeLimit : iLength;
+				} else if (!this.iLength) {
+					this.iLength = this.oModel.iSizeLimit;
+				}
+		
+				var mParameters = this._buildParameters(this.iLength);
+				var fnSuccess = function(oData) {
+					if (oData.total === undefined){
+						throw new Error("FHIR Server error: The \"total\" property is missing in the response for the requested FHIR resource " + this.sPath);
+					}
+					this.bDirectCallPending = false;
+					if (!this.aKeys) {
+						this.aKeys = [];
+						iStartIndex = 0;
+					} else {
+						iStartIndex = this.aKeys.length;
+					}
+					if (oData.entry && oData.entry.length){
+						var oResource;
+						var oBindingInfo = this.oModel.getBindingInfo(this.sPath, this.oContext, this.bUnique);
+						var sBindingResType = oBindingInfo.getResourceType();
+						for (var i = 0; i < oData.entry.length; i++) {
+							oResource = oData.entry[i].resource;
+							oBindingInfo = this.oModel.getBindingInfo(this.sPath, this.oContext, this.bUnique, oResource);
+							if (oResource.resourceType === sBindingResType){
+								this.aKeys[iStartIndex + i] = oBindingInfo.getAbsolutePath().substring(1);
+							}
+						}
+					}
+					this._markSuccessRequest(oData, oData.total);
+				}.bind(this);
+		
+				var fnSuccessValueSet = function(oData) {
+					var iTotal = oData.expansion.total || (oData.expansion.contains && oData.expansion.contains.length) || 0;
+					this._buildKeys("ValueSet/" + "§" + oData.expansion.identifier + "§", oData.expansion.contains, iTotal);
+					this._markSuccessRequest(oData, iTotal);
+				}.bind(this);
+		
+				var fnLoadResources = function() {
+					var sValueSetUri = this._getValueSetUriFromStructureDefinition();
+					if (sValueSetUri) {
+						this._submitRequest("/ValueSet/$expand", {
+							urlParameters : {
+								url : sValueSetUri,
+								displayLanguage: sap.ui.getCore().getConfiguration().getLanguage()
+							}
+						}, fnSuccessValueSet);
+					} else {
+						this._loadResources(iLength);
+					}
+				}.bind(this);
+		
+				var fnSuccessStructDef = function(oData) {
+					this.bDirectCallPending = false;
+					if (oData && oData.entry) {
+						this.oStructureDefinition = oData.entry[0].resource;
+						fnLoadResources();
+					} else {
+						this.bPendingRequest = false;
+						this.bInitial = false;
+						var oBindingInfo = this.oModel.getBindingInfo(this.sPath, this.oContext, this.bUnique);
+						var oResource = this.oModel.getProperty(oBindingInfo.getResourcePath()) || {};
+						oResource.resourceType = oResource.resourceType || oBindingInfo.getResourceType();
+						var sStrucDefUrl = this.oModel.getStructureDefinitionUrl(oResource);
+						throw new Error("The structuredefinition " + sStrucDefUrl + " could not be loaded from the server for binding with path " + oBindingInfo.getRelativePath());
+					}
+				}.bind(this);
+		
+				if (!this.bPendingRequest && !this.bResourceNotAvailable) {
+					if (this._isValueSetHardCoded() && this.iTotalLength === undefined) { // load hardcoded valueset
+						mParameters.urlParameters.displayLanguage = sap.ui.getCore().getConfiguration().getLanguage();
+						this._submitRequest("/ValueSet/$expand", mParameters, fnSuccessValueSet);
+					} else if (!this.aSortersCache && !this.aFilterCache && this.sNextLink && iLength > this.iLastLength) {
+						this.iLastLength += this.iLength;
+						// the direct next links will not be used by default to send the request
+						// instead its converted into the necessary parameters and path before sending
+						// this is to address the if the service url is relative
+						if (this.sNextLink && this.sNextLink.indexOf("?") > -1) {
+							var sQueryParams = this.sNextLink.substring(this.sNextLink.indexOf("?") + 1, this.sNextLink.length);
+							var aParameter = sQueryParams ? sQueryParams.split("&") : [];
+							var aKeyValue;
+							for (var i = 0; i < aParameter.length; i++) {
+								aKeyValue = aParameter[i].split("=");
+								mParameters.urlParameters[aKeyValue[0]] = aKeyValue[1];
+							}
+							// this._submitRequest(this.sPath, mParameters, fnSuccess, true);
+							// MEDU-108 do not use the resource for
+							this._submitRequest("?"+sQueryParams, undefined, fnSuccess, true);
+						} else {
+							this._submitRequest(this.sNextLink, undefined, fnSuccess, true);
+						}
+					} else if (this.iTotalLength === undefined){ // load context based resources
+						this.iLastLength = this.iLength;
+						this._loadProfile(fnSuccessStructDef, fnLoadResources, fnSuccess, mParameters, iLength);
+					} else if (!this._isValueSet()){
+						if (iLength > this.iLastLength){
+							this.iLastLength += this.iLength;
+						}
+						if (!this.iLastLength){
+							this.iLastLength = this.iLength;
+						}
+						this._loadResources(this.iLastLength);
+					}
+				}
+		
+				this._buildContexts(iLength);
+				return this.aContexts;
+			};
 		},
 
 		/**
