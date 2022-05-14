@@ -36,8 +36,9 @@
         visible="{appState>/editMode}">
         <form:content>
             <Label text="{i18n>labelPatientGender}" labelFor="patientGenderSelect"/>
-            <Select id="patientGenderSelect" items="{gender}" forceSelection="false" selectedKey="{gender}">
-                <core:Item key="{code}" text="{display}"/>
+            <Select id="patientGenderSelect" forceSelection="false" selectedKey="{gender}">
+                <core:Item key="male" text="Männlich"/>
+                <core:Item key="female" text="Weiblich"/>
             </Select>
         </form:content>
     </form:SimpleForm>

@@ -10,7 +10,7 @@
 					<Title text="{i18n>medications}" />
 				</f:heading>
 				<f:actions>
-					<Button type="Emphasized" text="{i18n>Create}" press="onAdd" />
+					<Button type="Emphasized" text="{i18n>RequestEPrescriptions}" press="onRequestEPrescriptions" />
 				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>
@@ -18,7 +18,19 @@
 		<!-- DynamicPage Content -->
 		<f:content>
 			<Table id="medicationsTable" inset="false"
-				items="{/MedicationStatement}"
+				items="{path: '/MedicationStatement',
+					parameters: {
+						request: {
+							_include: ['MedicationStatement:subject',
+							'MedicationStatement:source']
+						}
+					},
+					sorter: [{
+						path: 'subject', 
+						descending: false, 
+						group: '.groupOnSubject'
+					}]		
+				}"
 				class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
 				<headerToolbar>
 					<OverflowToolbar>
@@ -29,29 +41,37 @@
 					</OverflowToolbar>
 				</headerToolbar>
 				<columns>
-					<Column width="30%" importance="High" autoPopinWidth="10">
+					<Column width="35%" importance="High" autoPopinWidth="10">
 						<Text text="{i18n>medicationName}" />
 					</Column>
-					<Column width="30%" importance="High">
+					<Column width="20%" importance="High">
 						<Text text="{i18n>medicationPZN}" />
 					</Column>
-					<Column width="30%" importance="High">
+					<Column width="5%" importance="High">
 						<Text text="{i18n>medicationSize}" />
 					</Column>
-					<Column width="30%" importance="High">
+					<Column width="5%" importance="Medium">
 						<Text text="{i18n>medicationDosage}" />
 					</Column>
+					<Column width="35%" importance="High">
+						<Text text="{i18n>practitioner}" />
+					</Column>
+					<!--
+					<Column width="20%" importance="High">
+						<Text text="{i18n>pharmacy}" />
+					</Column>-->
 				</columns>
 				<items>
 					<ColumnListItem>
 						<cells>
 							<Text
-								text="{medicationCodeableConcept/coding/0/display}" />
+								text="{medicationCodeableConcept/text}" />
 							<Text
-								text="{medicationCodeableConcept/coding/0/code}" />
-							<Text text="" />
+								text="{identifier/0/value}" />
+							<Text text="{medication/amount}" />
 							<Text
 								text="{dosage/0/text}" />
+							<Text text="{path: 'informationSource/reference', formatter: '.referencePhysician'}" />
 						</cells>
 					</ColumnListItem>
 				</items>
