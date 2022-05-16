@@ -45,7 +45,7 @@ sap.ui.define([
 				};
 
 				const oModel = this.getView().getModel();
-				const sPatientId = oModel.create(sEntityName, oPatient, "patientDetails");
+				const sPatientId = oModel.create(this.getEntityName(), oPatient, "patientDetails");
 
 				const aMedication = Array.from(oEMP.querySelectorAll("M"));
 				// https://www.vesta-gematik.de/standard/formhandler/324/gemSpec_Info_AMTS_V1_5_0.pdf
