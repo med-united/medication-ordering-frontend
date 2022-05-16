@@ -1,6 +1,6 @@
 <mvc:View displayBlock="true"
 	controllerName="medunited.care.controller.patient.Master" height="100%"
-	xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
+	xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc" xmlns:medunited="medunited.base.control">
 	<f:DynamicPage id="patientPageId"
 		toggleHeaderOnTitleClick="false">
 		<!-- DynamicPage Title -->
@@ -11,6 +11,7 @@
 				</f:heading>
 				<f:actions>
 					<Button type="Emphasized" text="{i18n>Create}" press="onAdd" />
+					<Button text="{i18n>createPatientFromBMP}" press="onPressCreatePatientFromBMP" />
 				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>
@@ -69,5 +70,8 @@
 				<Button type="Reject" text="{i18n>DeleteSelected}" press="onDeleteSelected" />
 			</OverflowToolbar>
 		</f:footer>
+		<f:dependents>
+			<medunited:ExtScanner id="extScanner" editMode="false" type="DatamatrixCode" laser="true" tryHarder="true" valueScanned="onValueScanned" />
+		</f:dependents>
 	</f:DynamicPage>
 </mvc:View>

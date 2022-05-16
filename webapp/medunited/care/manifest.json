@@ -79,6 +79,11 @@
 			}
 		},
 		"resources": {
+			"js": [
+				{
+				"uri": "./lib/zxing-0.19.1.min.js"
+				}
+			],
 			"css": [
 				{
 					"uri": "css/style.css"
