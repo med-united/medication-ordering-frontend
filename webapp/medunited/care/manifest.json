@@ -162,16 +162,16 @@
 					]
 				},
 				{
-					"pattern": "pharmacy/:layout:",
-					"name": "pharmacy-master",
+					"pattern": "organization/:layout:",
+					"name": "organization-master",
 					"target": [
 						"pharmacy-master",
 						"pharmacy-detail"
 					]
 				},
 				{
-					"pattern": "pharmacy/{pharmacy}/{layout}",
-					"name": "pharmacy-detail",
+					"pattern": "organization/{organization}/{layout}",
+					"name": "organization-detail",
 					"target": [
 						"pharmacy-master",
 						"pharmacy-detail"

@@ -7,11 +7,11 @@ sap.ui.define([
 	return AbstractDetailController.extend("medunited.care.controller.pharmacy.Detail", {
 		formatter: Formatter,
 		getEntityName : function () {
-			return "pharmacy";
+			return "Organization";
 		},
 		getBindElementParams : function() {
 			return {
-				groupId : "pharmacyDetails"
+				groupId : "organizationDetails"
 			};
 		}
 	});
