@@ -1,5 +1,5 @@
 <mvc:View displayBlock="true" controllerName="medunited.care.controller.pharmacy.Master" height="100%" xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
-	<f:DynamicPage id="pharmacyPageId" toggleHeaderOnTitleClick="false">
+	<f:DynamicPage id="organizationPageId" toggleHeaderOnTitleClick="false">
 		<!-- DynamicPage Title -->
 		<f:title>
 			<f:DynamicPageTitle>
@@ -14,7 +14,7 @@
 
 		<!-- DynamicPage Content -->
 		<f:content>
-			<Table id="pharmacyTable" inset="false" items="{/Organization}" class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true">
+			<Table id="organizationTable" inset="false" items="{/Organization}" class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true">
 				<headerToolbar>
 					<OverflowToolbar>
 						<ToolbarSpacer />

@@ -23,25 +23,12 @@
                     	</uxap:actions>
                     </uxap:ObjectPageHeader>
                 </uxap:headerTitle>
-                <uxap:headerContent>
-                  	<VBox items="{telecom}">
-                        <HBox>
-                            <Label text="{path: 'use', formatter: '.formatter.formatPatientTelecomUse'}" class="sapUiTinyMarginEnd"/>
-                            <Link text="{value}"/>
-                        </HBox>                        
-			        </VBox>
-                </uxap:headerContent>
                 <uxap:sections>
-                    <uxap:ObjectPageSection id="pharmacySection" title="{i18n>titlePharmacyInformation}">
+                    <uxap:ObjectPageSection id="organizationSection" title="{i18n>titlePharmacyInformation}">
                         <uxap:subSections>
-                            <uxap:ObjectPageSubSection id="pharmacySubSection" title="{i18n>titleSubSectionPharmacy}">
+                            <uxap:ObjectPageSubSection id="organizationSubSection" title="{i18n>titleSubSectionPharmacy}">
                                 <uxap:blocks>
                                     <pharmacy:PharmacyBlock id="pharmacyBlock" columnLayout="1"/>
-                                </uxap:blocks>
-                            </uxap:ObjectPageSubSection>
-                             <uxap:ObjectPageSubSection id="addressSubSection" title="{i18n>titleSubSectionAddress}">
-                                <uxap:blocks>
-                                    <address:AddressBlock id="addressBlock" columnLayout="1"/>
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
 				        </uxap:subSections>

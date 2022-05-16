@@ -15,8 +15,18 @@
 		columnsM="2"
 		visible="{= !${appState>/editMode}}">
 		<form:content>
-			<Label text="{i18n>labelPharmacyName}" labelFor="pharmacyNameText"/>
+			<Label text="{i18n>PharmacyName}" labelFor="pharmacyNameText"/>
             <Text id="pharmacyNameText" text="{name}" />
+			<Label text="{i18n>PharmacyAddress}" labelFor="pharmacyAddressText"/>
+            <Text id="pharmacyAddressText" text="{address/0/line/0}" />
+			<Label text="{i18n>PharmacyPostalCode}" labelFor="pharmacyPostalCodeText"/>
+            <Text id="pharmacyPostalCodeText" text="{address/0/postalCode}" />
+			<Label text="{i18n>PharmacyCity}" labelFor="pharmacyCityText"/>
+            <Text id="pharmacyCityText" text="{address/0/city}" />
+			<Label text="{i18n>PharmacyPhone}" labelFor="pharmacyPhoneText"/>
+            <Text id="pharmacyPhoneText" text="{telecom/0/value}" />
+			<Label text="{i18n>PharmacyEmail}" labelFor="pharmacyEmailText"/>
+            <Text id="pharmacyEmail" text="{telecom/1/value}" />
 		</form:content>
     </form:SimpleForm>
 	<form:SimpleForm id="pharmacyFormEdit"
@@ -35,8 +45,18 @@
 		columnsM="2"
 		visible="{appState>/editMode}">
 		<form:content>
-			<Label text="{i18n>labelPharmacyNname}" labelFor="pharmacyNameInput"/>
+			<Label text="{i18n>PharmacyName}" labelFor="pharmacyNameInput"/>
 			<Input id="pharmacyNameInput" value="{name}" />
+			<Label text="{i18n>PharmacyAddress}" labelFor="pharmacyAddressInput"/>
+			<Input id="pharmacyAddressInput" value="{address/0/line/0}" />
+			<Label text="{i18n>PharmacyPostalCode}" labelFor="pharmacyPostalCodeInput"/>
+			<Input id="pharmacyPostalCodeInput" value="{address/0/postalCode}" />
+			<Label text="{i18n>PharmacyCity}" labelFor="pharmacyCityInput"/>
+			<Input id="pharmacyCityInput" value="{address/0/city}" />
+			<Label text="{i18n>PharmacyPhone}" labelFor="pharmacyPhoneInput"/>
+			<Input id="pharmacyPhoneInput" value="{telecom/0/value}" />
+			<Label text="{i18n>PharmacyEmail}" labelFor="pharmacyEmailInput"/>
+			<Input id="pharmacyEmailInput" value="{telecom/1/value}" />
 		</form:content>
     </form:SimpleForm>
 </mvc:View>
