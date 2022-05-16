@@ -23,7 +23,13 @@
 						</Menu>
 					</f:menu> -->
 					<f:profile>
-						<Avatar initials="{JWT>/sub}"/>
+						<Avatar initials="{JWT>/sub}" tooltip="{
+							parts: [
+                				{path: 'JWT>/given_name'},
+								{path: 'JWT>/family_name'}
+							],
+							formatter: '.formatJwtName'
+						}" />
 					</f:profile>
 				</f:ShellBar>
 			</customHeader>

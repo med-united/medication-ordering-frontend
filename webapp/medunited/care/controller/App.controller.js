@@ -2,8 +2,9 @@ sap.ui.define([
 	"sap/ui/core/ResizeHandler",
 	"medunited/base/controller/AbstractController",
 	"sap/f/FlexibleColumnLayout",
-	"sap/base/Log"
-], function (ResizeHandler, AbstractController, FlexibleColumnLayout, Log) {
+	"sap/base/Log",
+	"medunited/base/jwt/JWTUtil"
+], function (ResizeHandler, AbstractController, FlexibleColumnLayout, Log, JWTUtil) {
 	"use strict";
 
 	return AbstractController.extend("medunited.care.controller.App", {
@@ -76,6 +77,16 @@ sap.ui.define([
 				this.oRouter.detachRouteMatched(this.onRouteMatched, this);
 			} catch(e) {
 				Log.warning(e);
+			}
+		},
+		formatJwtName: function(sGivenName, sFamilyName) {
+			try {
+				if(!sGivenName || !sFamilyName) {
+					return "";
+				}
+				return JWTUtil.getSalutation(sGivenName, sFamilyName);
+			} catch(e) {
+				console.error("Exception while formatting name: "+e);
 			}
 		}
 	});
