@@ -120,6 +120,11 @@
 
 		},
 		"resources": {
+			"js": [
+				{
+				"uri": "./lib/zxing-0.19.1.min.js"
+				}
+			],
 			"css": [
 				{
 					"uri": "css/style.css"
@@ -194,29 +199,20 @@
 					"pattern": "medication/:layout:",
 					"name": "medication-master",
 					"target": [
-						"medication-master",
-						"medication-detail"
+						"medication-master"
 					]
 				},
 				{
-					"pattern": "medication/{medication}/{layout}",
-					"name": "medication-detail",
-					"target": [
-						"medication-master",
-						"medication-detail"
-					]
-				},
-				{
-					"pattern": "pharmacy/:layout:",
-					"name": "pharmacy-master",
+					"pattern": "organization/:layout:",
+					"name": "organization-master",
 					"target": [
 						"pharmacy-master",
 						"pharmacy-detail"
 					]
 				},
 				{
-					"pattern": "pharmacy/{pharmacy}/{layout}",
-					"name": "pharmacy-detail",
+					"pattern": "organization/{organization}/{layout}",
+					"name": "organization-detail",
 					"target": [
 						"pharmacy-master",
 						"pharmacy-detail"
@@ -247,11 +243,6 @@
 				"medication-master": {
 					"viewName": "medication/Master",
 					"controlAggregation": "beginColumnPages",
-					"clearControlAggregation": true
-				},
-				"medication-detail": {
-					"viewName": "medication/Detail",
-					"controlAggregation": "midColumnPages",
 					"clearControlAggregation": true
 				},
 				"pharmacy-master": {

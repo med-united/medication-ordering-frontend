@@ -4,9 +4,10 @@
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns:u="sap.ui.unified"
 	xmlns:l="sap.ui.layout.form"
+	xmlns:medunited="medunited.base.control"
 	height="100%"
 	displayBlock="true">
-	<f:DynamicPage id="dynamicPageId"
+	<f:DynamicPage id="patientPageId"
 		toggleHeaderOnTitleClick="false">
 		<!-- DynamicPage Title -->
 		<f:title>
@@ -26,6 +27,7 @@
 						</l:content>
 					</l:SimpleForm>
 					<Button type="Emphasized" text="{i18n>CreatePatient}" press="onAdd" />
+					<Button text="{i18n>createPatientFromBMP}" press="onPressCreatePatientFromBMP" />
 				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>
@@ -34,7 +36,7 @@
 		<f:content>
 			<Table id="patientTable" inset="false"
 				items="{/Patient}"
-				class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
+				class="sapFDynamicPageAlignContent" width="auto" growing="true" growingScrollToLoad="true" growingThreshold="10" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
 				<headerToolbar>
 					<OverflowToolbar>
 						<ToolbarSpacer />
@@ -80,5 +82,8 @@
 				<Button type="Reject" text="{i18n>btnDeleteSelected}" press="onDeleteSelected" />
 			</OverflowToolbar>
 		</f:footer>
+		<f:dependents>
+			<medunited:ExtScanner id="extScanner" editMode="false" type="DatamatrixCode" laser="true" tryHarder="true" valueScanned="onValueScanned" />
+		</f:dependents>
 	</f:DynamicPage>
 </mvc:View>

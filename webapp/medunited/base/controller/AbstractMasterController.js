@@ -106,7 +106,7 @@ sap.ui.define([
 			const sEntityId = oModel.create(sEntityName, {}, this.getEntityName().toLowerCase()+"Details");
 			return "/"+sEntityName+"/"+sEntityId;
 		},
-		onSave: function (oEvent) {
+		save: function () {
 			var fnSuccess = function(oData){
                 MessageToast.show(this.translate(this, "msgPatientSaved"));
 			}.bind(this);
@@ -116,8 +116,10 @@ sap.ui.define([
             }.bind(this);
 			
             var oRequest = this.getView().getModel().submitChanges(this.getEntityName().toLowerCase()+"Details", fnSuccess, fnError);
+		},
+		onSave: function (oEvent) {
+			this.save();
 			this.byId("createDialog").close()
-			
 		},
 		onCancel: function (oEvent) {
 			this.getOwnerComponent().getModel().resetChanges();

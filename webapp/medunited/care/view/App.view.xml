@@ -23,7 +23,13 @@
 						</Menu>
 					</f:menu> -->
 					<f:profile>
-						<Avatar initials="{JWT>/sub}"/>
+						<Avatar initials="{JWT>/sub}" tooltip="{
+							parts: [
+                				{path: 'JWT>/given_name'},
+								{path: 'JWT>/family_name'}
+							],
+							formatter: '.formatJwtName'
+						}" />
 					</f:profile>
 				</f:ShellBar>
 			</customHeader>
@@ -36,7 +42,7 @@
 								<IconTabFilter key="patient-master" text="{i18n>patientsTabFilter}" />
 								<IconTabFilter key="medication-master" text="{i18n>medicationTabFilter}" />
 								<IconTabFilter key="practitioner-master" text="{i18n>practitionerTabFilter}" />
-								<IconTabFilter key="pharmacy-master" text="{i18n>pharmacyTabFilter}" />
+								<IconTabFilter key="organization-master" text="{i18n>pharmacyTabFilter}" />
 							</items>
 						</IconTabHeader>
 					</tnt:ToolHeader>

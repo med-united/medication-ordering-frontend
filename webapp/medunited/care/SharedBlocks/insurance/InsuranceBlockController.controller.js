@@ -40,7 +40,7 @@ sap.ui.define([
 
         filterInsuranceTableToPatient: function(sPatientId){
             var aFilters = [];
-            aFilters.push(new FHIRFilter({ path: "patient", operator : FHIRFilterOperator.EQ, value1: "Patient/" + sPatientId, valueType: FHIRFilterType.string}));
+            aFilters.push(new FHIRFilter({ path: "patient", operator : FHIRFilterOperator.StartsWith, value1: "Patient/" + sPatientId, valueType: FHIRFilterType.string}));
             this.getView().byId("insuranceTable").getBinding("items").filter(aFilters);
         },
 
