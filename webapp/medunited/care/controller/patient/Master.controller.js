@@ -2,7 +2,7 @@ sap.ui.define([
 	"medunited/base/controller/AbstractMasterController",
 	'sap/ui/model/Filter',
 	'sap/ui/model/FilterOperator',
-	'medunited/care/libs/jquery-csv'
+	'medunited/care/lib/jquery-csv'
 ], function (AbstractMasterController, Filter, FilterOperator) {
 	"use strict";
 
