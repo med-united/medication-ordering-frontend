@@ -1,0 +1,33 @@
+<core:FragmentDefinition xmlns="sap.m"
+	xmlns:l="sap.ui.layout" xmlns:form="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Dialog id="createDialog" title="{i18n>Create}" contentWidth="40rem">
+		<form:SimpleForm editable="false"
+			layout="ResponsiveGridLayout" labelSpanXL="4"
+			labelSpanL="4" labelSpanM="12" labelSpanS="12"
+			adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0"
+			emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2"
+			singleContainerFullSize="true">
+			<form:content>
+				<Label text="{i18n>PharmacyName}" />
+				<Input type="text" value="{name}" />
+				<Label text="{i18n>Address}" />
+				<Input type="text" value="{address/0/line/0}" />
+                <Label text="{i18n>PostalCode}" />
+				<Input type="text" value="{address/0/postalCode}" />
+				<Label text="{i18n>City}" />
+				<Input type="text" value="{address/0/city}" />
+				<Label text="{i18n>Phone}" />
+				<Input type="text" value="{telecom/0/value}" />
+				<Label text="{i18n>Email}" />
+				<Input type="text" value="{telecom/1/value}" />
+			</form:content>
+		</form:SimpleForm>
+		<beginButton>
+			<Button type="Reject" text="{i18n>cancel}" press="onCancel" />
+		</beginButton>
+		<endButton>
+			<Button type="Accept" text="{i18n>Create}" press="onSave" />
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>
