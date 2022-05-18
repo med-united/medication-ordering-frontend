@@ -1,6 +1,6 @@
 <mvc:View displayBlock="true"
 	controllerName="medunited.care.controller.practitioner.Master" height="100%"
-	xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
+	xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc" xmlns:medunited="medunited.base.control">
 	<f:DynamicPage id="practitionerPageId"
 		toggleHeaderOnTitleClick="false">
 		<!-- DynamicPage Title -->
@@ -19,7 +19,7 @@
 		<f:content>
 			<Table id="practitionerTable" inset="false"
 				items="{/Practitioner}"
-				class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true">
+				class="sapFDynamicPageAlignContent" width="auto" growing="true" growingScrollToLoad="true" growingThreshold="10" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
 				<headerToolbar>
 					<OverflowToolbar>
 						<ToolbarSpacer />
@@ -36,28 +36,30 @@
 						<Text text="{i18n>FamilyName}" />
 					</Column>
 					<Column width="30%" importance="Medium">
-						<Text text="{i18n>EMail}" />
+						<Text text="{i18n>Email}" />
 					</Column>
 					<Column width="30%" importance="Low">
-						<Text text="{i18n>Telephone}" />
+						<Text text="{i18n>Phone}" />
 					</Column>
 				</columns>
 				<items>
 					<ColumnListItem type="Navigation"
 						press="onListItemPress">
 						<cells>
-							<Text
-								text="{name/0/given}" />
-							<Text
-								text="{name/0/family}" />
-							<Text
-								text="{telecom/1/value}" />
-							<Text
-								text="{telecom/0/value}" />
+							<Text text="{name/0/given}" />
+							<Text text="{name/0/family}" />
+							<Text text="{telecom/0/value}" />
+							<Text text="{telecom/1/value}" />
 						</cells>
 					</ColumnListItem>
 				</items>
 			</Table>
 		</f:content>
+		<f:footer>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button type="Reject" text="{i18n>DeleteSelected}" press="onDeleteSelected" />
+			</OverflowToolbar>
+		</f:footer>
 	</f:DynamicPage>
 </mvc:View>

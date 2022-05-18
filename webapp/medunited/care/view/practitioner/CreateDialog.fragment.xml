@@ -13,19 +13,10 @@
 				<Input type="text" value="{name/[use=official]/given/0}" />
 				<Label text="{i18n>FamilyName}" />
 				<Input type="text" value="{name/[use=official]/family}" />
-				<Label text="{i18n>BirthDate}" />
-				<DatePicker value="{birthdate}" />
-				<Label text="{i18n>Street}" />
-				<Input type="text" value="{address/[use=home]/line/0}" />
-				<Label text="{i18n>PostalCode}" />
-				<Input type="text" value="{address/[use=home]/postalCode}" />
-				<Label text="{i18n>City}" />
-				<Input type="text" value="{address/[use=home]/city}" />
-				<Label text="{i18n>Gender}" />
-				<ComboBox id="patientGenderSelect" forceSelection="false" selectedKey="{gender}">
-                	<core:Item key="male" text="{i18n>Male}"/>
-                	<core:Item key="female" text="{i18n>Female}"/>
-				</ComboBox>
+				<Label text="{i18n>Email}" />
+				<Input type="text" value="{telecom/0/value}" />
+                <Label text="{i18n>Phone}" />
+				<Input type="text" value="{telecom/1/value}" />
 			</form:content>
 		</form:SimpleForm>
 		<beginButton>

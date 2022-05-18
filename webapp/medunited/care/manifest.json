@@ -139,8 +139,24 @@
 					]
 				},
 				{
+					"pattern": "practitioner/action/add",
+					"name": "practitioner-add",
+					"target": [
+						"practitioner-master",
+						"practitioner-detail"
+					]
+				},
+				{
 					"pattern": "practitioner/:layout:",
 					"name": "practitioner-master",
+					"target": [
+						"practitioner-master",
+						"practitioner-detail"
+					]
+				},
+				{
+					"pattern": "practitioner/search/:query:",
+					"name": "practitioner-search",
 					"target": [
 						"practitioner-master",
 						"practitioner-detail"
@@ -162,19 +178,35 @@
 					]
 				},
 				{
+					"pattern": "organization/action/add",
+					"name": "organization-add",
+					"target": [
+						"organization-master",
+						"organization-detail"
+					]
+				},
+				{
 					"pattern": "organization/:layout:",
 					"name": "organization-master",
 					"target": [
-						"pharmacy-master",
-						"pharmacy-detail"
+						"organization-master",
+						"organization-detail"
+					]
+				},
+				{
+					"pattern": "organization/search/:query:",
+					"name": "organization-search",
+					"target": [
+						"organization-master",
+						"organization-detail"
 					]
 				},
 				{
 					"pattern": "organization/{organization}/{layout}",
 					"name": "organization-detail",
 					"target": [
-						"pharmacy-master",
-						"pharmacy-detail"
+						"organization-master",
+						"organization-detail"
 					]
 				}
 			],
@@ -204,13 +236,13 @@
 					"controlAggregation": "beginColumnPages",
 					"clearControlAggregation": true
 				},
-				"pharmacy-master": {
-					"viewName": "pharmacy/Master",
+				"organization-master": {
+					"viewName": "organization/Master",
 					"controlAggregation": "beginColumnPages",
 					"clearControlAggregation": true
 				},
-				"pharmacy-detail": {
-					"viewName": "pharmacy/Detail",
+				"organization-detail": {
+					"viewName": "organization/Detail",
 					"controlAggregation": "midColumnPages",
 					"clearControlAggregation": true
 				}

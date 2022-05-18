@@ -5,7 +5,7 @@ sap.ui.define([
 ], function (AbstractMasterController, Filter, FilterOperator) {
 	"use strict";
 
-	return AbstractMasterController.extend("medunited.care.controller.pharmacy.Master", {
+	return AbstractMasterController.extend("medunited.care.controller.organization.Master", {
 		getEntityName: function() {
 			return "Organization";
 		},
