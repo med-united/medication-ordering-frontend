@@ -4,7 +4,7 @@ sap.ui.define([
 ], function (AbstractDetailController, Formatter) {
 	"use strict";
 
-	return AbstractDetailController.extend("medunited.care.controller.pharmacy.Detail", {
+	return AbstractDetailController.extend("medunited.care.controller.organization.Detail", {
 		formatter: Formatter,
 		getEntityName : function () {
 			return "Organization";

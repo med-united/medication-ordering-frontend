@@ -37,8 +37,8 @@
         <form:content>
             <Label text="{i18n>labelPatientGender}" labelFor="patientGenderSelect"/>
             <Select id="patientGenderSelect" forceSelection="false" selectedKey="{gender}">
-                <core:Item key="male" text="Männlich"/>
-                <core:Item key="female" text="Weiblich"/>
+                <core:Item key="male" text="{i18n>Male}"/>
+                <core:Item key="female" text="{i18n>Female}"/>
             </Select>
         </form:content>
     </form:SimpleForm>

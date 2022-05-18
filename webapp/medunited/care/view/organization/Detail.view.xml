@@ -1,4 +1,4 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:uxap="sap.uxap" xmlns:pharmacy="medunited.care.SharedBlocks.pharmacy" xmlns:name="medunited.care.SharedBlocks.name" xmlns:address="medunited.care.SharedBlocks.address" controllerName="medunited.care.controller.pharmacy.Detail" xmlns:html="http://www.w3.org/1999/xhtml">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:uxap="sap.uxap" xmlns:organization="medunited.care.SharedBlocks.organization" xmlns:name="medunited.care.SharedBlocks.name" xmlns:address="medunited.care.SharedBlocks.address" controllerName="medunited.care.controller.organization.Detail" xmlns:html="http://www.w3.org/1999/xhtml">
     <Page showHeader="false">
         <content>
             <uxap:ObjectPageLayout id="objectPageLayout" showTitleInHeaderContent="true">
@@ -28,7 +28,7 @@
                         <uxap:subSections>
                             <uxap:ObjectPageSubSection id="organizationSubSection" title="{i18n>titleSubSectionPharmacy}">
                                 <uxap:blocks>
-                                    <pharmacy:PharmacyBlock id="pharmacyBlock" columnLayout="1"/>
+                                    <organization:OrganizationBlock id="organizationBlock" columnLayout="1"/>
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
 				        </uxap:subSections>

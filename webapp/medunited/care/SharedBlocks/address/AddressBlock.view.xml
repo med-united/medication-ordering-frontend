@@ -17,8 +17,10 @@
         <form:content>
             <Label text="{i18n>labelPatientStreet}" labelFor="patientStreetText"/>
             <Text id="patientStreetText" text="{line/0}" />
+            <Label text="{i18n>labelPatientPostalCode}" labelFor="patientPostalCodeText"/>
+            <Text id="patientPostalCodeText" text="{postalCode}" />
             <Label text="{i18n>labelPatientCity}" labelFor="patientCityText"/>
-            <Text id="patientCityText" text="{postalCode} {city}" />
+            <Text id="patientCityText" text="{city}" />
         </form:content>
     </form:SimpleForm>
     <form:SimpleForm id="addressFormEdit" binding="{address/[use=home]}"

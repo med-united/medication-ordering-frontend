@@ -7,7 +7,7 @@ sap.ui.define([
 	return AbstractDetailController.extend("medunited.care.controller.practitioner.Detail", {
 		formatter: Formatter,
 		getEntityName : function () {
-			return "practitioner";
+			return "Practitioner";
 		},
 		getBindElementParams : function() {
 			return {
