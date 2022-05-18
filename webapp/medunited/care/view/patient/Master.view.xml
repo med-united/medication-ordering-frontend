@@ -23,7 +23,7 @@
 								sameFilenameAllowed="false" buttonText="" fileType="CSV"
 								placeholder="Choose a CSV file" style="Emphasized">
 							</u:FileUploader>
-							<Button icon="sap-icon://upload" text="{i18n>buttonUploadFile}" press="onUploadFile" type="Accept" class="sapUiSmallMarginEnd"/>
+							<Button type="Accept" icon="sap-icon://upload" text="{i18n>buttonUploadFile}" press="onUploadFile" />
 						</l:content>
 					</l:SimpleForm>
 					<Button type="Emphasized" text="{i18n>CreatePatient}" press="onAdd" />

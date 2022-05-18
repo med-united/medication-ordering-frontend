@@ -32,6 +32,9 @@ sap.ui.define([
 				console.log(e);
 				return "Arzt unbekannt";
 			}
+		},
+		onRequestEPrescriptions: function (oEvent){
+
 		}
 	});
 }, true);
