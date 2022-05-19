@@ -2,7 +2,7 @@ sap.ui.define([
 	"medunited/base/controller/AbstractMasterController",
 	'sap/ui/model/Filter',
 	'sap/ui/model/FilterOperator',
-	'medunited/care/controller/patient/ProcessUpload'
+	'medunited/care/utils/ProcessUpload'
 ], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload) {
 	"use strict";
 
@@ -28,7 +28,7 @@ sap.ui.define([
 			let fileUploader = this.getView().byId("idfileUploader");
 			let domRef = fileUploader.getFocusDomRef();
 			let file = domRef.files[0];
-			ProcessUpload.processUploadedFile(file,this);
+			ProcessUpload.processUploadedFile(file,this.getView());
 		},
 
 		onPressCreatePatientFromBMP: function() {

@@ -34,6 +34,7 @@ sap.ui.define([
 			}
 		},
 		onRequestEPrescriptions: function (oEvent){
+			const aResources = this.byId(this.getEntityName().toLowerCase()+"Table").getSelectedItems().map(oItem => oItem.getBindingContext().getPath());
 
 		}
 	});
