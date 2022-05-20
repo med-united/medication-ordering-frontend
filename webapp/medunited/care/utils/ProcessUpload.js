@@ -169,7 +169,9 @@ sap.ui.define([
                     aRequests.push(oModel.sendGetRequest('/Patient', mParameters).getRequest());
                 }
                 Promise.all(aRequests).then(() => {
-                    oModel.submitChanges();
+                    oModel.submitChanges("patientDetails", (aFHIRResources) => {
+                        console.log(aFHIRResources);
+                    });
                 });
             };
             oReader.readAsBinaryString(oFile);
