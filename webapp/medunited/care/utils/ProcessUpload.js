@@ -148,6 +148,7 @@ sap.ui.define([
                     if (!isInBundle) oBundle.medicationStatements.push(oMedicationStatement);
                 };
 
+                const aRequests = [];
                 // DB existence check
                 for (let oPatient of oBundle.patients) {
                     var mParameters = {
@@ -165,10 +166,11 @@ sap.ui.define([
                             console.log(oError.code, `${oError.message}\n${oError.additionalText}`);
                         }
                     };                    
-                    oModel.sendGetRequest('/Patient', mParameters);
-                    break;
+                    aRequests.push(oModel.sendGetRequest('/Patient', mParameters).getRequest());
                 }
-                oModel.submitChanges();
+                Promise.all(aRequests).then(() => {
+                    oModel.submitChanges();
+                });
             };
             oReader.readAsBinaryString(oFile);
         }
