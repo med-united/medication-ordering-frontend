@@ -6,8 +6,9 @@ sap.ui.define([
 	'sap/ui/model/Sorter',
 	'sap/m/MessageBox',
 	'sap/m/MessageToast',
-	"sap/ui/core/Fragment"
-], function (AbstractController, Filter, FilterType, FilterOperator, Sorter, MessageBox, MessageToast, Fragment) {
+	"sap/ui/core/Fragment",
+	'sap/ui/model/json/JSONModel'
+], function (AbstractController, Filter, FilterType, FilterOperator, Sorter, MessageBox, MessageToast, Fragment, JSONModel) {
 	"use strict";
 
 	return AbstractController.extend("medunited.base.controller.AbstractMasterController", {
@@ -64,6 +65,14 @@ sap.ui.define([
 		},
 		onAdd: function (oEvent) {
 			this.oRouter.navTo(this.getEntityName().toLowerCase()+"-add");
+			if (this.getEntityName() === "Practitioner") {
+				var newModel = new JSONModel();
+				var loaded = newModel.loadData("https://www.overpass-api.de/api/interpreter?data=[out:json];area[name=%22Berlin%22]-%3E.b;rel(area.b)[name=%22Kreuzberg%22];map_to_area-%3E.a;node(area.a)[amenity=doctors][%22name%22];out%20center;");
+				this.getView().setModel(newModel, "newModel");
+				newModel.attachRequestCompleted(function() {
+					console.log("completed the api request");
+				})
+			}
 		},
 		onRouteAddMatched: function(oEvent) {
 			var oView = this.getView();

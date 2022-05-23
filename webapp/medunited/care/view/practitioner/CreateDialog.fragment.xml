@@ -9,6 +9,16 @@
 			emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2"
 			singleContainerFullSize="true">
 			<form:content>
+				<Input
+					id="practitionerNameInput"
+					placeholder="Enter practitioner name"
+					showSuggestion="true"
+					suggest=".onSuggest"
+					suggestionItems="{newModel>/elements}" >
+					<suggestionItems>
+						<core:Item text="{tags/name}" />
+					</suggestionItems>
+				</Input>
 				<Label text="{i18n>GivenName}" />
 				<Input type="text" value="{name/[use=official]/given/0}" />
 				<Label text="{i18n>FamilyName}" />
