@@ -16,7 +16,7 @@
 					suggest=".onSuggest"
 					suggestionItems="{newModel>/elements}" >
 					<suggestionItems>
-						<core:Item text="{tags/name}" />
+						<core:Item text="{newModel>tags/name}" />
 					</suggestionItems>
 				</Input>
 				<Label text="{i18n>GivenName}" />
