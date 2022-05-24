@@ -9,24 +9,31 @@
 			emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2"
 			singleContainerFullSize="true">
 			<form:content>
+				<Label id="search" text="{i18n>Search}" />
 				<Input
 					id="practitionerNameInput"
 					placeholder="Enter practitioner name"
 					showSuggestion="true"
-					suggest=".onSuggest"
-					suggestionItems="{newModel>/elements}" >
+					suggestionItemSelected=".onSuggestionItemSelected"
+					suggestionItems='{path: "Suggestions>/elements", length: 1000}' >
 					<suggestionItems>
-						<core:Item text="{newModel>tags/name}" />
+						<core:Item text="{Suggestions>tags/name}" />
 					</suggestionItems>
 				</Input>
 				<Label text="{i18n>GivenName}" />
-				<Input type="text" value="{name/[use=official]/given/0}" />
+				<Input type="text" id="givenName" value="{name/[use=official]/given/0}" />
 				<Label text="{i18n>FamilyName}" />
-				<Input type="text" value="{name/[use=official]/family}" />
+				<Input type="text" id="familyName" value="{name/[use=official]/family}" />
+				<Label text="{i18n>Street}" />
+				<Input type="text" id="street" value="{address/[use=home]/line/0}" />
+				<Label text="{i18n>PostalCode}" />
+				<Input type="text" id="postalCode" value="{address/[use=home]/postalCode}" />
+				<Label text="{i18n>City}" />
+				<Input type="text" id="city" value="{address/[use=home]/city}" />
 				<Label text="{i18n>Email}" />
-				<Input type="text" value="{telecom/0/value}" />
+				<Input type="text" id="email" value="{telecom/0/value}" />
                 <Label text="{i18n>Phone}" />
-				<Input type="text" value="{telecom/1/value}" />
+				<Input type="text" id="phone" value="{telecom/1/value}" />
 			</form:content>
 		</form:SimpleForm>
 		<beginButton>
