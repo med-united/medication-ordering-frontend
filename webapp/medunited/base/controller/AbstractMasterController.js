@@ -67,7 +67,7 @@ sap.ui.define([
 		},
 		onRouteAddMatched: function(oEvent) {
 			var oView = this.getView();
-
+			const me = this;
 			// create dialog lazily
 			if (!this.byId("createDialog")) {
 				// load asynchronous XML fragment
@@ -76,6 +76,7 @@ sap.ui.define([
 					name: "medunited.care.view."+this.getEntityName().toLowerCase()+".CreateDialog",
 					controller: this
 				}).then(function (oDialog) {
+					me.onAfterCreateOpenDialog({"dialog":oDialog});
 					// connect dialog to the root view of this component (models, lifecycle)
 					oView.addDependent(oDialog);
 					this._openCreateDialog(oDialog);
@@ -83,6 +84,9 @@ sap.ui.define([
 			} else {
 				this._openCreateDialog(this.byId("createDialog"));
 			}
+		},
+		onAfterCreateOpenDialog: function() {
+
 		},
 		getPackageName: function() {
 			return this.getEntityName().toLowerCase();
