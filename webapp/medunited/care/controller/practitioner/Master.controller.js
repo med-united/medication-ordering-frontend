@@ -113,6 +113,7 @@ sap.ui.define([
 			else if (oDoctorFromOSM["contact:email"] && oDoctorFromOSM["email"]) {
 				emailAddress = oDoctorFromOSM["contact:email"];
 			}
+
 			this.byId("email").setValue(emailAddress);
 
 			if (!oDoctorFromOSM["contact:phone"] && oDoctorFromOSM["phone"]) {
