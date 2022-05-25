@@ -28,6 +28,7 @@ sap.ui.define([
 		onValueScanned: function(oEvent) {
 			try {
 				// <MP v="025" U="02BD2867FB024401A590D59D94E1FFAE" l="de-DE"><P g="Jürgen" f="Wernersen" b="19400324"/><A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/><S><M p="230272" m="1" du="1" r="Herz/Blutdruck"/><M p="2223945" m="1" du="1" r="Blutdruck"/><M p="558736" m="20" v="20" du="p" i="Wechseln der Injektionsstellen, unmittelbar vor einer Mahlzeit spritzen" r="Diabetes"/><M p="9900751" v="1" du="1" r="Blutfette"/></S><S t="zu besonderen Zeiten anzuwendende Medikamente"><M p="2239828" t="alle drei Tage 1" du="1" i="auf wechselnde Stellen aufkleben" r="Schmerzen"/></S><S c="418"><M p="2455874" m="1" du="1" r="Stimmung"/></S></MP>
+				const oModel = this.getView().getModel();
 				const sEMP = oEvent.getParameter("value")
 				const parser = new DOMParser();
 				const oEMP = parser.parseFromString(sEMP, "application/xml");
@@ -38,13 +39,60 @@ sap.ui.define([
 					"name": [
 						{
 							"given": [oEMP.querySelector("P").getAttribute("g")],
-							"family": oEMP.querySelector("P").getAttribute("f")
+							"family": oEMP.querySelector("P").getAttribute("f"),
+							"use": "official"
 						}
 					],
-					"birthdate": sBirthdate.substring(0, 4)+"-"+sBirthdate.substring(4, 6)+"-"+sBirthdate.substring(6, 8)
+					"birthDate": sBirthdate.substring(0, 4)+"-"+sBirthdate.substring(4, 6)+"-"+sBirthdate.substring(6, 8)
 				};
 
-				const oModel = this.getView().getModel();
+				// <A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/>
+				const oPractitionerNode = oEMP.querySelector("A");
+				let sPractitionerId = undefined;
+				if(oPractitionerNode) {
+					const sName = oPractitionerNode.getAttribute("n");
+					const oPractitioner = {};
+					if(sName && sName.split(/ /).length > 1) {
+						const aNameParts = sName.split(/ /);
+						oPractitioner.name = [
+							{
+								"given": [aNameParts[aNameParts.length-2]],
+								"family": aNameParts[aNameParts.length-1],
+								"use": "official"
+							}
+						];
+						oPractitioner.address = [
+							{
+								"line": [oPractitionerNode.getAttribute("s")],
+								"postalCode": oPractitionerNode.getAttribute("z"),
+								"city": oPractitionerNode.getAttribute("c")
+							}
+						];
+						oPractitioner.telecom = [];
+						const sPhone = oPractitionerNode.getAttribute("p");
+						if(sPhone) {
+							oPractitioner.telecom.push({
+								"system": "phone",
+								"value": sPhone
+							});
+						}
+						const sEmail = oPractitionerNode.getAttribute("e");
+						if(sEmail) {
+							oPractitioner.telecom.push({
+								"system": "email",
+								"value": sEmail
+							});
+						}
+					}
+					sPractitionerId = oModel.create("Practitioner", oPractitioner, "patientDetails");
+				}
+
+				if(sPractitionerId) {
+					oPatient.generalPractitioner = {
+						"reference": "urn:uuid:"+sPractitionerId
+					}
+				}
+
 				const sPatientId = oModel.create(this.getEntityName(), oPatient, "patientDetails");
 
 				const aMedication = Array.from(oEMP.querySelectorAll("M"));
@@ -72,13 +120,19 @@ sap.ui.define([
 					// reason
 					let sReason = oMedication.getAttribute("r");
 					let sAdditionalInformation = oMedication.getAttribute("i");
-					this.getView().getModel().create("MedicationStatement", {
+					const oMedicationStatement = {
 						identifier: [{"value": sPZN}],
 						dosage: [
 							{text: sDosierschemaMorgens+"-"+sDosierschemaMittags+"-"+sDosierschemaAbends+"-"+sDosierschemaNachts}
 						],
 						subject: {reference: "urn:uuid:" + sPatientId}
-					}, "patientDetails");
+					};
+					if(sPractitionerId) {
+						oMedicationStatement.informationSource = {
+							reference: "urn:uuid:"+sPractitionerId
+						};
+					}
+					oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
 				}
 				this.save();
 			} catch(e) {

@@ -56,9 +56,9 @@
 								text="{name/0/family}" />
 							<Text text="{path: 'birthDate', formatOptions: {style: 'short'}}" />
 							<Text
-								text="{GeneralPractitioner}" />
+								text="{generalPractitioner/reference}" />
 							<Text
-								text="{ManagingOrganization}" />
+								text="{managingOrganization/reference}" />
 						</cells>
 					</ColumnListItem>
 				</items>

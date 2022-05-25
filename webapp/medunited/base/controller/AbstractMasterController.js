@@ -152,9 +152,9 @@ sap.ui.define([
 			oModel.remove(aResources);
 
 			oModel.submitChanges(function () {
-				MessageToast.show(me.translate(me, "msgCountDeleted", iCount));
+				MessageToast.show(me.translate("msgCountDeleted", iCount));
 			}, function (oError) {
-				MessageBox.show(me.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
+				MessageBox.show(me.translate("msgSavedFailed", [oError.statusCode, oError.statusText]));
 			});
 		},
 		onSelectionChange: function(oEvent) {

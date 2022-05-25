@@ -1,13 +1,13 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller",
+    "medunited/base/controller/AbstractController",
     "../../utils/Formatter",
     "sap/fhir/model/r4/FHIRFilter",
     "sap/fhir/model/r4/FHIRFilterType",
     "sap/fhir/model/r4/FHIRFilterOperator"
-], function(Controller, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator) {
+], function(AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator) {
 	"use strict";
 
-	return Controller.extend("medunited.care.SharedBlocks.medication.MedicationBlockController", {
+	return AbstractController.extend("medunited.care.SharedBlocks.medication.MedicationBlockController", {
    
         formatter: Formatter,
 
@@ -47,6 +47,19 @@ sap.ui.define([
         addMedication: function(){
             var sPatientId = this.byId("medicationTable").getBindingContext().getPath().split("/")[2];
             var sMedicationStatementId = this.getView().getModel().create("MedicationStatement", {subject: {reference: "Patient/" + sPatientId}}, "patientDetails");
+        },
+        deleteMedication: function() {
+            const aResources = this.byId("medicationTable").getSelectedItems().map(oItem => oItem.getBindingContext().getPath());
+			const iCount = aResources.length;
+			const oModel = this.getView().getModel();
+			const me = this;
+			oModel.remove(aResources);
+
+			oModel.submitChanges(function () {
+				MessageToast.show(me.translate("msgCountDeleted", iCount));
+			}, function (oError) {
+				MessageBox.show(me.translate("msgDeleteFailed", [oError.statusCode, oError.statusText]));
+			});
         }
 
     });

@@ -2,7 +2,7 @@
     <HBox justifyContent="End" class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
         <Link text="Add Medication" press="addMedication"/>
     </HBox>
-    <Table id="medicationTable" items="{path: '/MedicationStatement', parameters : {request: { _include: 'MedicationStatement:medication'}}}">
+    <Table id="medicationTable" items="{path: '/MedicationStatement', parameters : {request: { _include: 'MedicationStatement:medication'}}}" mode="{= ${appState>/editMode} ? 'MultiSelect' : 'None'}">
         <columns>
             <Column hAlign="Left">
                 <Text text="{i18n>columnLabelMedicationName}"/>
@@ -40,4 +40,7 @@
             </ColumnListItem>
         </items>
     </Table>
+    <HBox justifyContent="End" class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
+        <Link text="Delete Medication" press="deleteMedication"/>
+    </HBox>
 </mvc:View>
