@@ -6,14 +6,14 @@ sap.ui.define([
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
-		getEntityName: function() {
+		getEntityName: function () {
 			return "Medication";
 		},
-		groupOnSubject: function(oMedicationStatement) {
+		groupOnSubject: function (oMedicationStatement) {
 			try {
 				const sPatientPath = oMedicationStatement.getProperty("subject").reference;
 				return this.getNameForPath("/" + sPatientPath);
-			} catch(e) {
+			} catch (e) {
 				console.log(e);
 				return "Patient unbekannt";
 			}
@@ -23,15 +23,42 @@ sap.ui.define([
 			const oObject = oFhirModel.getProperty(sObjectPath);
 			return oObject.name[0].given[0] + " " + oObject.name[0].family;
 		},
-		referencePhysician: function(sPractitionerPath) {
+		referencePhysician: function (sPractitionerPath) {
 			try {
-				if(sPractitionerPath) {
-					return this.getNameForPath("/"+sPractitionerPath);
+				if (sPractitionerPath) {
+					return this.getNameForPath("/" + sPractitionerPath);
 				}
-			} catch(e) {
+			} catch (e) {
 				console.log(e);
 				return "Arzt unbekannt";
 			}
+		},
+		onRequestEPrescriptions: function () {
+			fetch('resources/local/t2med.ps1')
+				.then(response => response.blob())
+				.then(blob => {
+					const reader = new FileReader();
+					reader.readAsText(blob);
+					reader.onload = () => {
+						const sText = reader.result;
+						const sNewText = sText.replace("userReference", "12345");
+						const newBlob = new Blob([sNewText], { type: "text/plain" });
+						const sFileName = "t2med";
+						const sFileType = "text/plain";
+						const sFileExtension = "ps1";
+						const sFile = new File([newBlob], sFileName, { type: sFileType });
+						const oEvent = new MouseEvent("click", {
+							view: window,
+							bubbles: true,
+							cancelable: true
+						});
+						const oLink = document.createElement("a");
+						oLink.href = URL.createObjectURL(sFile);
+						oLink.download = sFileName + "." + sFileExtension;
+						oLink.dispatchEvent(oEvent);
+					}
+
+				})
 		}
 	});
 }, true);
