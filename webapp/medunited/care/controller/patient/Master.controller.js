@@ -77,7 +77,7 @@ sap.ui.define([
 						dosage: [
 							{text: sDosierschemaMorgens+"-"+sDosierschemaMittags+"-"+sDosierschemaAbends+"-"+sDosierschemaNachts}
 						],
-						subject: {reference: "Patient/" + sPatientId}
+						subject: {reference: "urn:uuid:" + sPatientId}
 					}, "patientDetails");
 				}
 				this.save();

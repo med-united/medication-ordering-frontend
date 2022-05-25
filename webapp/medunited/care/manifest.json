@@ -9,15 +9,8 @@
 		"title": "{{appTitle}}",
 		"dataSources": {
 			"fhir": {
-				"uri": "https://fhir.med-united.health/fhir",
-				"type": "FHIR",
-				"settings": {
-					"groupProperties": {
-						"patientDetails": {
-							"submit": "Batch"
-						}
-					}
-				}
+				"uri": "http://localhost:8080/fhir",
+				"type": "FHIR"
 			},
 			"app-state": {
 				"uri": "../../resources/local/state.json",
@@ -59,7 +52,13 @@
 				"settings": {
 					"groupProperties": {
 						"patientDetails": {
-							"submit": "Batch"
+							"submit": "Transaction"
+						},
+						"practitionerDetails": {
+							"submit": "Transaction"
+						},
+						"organizationDetails": {
+							"submit": "Transaction"
 						}
 					},
 					"defaultQueryParameters": {
