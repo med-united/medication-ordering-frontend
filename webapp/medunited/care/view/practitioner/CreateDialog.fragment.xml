@@ -12,7 +12,7 @@
 				<Label id="search" text="{i18n>Search}" />
 				<Input
 					id="practitionerNameInput"
-					placeholder="Enter practitioner name"
+					placeholder="{i18n>EnterPractitionerName}"
 					showSuggestion="true"
 					suggestionItemSelected=".onSuggestionItemSelected"
 					suggestionItems='{path: "Suggestions>/elements", length: 1000}' >
