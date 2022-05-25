@@ -9,7 +9,7 @@
 		"title": "{{appTitle}}",
 		"dataSources": {
 			"fhir": {
-				"uri": "http://localhost:8080/fhir",
+				"uri": "https://fhir.med-united.health/fhir",
 				"type": "FHIR"
 			},
 			"app-state": {
