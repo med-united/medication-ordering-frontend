@@ -10,9 +10,6 @@ $code= @"
 Add-Type -TypeDefinition $code -Language CSharp
 [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 
-#Arguments
-$patientSurname = $args[0]
-
 Write-Host "Please enter your username:"
 $doctorUsername = Read-Host
 Write-Host "Please enter your password:"

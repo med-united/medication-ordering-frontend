@@ -65,7 +65,7 @@ sap.ui.define([
 					reader.readAsText(blob);
 					reader.onload = () => {
 						const sText = reader.result;
-						const sNewText = sText.replace("$patientName", name);
+						const sNewText = sText.replace("$patientName", name).replace("$patientSurname", surname);
 						const newBlob = new Blob([sNewText], { type: "text/plain" });
 						const sFileName = "t2med";
 						const sFileType = "text/plain";
