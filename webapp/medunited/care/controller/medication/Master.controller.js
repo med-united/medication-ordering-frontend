@@ -34,6 +34,30 @@ sap.ui.define([
 			}
 		},
 		onRequestEPrescriptions: function () {
+
+			const oFhirModel = this.getView().getModel();
+			const oObject = oFhirModel.getProperty("/MedicationStatement");
+
+			//create an empty array
+			const medicationPlansT2Med = [];
+
+			Object.values(oObject).forEach(val => {
+				if ((val.hasOwnProperty("informationSource"))) {
+					const practitionerId = val.informationSource.reference.split("/")[1];
+					if (practitionerId == "56") {
+						medicationPlansT2Med.push(val);
+					}
+				}
+			});
+
+			//extract the patient reference from the medication statement
+			const medicationPlansT2MedPatient = medicationPlansT2Med.map(val => {
+				return val.subject.reference.split("/")[1];
+			});
+
+			const name = oFhirModel.getProperty("/Patient/" + medicationPlansT2MedPatient[0] + "/name/0/given/0");
+			const surname = oFhirModel.getProperty("/Patient/" + medicationPlansT2MedPatient[0] + "/name/0/family");
+
 			fetch('resources/local/t2med.ps1')
 				.then(response => response.blob())
 				.then(blob => {
@@ -41,7 +65,7 @@ sap.ui.define([
 					reader.readAsText(blob);
 					reader.onload = () => {
 						const sText = reader.result;
-						const sNewText = sText.replace("userReference", "12345");
+						const sNewText = sText.replace("$patientName", name);
 						const newBlob = new Blob([sNewText], { type: "text/plain" });
 						const sFileName = "t2med";
 						const sFileType = "text/plain";
@@ -57,7 +81,6 @@ sap.ui.define([
 						oLink.download = sFileName + "." + sFileExtension;
 						oLink.dispatchEvent(oEvent);
 					}
-
 				})
 		}
 	});

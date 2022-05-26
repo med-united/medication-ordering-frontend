@@ -12,7 +12,6 @@ Add-Type -TypeDefinition $code -Language CSharp
 
 #Arguments
 $patientSurname = $args[0]
-$patientName = $args[1]
 
 Write-Host "Please enter your username:"
 $doctorUsername = Read-Host
