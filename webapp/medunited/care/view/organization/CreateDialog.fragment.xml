@@ -9,22 +9,33 @@
 			emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2"
 			singleContainerFullSize="true">
 			<form:content>
+				<Label id="search" text="{i18n>Search}" />
+				<Input
+					id="pharmacyNameInput"
+					placeholder="{i18n>EnterPharmacyName}"
+					showSuggestion="true"
+					suggestionItemSelected=".onSuggestionItemSelected"
+					suggestionItems='{path: "Suggestions>/elements", length: 1000}' >
+					<suggestionItems>
+						<core:Item text="{Suggestions>tags/name}" />
+					</suggestionItems>
+				</Input>
 				<Label text="{i18n>PharmacyName}" />
-				<Input type="text" value="{name}" />
+				<Input type="text" id="pharmacyName" value="{name}" />
 				<Label text="{i18n>Address}" />
-				<Input type="text" value="{address/0/line/0}" />
+				<Input type="text" id="pharmacyAddress" value="{address/0/line/0}" />
                 <Label text="{i18n>PostalCode}" />
-				<Input type="text" value="{address/0/postalCode}" />
+				<Input type="text" id="pharmacyPostalCode" value="{address/0/postalCode}" />
 				<Label text="{i18n>City}" />
-				<Input type="text" value="{address/0/city}" />
+				<Input type="text" id="pharmacyCity" value="{address/0/city}" />
 				<Label text="{i18n>Phone}" />
-				<Input type="text" value="{telecom/0/value}" />
+				<Input type="text" id="pharmacyPhone" value="{telecom/0/value}" />
 				<Label text="{i18n>Email}" />
-				<Input type="text" value="{telecom/1/value}" />
+				<Input type="text" id="pharmacyEmail" value="{telecom/1/value}" />
 			</form:content>
 		</form:SimpleForm>
 		<beginButton>
-			<Button type="Reject" text="{i18n>cancel}" press="onCancel" />
+			<Button type="Reject" text="{i18n>textCancelButton}" press="onCancel" />
 		</beginButton>
 		<endButton>
 			<Button type="Accept" text="{i18n>Create}" press="onSave" />
