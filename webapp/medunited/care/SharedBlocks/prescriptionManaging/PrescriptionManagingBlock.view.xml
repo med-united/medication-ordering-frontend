@@ -1,0 +1,9 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core">
+   	<!-- Open a dropdown menu -->
+	<Select id="prescriptionModeSelect" forceSelection="false" selectedKey="arztbrief">
+		<items>
+			<core:Item text="{i18n>t2MedMode}" key="t2med" />
+			<core:Item text="{i18n>eArztbriefMode}" key="arztbrief" />
+		</items>
+	</Select>
+</mvc:View>
