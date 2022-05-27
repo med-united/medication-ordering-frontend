@@ -1,7 +1,6 @@
 sap.ui.define(['sap/uxap/BlockBase'], function (BlockBase) {
 	"use strict";
-
-	var NameBlock = BlockBase.extend("medunited.care.SharedBlocks.name.NameBlock", {
+	return BlockBase.extend("medunited.care.SharedBlocks.name.NameBlock", {
 		metadata: {
 			views: {
 				Collapsed: {
@@ -15,6 +14,4 @@ sap.ui.define(['sap/uxap/BlockBase'], function (BlockBase) {
 			}
 		}
 	});
-
-	return NameBlock;
 }, true);
