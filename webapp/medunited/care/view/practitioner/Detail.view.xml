@@ -3,7 +3,7 @@
         <content>
             <uxap:ObjectPageLayout id="objectPageLayout" showTitleInHeaderContent="true">
                 <uxap:headerTitle>
-                    <uxap:ObjectPageHeader objectImageURI="{path: 'photo/0', formatter: '.formatter.formatPatientPhoto'}" objectImageShape="Circle" objectImageAlt="Profile picture of Practitioner" objectTitle="{name/[use=official]/family}, {name/[use=official]/given/0}" isObjectIconAlwaysVisible="false"
+                    <uxap:ObjectPageHeader objectImageURI="{path: 'photo/0', formatter: '.formatter.formatPatientPhoto'}" objectImageShape="Circle" objectImageAlt="Profile picture of Practitioner" objectTitle="{name/0/family}, {name/0/given/0}" isObjectIconAlwaysVisible="false"
 							  isObjectTitleAlwaysVisible="false"
 							  isObjectSubtitleAlwaysVisible="false">
                     	<uxap:actions>
