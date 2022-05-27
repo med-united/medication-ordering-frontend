@@ -1,27 +1,24 @@
 sap.ui.define([], function () {
     "use strict";
     return {
+
         makePowershellScript: function (oView) {
+
             const oFhirModel =oView.getModel();
-            const oObject = oFhirModel.getProperty("/MedicationStatement");
+            const medicationPlans = oFhirModel.getProperty("/MedicationStatement");
 
-            const medicationPlansT2Med = [];
+            const medicationPlansT2Med = this.filterPlansByDoctor(medicationPlans);
 
-            Object.values(oObject).forEach(val => {
-                if ((val.hasOwnProperty("informationSource"))) {
-                    const practitionerId = val.informationSource.reference.split("/")[1];
-                    if (practitionerId == "56") {
-                        medicationPlansT2Med.push(val);
-                    }
-                }
-            });
-
-            const medicationPlansT2MedPatient = medicationPlansT2Med.map(val => {
+            const patientsT2Med = medicationPlansT2Med.map(val => {
                 return val.subject.reference.split("/")[1];
             });
 
-            const name = oFhirModel.getProperty("/Patient/" + medicationPlansT2MedPatient[0] + "/name/0/given/0");
-            const surname = oFhirModel.getProperty("/Patient/" + medicationPlansT2MedPatient[0] + "/name/0/family");
+            const medicationsT2Med = medicationPlansT2Med.map(val => {
+                return val.medicationCodeableConcept.text;
+            });
+
+            const name = oFhirModel.getProperty("/Patient/" + patientsT2Med[0] + "/name/0/given/0");
+            const surname = oFhirModel.getProperty("/Patient/" + patientsT2Med[0] + "/name/0/family");
 
             fetch('resources/local/t2med.ps1')
                 .then(response => response.blob())
@@ -47,7 +44,20 @@ sap.ui.define([], function () {
                         oLink.dispatchEvent(oEvent);
                     }
                 })
-        }
+        },
+
+        filterPlansByDoctor: function (medicationPlans) {
+            const t2medPlans = [];
+            Object.values(medicationPlans).forEach(val => {
+                if ((val.hasOwnProperty("informationSource"))) {
+                    const practitionerId = val.informationSource.reference.split("/")[1];
+                    if (practitionerId == "56") {
+                        t2medPlans.push(val);
+                    }
+                }
+            });
+            return t2medPlans;
+        },
     };
 
 }, true);
