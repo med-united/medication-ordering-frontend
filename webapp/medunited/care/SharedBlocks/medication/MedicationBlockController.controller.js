@@ -5,8 +5,9 @@ sap.ui.define([
     "sap/fhir/model/r4/FHIRFilterType",
     "sap/fhir/model/r4/FHIRFilterOperator",
 	"../../search/MedicationSearchProvider",
-    "sap/ui/core/Item"
-], function(AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item) {
+    "sap/ui/core/Item",
+    "sap/ui/thirdparty/jquery",
+], function(AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, jQuery) {
 	"use strict";
 
 	return AbstractController.extend("medunited.care.SharedBlocks.medication.MedicationBlockController", {
@@ -70,17 +71,23 @@ sap.ui.define([
         },
         onSuggest: function (oEvent) {
 			var sTerm = oEvent.getParameter("suggestValue");
+            var oController = this.getView().getController();
 
 			this._oMedicationSearchProvider.suggest(sTerm, function (sValue, aSuggestions) {
 				this.destroySuggestionItems();
 
 				for (var i = 0; i < aSuggestions.length; i++) {
 					this.addSuggestionItem(new Item({
-						text: aSuggestions[i].name+" ("+aSuggestions[i].pzn+")"
+						text: oController.cleanMedicationNameResults(aSuggestions[i].name) + " (" + aSuggestions[i].pzn + ")"
 					}));
 				}
+                console.log(this);
 			}.bind(oEvent.getSource()));
-		}
+		},
+        cleanMedicationNameResults: function (medicationNameFromSearchProvider) {
+            let htmlTagsRegex = /<\/?[^>]+>/g;
+            return medicationNameFromSearchProvider.replace(htmlTagsRegex, '');
+        }
 
     });
 });
