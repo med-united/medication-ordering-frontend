@@ -1,7 +1,8 @@
 sap.ui.define([
 	"medunited/base/controller/AbstractMasterController",
-	'medunited/care/utils/ScriptDownloader'
-], function (AbstractMasterController, ScriptDownloader) {
+	'medunited/care/utils/ScriptDownloader',
+	'medunited/care/utils/BriefSender'
+], function (AbstractMasterController, ScriptDownloader, BriefSender) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
@@ -38,7 +39,8 @@ sap.ui.define([
 		},
 
 		onRequestEPrescriptions: function () {
-			ScriptDownloader.makePowershellScript(this.getView());
+			//ScriptDownloader.makePowershellScript(this.getView());
+			BriefSender.sendEarztBrief();
 		}
 	});
 }, true);
