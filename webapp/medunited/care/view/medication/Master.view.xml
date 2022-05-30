@@ -17,7 +17,7 @@
 
 		<!-- DynamicPage Content -->
 		<f:content>
-			<Table id="medicationsTable" inset="false"
+			<Table id="medicationTable" inset="false"
 				items="{path: '/MedicationStatement',
 					parameters: {
 						request: {
@@ -56,10 +56,6 @@
 					<Column width="35%" importance="High">
 						<Text text="{i18n>GeneralPractitioner}" />
 					</Column>
-					<!--
-					<Column width="20%" importance="High">
-						<Text text="{i18n>pharmacy}" />
-					</Column>-->
 				</columns>
 				<items>
 					<ColumnListItem>

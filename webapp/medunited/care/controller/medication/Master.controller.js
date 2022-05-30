@@ -44,8 +44,16 @@ sap.ui.define([
 		},
 
 		onRequestEPrescriptions: function () {
+			// TODO: switch between normal eArztbrief and Powershell Script
 			//ScriptDownloader.makePowershellScript(this.getView());
-			BriefSender.sendEarztBrief(this.getView(), this.eArztbriefModel);
+
+			const medicationTableEntity = this.getEntityName().toLowerCase() + "Table";
+			const selectedPlans = this.byId(medicationTableEntity).getSelectedItems()
+				.map(
+					oItem =>
+						oItem.getBindingContext().getPath());
+
+			BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 		}
 	});
 }, true);

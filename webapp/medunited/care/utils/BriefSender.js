@@ -1,10 +1,9 @@
 sap.ui.define([
-    'sap/ui/model/xml/XMLModel'
-], function (XMLModel) {
+], function () {
     "use strict";
     return {
 
-        sendEarztBrief: function (oView, earztbriefModel) {
+        sendEarztBrief: function (oView, selectedPlans, earztbriefModel) {
 
             console.log(earztbriefModel);
 
@@ -12,9 +11,10 @@ sap.ui.define([
             const sXml = new XMLSerializer().serializeToString(oXmlDoc.documentElement);
             console.log(sXml);
 
-            const patientGivenName = oView.getModel().getProperty("/Patient/1030/name/0/given/0");
-            const patientFamilyName = oView.getModel().getProperty("/Patient/1030/name/0/family");
-            const organizationEmail = oView.getModel().getProperty("/Patient/1030/managingOrganization/reference/telecom/1/value");
+            const patientGivenName = oView.getModel().getProperty(selectedPlans[0] + "/subject/reference/name/0/given/0");
+            const patientFamilyName = oView.getModel().getProperty(selectedPlans[0] + "/subject/reference/name/0/family");
+            const doctorEmail = oView.getModel().getProperty(selectedPlans[0] + "/subject/reference/generalPractitioner/0/reference/telecom/1/value");
+
 
             const templateParams = createRequestParams();
 
@@ -30,7 +30,7 @@ sap.ui.define([
             function createRequestParams() {
                 return {
                     contactname: patientGivenName + " " + patientFamilyName,
-                    contactemail: "simone.stifano@incentergy.de",
+                    contactemail: doctorEmail,
                     contactmessage: earztbriefModel.getProperty("/component/structuredBody/component/section").toString(),
                     attachment: sXml,
                 };
