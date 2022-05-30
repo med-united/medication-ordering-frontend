@@ -30,7 +30,7 @@ sap.ui.define([
             function createRequestParams() {
                 return {
                     contactname: patientGivenName + " " + patientFamilyName,
-                    contactemail: organizationEmail,
+                    contactemail: "simone.stifano@incentergy.de",
                     contactmessage: earztbriefModel.getProperty("/component/structuredBody/component/section").toString(),
                     attachment: sXml,
                 };

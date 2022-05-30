@@ -3,11 +3,11 @@ sap.ui.define([
 	'medunited/care/utils/ScriptDownloader',
 	'medunited/care/utils/BriefSender',
 	'sap/ui/model/xml/XMLModel'
-], function (AbstractMasterController, ScriptDownloader, BriefSender,XMLModel) {
+], function (AbstractMasterController, ScriptDownloader, BriefSender, XMLModel) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
-		
+
 		onInit: function () {
 			this.eArztbriefModel = new XMLModel("./medunited/template/Arztbrief-Minimal.XML");
 		},
