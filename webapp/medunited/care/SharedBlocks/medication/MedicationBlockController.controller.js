@@ -3,8 +3,10 @@ sap.ui.define([
     "../../utils/Formatter",
     "sap/fhir/model/r4/FHIRFilter",
     "sap/fhir/model/r4/FHIRFilterType",
-    "sap/fhir/model/r4/FHIRFilterOperator"
-], function(AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator) {
+    "sap/fhir/model/r4/FHIRFilterOperator",
+	"../../search/MedicationSearchProvider",
+    "sap/ui/core/Item"
+], function(AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item) {
 	"use strict";
 
 	return AbstractController.extend("medunited.care.SharedBlocks.medication.MedicationBlockController", {
@@ -26,6 +28,12 @@ sap.ui.define([
                 }
             };
             this.getView().byId("medicationTable").attachModelContextChange(fnInitialFiltering.bind(this));
+
+            this._oMedicationSearchProvider = new MedicationSearchProvider();
+			// npm install -g local-cors-proxy
+			// lcp --proxyUrl https://www.apotheken-umschau.de/
+			// http://localhost:8010/proxy
+			this._oMedicationSearchProvider.setSuggestUrl("http://localhost:8010/proxy/ajax/search/drugs/auto/?query={searchTerms}");
         },
 
 		initializeRouter: function(){
@@ -43,7 +51,6 @@ sap.ui.define([
             aFilters.push(new FHIRFilter({ path: "subject", operator : FHIRFilterOperator.StartsWith, value1: "Patient/" + sPatientId, valueType: FHIRFilterType.string}));
             this.getView().byId("medicationTable").getBinding("items").filter(aFilters);
         },
-
         addMedication: function(){
             var sPatientId = this.byId("medicationTable").getBindingContext().getPath().split("/")[2];
             var sMedicationStatementId = this.getView().getModel().create("MedicationStatement", {subject: {reference: "Patient/" + sPatientId}}, "patientDetails");
@@ -60,7 +67,20 @@ sap.ui.define([
 			}, function (oError) {
 				MessageBox.show(me.translate("msgDeleteFailed", [oError.statusCode, oError.statusText]));
 			});
-        }
+        },
+        onSuggest: function (oEvent) {
+			var sTerm = oEvent.getParameter("suggestValue");
+
+			this._oMedicationSearchProvider.suggest(sTerm, function (sValue, aSuggestions) {
+				this.destroySuggestionItems();
+
+				for (var i = 0; i < aSuggestions.length; i++) {
+					this.addSuggestionItem(new Item({
+						text: aSuggestions[i].name+" ("+aSuggestions[i].pzn+")"
+					}));
+				}
+			}.bind(oEvent.getSource()));
+		}
 
     });
 });
