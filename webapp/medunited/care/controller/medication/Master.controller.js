@@ -1,11 +1,16 @@
 sap.ui.define([
 	"medunited/base/controller/AbstractMasterController",
 	'medunited/care/utils/ScriptDownloader',
-	'medunited/care/utils/BriefSender'
-], function (AbstractMasterController, ScriptDownloader, BriefSender) {
+	'medunited/care/utils/BriefSender',
+	'sap/ui/model/xml/XMLModel'
+], function (AbstractMasterController, ScriptDownloader, BriefSender,XMLModel) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
+		
+		onInit: function () {
+			this.eArztbriefModel = new XMLModel("./medunited/template/Arztbrief-Minimal.XML");
+		},
 
 		getEntityName: function () {
 			return "Medication";
@@ -40,7 +45,7 @@ sap.ui.define([
 
 		onRequestEPrescriptions: function () {
 			//ScriptDownloader.makePowershellScript(this.getView());
-			BriefSender.sendEarztBrief();
+			BriefSender.sendEarztBrief(this.getView(), this.eArztbriefModel);
 		}
 	});
 }, true);
