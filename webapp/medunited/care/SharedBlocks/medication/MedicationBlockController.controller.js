@@ -5,9 +5,8 @@ sap.ui.define([
     "sap/fhir/model/r4/FHIRFilterType",
     "sap/fhir/model/r4/FHIRFilterOperator",
 	"../../search/MedicationSearchProvider",
-    "sap/ui/core/Item",
-    "sap/ui/thirdparty/jquery",
-], function(AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, jQuery) {
+    "sap/ui/core/Item"
+], function(AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item) {
 	"use strict";
 
 	return AbstractController.extend("medunited.care.SharedBlocks.medication.MedicationBlockController", {
@@ -81,13 +80,25 @@ sap.ui.define([
 						text: oController.cleanMedicationNameResults(aSuggestions[i].name) + " (" + aSuggestions[i].pzn + ")"
 					}));
 				}
-                console.log(this);
 			}.bind(oEvent.getSource()));
 		},
         cleanMedicationNameResults: function (medicationNameFromSearchProvider) {
             let htmlTagsRegex = /<\/?[^>]+>/g;
             return medicationNameFromSearchProvider.replace(htmlTagsRegex, '');
-        }
+        },
+        onSuggestionItemSelected: function (oEvent) {
+            const oItem = oEvent.getParameter("selectedItem");
+            let itemSelected = oItem.getText();
+            let pznRegex = new RegExp(/\([0-9]*\)/, "g");
+            let allNumbersBetweenParenthesisMatches = itemSelected.match(pznRegex);
+            let lastMatch = allNumbersBetweenParenthesisMatches.length-1;
 
+            let medicationPZN = allNumbersBetweenParenthesisMatches[lastMatch].replace(/\(/, '').replace(/\)/, '');
+            let medicationName = itemSelected.replace("\(" + medicationPZN + "\)", "");
+
+            var source = oEvent.getSource();
+            source.getModel().setProperty(source.getBindingContext().getPath("medicationCodeableConcept/text"), medicationName);
+            source.getModel().setProperty(source.getBindingContext().getPath("identifier/0/value"), medicationPZN);
+        }
     });
 });

@@ -28,11 +28,14 @@
                 <cells>
                     <Input value="{medicationCodeableConcept/text}"
                         showSuggestion="true"
-                        suggest=".onSuggest" enabled="{appState>/editMode}"/>
+                        suggest=".onSuggest"
+                        suggestionItemSelected=".onSuggestionItemSelected"
+                        enabled="{appState>/editMode}"/>
                     <DatePicker value="{path: 'effectiveDateTime', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyy-MM-dd'}}}" enabled="{appState>/editMode}"/>
                     <Input value="{identifier/0/value}"
                         showSuggestion="true"
-                        suggest=".onSuggest" enabled="{appState>/editMode}"/>
+                        suggest=".onSuggest"
+                        enabled="{appState>/editMode}"/>
                     <Input value="{dosage/0/text}" enabled="{appState>/editMode}"/>
                     <ComboBox items="{/Practitioner}" selectedKey="{informationSource/reference}" enabled="{appState>/editMode}">
                         <core:Item key="Practitioner/{id}" text="{name/0/given/0} {name/0/family}" />
