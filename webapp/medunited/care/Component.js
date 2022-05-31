@@ -2,8 +2,9 @@ sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/model/json/JSONModel",
 	"sap/f/FlexibleColumnLayoutSemanticHelper",
-	"sap/fhir/model/r4/FHIRListBinding"
-], function (UIComponent, JSONModel, FlexibleColumnLayoutSemanticHelper, FHIRListBinding) {
+	"sap/fhir/model/r4/FHIRListBinding",
+	"sap/fhir/model/r4/FHIRModel"
+], function (UIComponent, JSONModel, FlexibleColumnLayoutSemanticHelper, FHIRListBinding, FHIRModel) {
 	"use strict";
 
 	return UIComponent.extend("medunited.care.Component", {
@@ -60,6 +61,17 @@ sap.ui.define([
 		},
 
 		fixPagingOfFhirModel: function () {
+
+			FHIRModel.prototype._createRequestInfo = function(sMethod, sUrl) {
+				const oRequestInfo = {
+					method : sMethod,
+					url : sUrl
+				};
+				if(sMethod === "DELETE") {
+					oRequestInfo.url += "?_cascade=delete";
+				}
+				return oRequestInfo;
+			};
 			// Copied from: https://github.com/SAP/openui5-fhir/blob/v2.2.8/src/sap/fhir/model/r4/FHIRListBinding.js#L180
 			// Directly use sNextLink
 			FHIRListBinding.prototype.getContexts = function (iStartIndex, iLength) {
