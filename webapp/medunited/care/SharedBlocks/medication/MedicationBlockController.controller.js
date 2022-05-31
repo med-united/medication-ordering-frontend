@@ -68,7 +68,7 @@ sap.ui.define([
 				MessageBox.show(me.translate("msgDeleteFailed", [oError.statusCode, oError.statusText]));
 			});
         },
-        onSuggest: function (oEvent) {
+        onSuggestMedicationName: function (oEvent) {
 			var sTerm = oEvent.getParameter("suggestValue");
             var oController = this.getView().getController();
 
@@ -86,7 +86,7 @@ sap.ui.define([
             let htmlTagsRegex = /<\/?[^>]+>/g;
             return medicationNameFromSearchProvider.replace(htmlTagsRegex, '');
         },
-        onSuggestionItemSelected: function (oEvent) {
+        onSuggestionMedicationNameSelected: function (oEvent) {
             const oItem = oEvent.getParameter("selectedItem");
             let itemSelected = oItem.getText();
             let pznRegex = new RegExp(/\([0-9]*\)/, "g");
@@ -95,6 +95,33 @@ sap.ui.define([
 
             let medicationPZN = allNumbersBetweenParenthesisMatches[lastMatch].replace(/\(/, '').replace(/\)/, '');
             let medicationName = itemSelected.replace("\(" + medicationPZN + "\)", "");
+
+            var source = oEvent.getSource();
+            source.getModel().setProperty(source.getBindingContext().getPath("medicationCodeableConcept/text"), medicationName);
+            source.getModel().setProperty(source.getBindingContext().getPath("identifier/0/value"), medicationPZN);
+        },
+        onSuggestPZN: function (oEvent) {
+			var sTerm = oEvent.getParameter("suggestValue");
+            var oController = this.getView().getController();
+
+			this._oMedicationSearchProvider.suggest(sTerm, function (sValue, aSuggestions) {
+				this.destroySuggestionItems();
+
+				for (var i = 0; i < aSuggestions.length; i++) {
+					this.addSuggestionItem(new Item({
+						text: aSuggestions[i].pzn + " (" + oController.cleanMedicationNameResults(aSuggestions[i].name) + ")"
+					}));
+				}
+			}.bind(oEvent.getSource()));
+		},
+        onSuggestionPZNSelected: function (oEvent) {
+            const oItem = oEvent.getParameter("selectedItem");
+            let itemSelected = oItem.getText();
+            let pznRegex = new RegExp(/\d*\s/);
+            let pznMatch = itemSelected.match(pznRegex)[0];
+
+            let medicationPZN = pznMatch.trim();
+            let medicationName = itemSelected.replace(pznRegex, "").slice(1, -1);
 
             var source = oEvent.getSource();
             source.getModel().setProperty(source.getBindingContext().getPath("medicationCodeableConcept/text"), medicationName);
