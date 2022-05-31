@@ -13,7 +13,7 @@ sap.ui.define([
 			manifest: "json"
 		},
 
-		init: function() {
+		init: function () {
 			this.fixPagingOfFhirModel();
 			UIComponent.prototype.init.apply(this, arguments);
 
@@ -59,19 +59,19 @@ sap.ui.define([
 			}
 		},
 
-		fixPagingOfFhirModel: function() {
+		fixPagingOfFhirModel: function () {
 			// Copied from: https://github.com/SAP/openui5-fhir/blob/v2.2.8/src/sap/fhir/model/r4/FHIRListBinding.js#L180
 			// Directly use sNextLink
-			FHIRListBinding.prototype.getContexts = function(iStartIndex, iLength) {
-				if (!this.iLength && iLength !== undefined){
+			FHIRListBinding.prototype.getContexts = function (iStartIndex, iLength) {
+				if (!this.iLength && iLength !== undefined) {
 					this.iLength = iLength > this.oModel.iSizeLimit ? this.oModel.iSizeLimit : iLength;
 				} else if (!this.iLength) {
 					this.iLength = this.oModel.iSizeLimit;
 				}
-		
+
 				var mParameters = this._buildParameters(this.iLength);
-				var fnSuccess = function(oData) {
-					if (oData.total === undefined){
+				var fnSuccess = function (oData) {
+					if (oData.total === undefined) {
 						throw new Error("FHIR Server error: The \"total\" property is missing in the response for the requested FHIR resource " + this.sPath);
 					}
 					this.bDirectCallPending = false;
@@ -81,33 +81,33 @@ sap.ui.define([
 					} else {
 						iStartIndex = this.aKeys.length;
 					}
-					if (oData.entry && oData.entry.length){
+					if (oData.entry && oData.entry.length) {
 						var oResource;
 						var oBindingInfo = this.oModel.getBindingInfo(this.sPath, this.oContext, this.bUnique);
 						var sBindingResType = oBindingInfo.getResourceType();
 						for (var i = 0; i < oData.entry.length; i++) {
 							oResource = oData.entry[i].resource;
 							oBindingInfo = this.oModel.getBindingInfo(this.sPath, this.oContext, this.bUnique, oResource);
-							if (oResource.resourceType === sBindingResType){
+							if (oResource.resourceType === sBindingResType) {
 								this.aKeys[iStartIndex + i] = oBindingInfo.getAbsolutePath().substring(1);
 							}
 						}
 					}
 					this._markSuccessRequest(oData, oData.total);
 				}.bind(this);
-		
-				var fnSuccessValueSet = function(oData) {
+
+				var fnSuccessValueSet = function (oData) {
 					var iTotal = oData.expansion.total || (oData.expansion.contains && oData.expansion.contains.length) || 0;
 					this._buildKeys("ValueSet/" + "§" + oData.expansion.identifier + "§", oData.expansion.contains, iTotal);
 					this._markSuccessRequest(oData, iTotal);
 				}.bind(this);
-		
-				var fnLoadResources = function() {
+
+				var fnLoadResources = function () {
 					var sValueSetUri = this._getValueSetUriFromStructureDefinition();
 					if (sValueSetUri) {
 						this._submitRequest("/ValueSet/$expand", {
-							urlParameters : {
-								url : sValueSetUri,
+							urlParameters: {
+								url: sValueSetUri,
 								displayLanguage: sap.ui.getCore().getConfiguration().getLanguage()
 							}
 						}, fnSuccessValueSet);
@@ -115,8 +115,8 @@ sap.ui.define([
 						this._loadResources(iLength);
 					}
 				}.bind(this);
-		
-				var fnSuccessStructDef = function(oData) {
+
+				var fnSuccessStructDef = function (oData) {
 					this.bDirectCallPending = false;
 					if (oData && oData.entry) {
 						this.oStructureDefinition = oData.entry[0].resource;
@@ -131,7 +131,7 @@ sap.ui.define([
 						throw new Error("The structuredefinition " + sStrucDefUrl + " could not be loaded from the server for binding with path " + oBindingInfo.getRelativePath());
 					}
 				}.bind(this);
-		
+
 				if (!this.bPendingRequest && !this.bResourceNotAvailable) {
 					if (this._isValueSetHardCoded() && this.iTotalLength === undefined) { // load hardcoded valueset
 						mParameters.urlParameters.displayLanguage = sap.ui.getCore().getConfiguration().getLanguage();
@@ -151,24 +151,24 @@ sap.ui.define([
 							}
 							// this._submitRequest(this.sPath, mParameters, fnSuccess, true);
 							// MEDU-108 do not use the resource for
-							this._submitRequest("?"+sQueryParams, undefined, fnSuccess, true);
+							this._submitRequest("?" + sQueryParams, undefined, fnSuccess, true);
 						} else {
 							this._submitRequest(this.sNextLink, undefined, fnSuccess, true);
 						}
-					} else if (this.iTotalLength === undefined){ // load context based resources
+					} else if (this.iTotalLength === undefined) { // load context based resources
 						this.iLastLength = this.iLength;
 						this._loadProfile(fnSuccessStructDef, fnLoadResources, fnSuccess, mParameters, iLength);
-					} else if (!this._isValueSet()){
-						if (iLength > this.iLastLength){
+					} else if (!this._isValueSet()) {
+						if (iLength > this.iLastLength) {
 							this.iLastLength += this.iLength;
 						}
-						if (!this.iLastLength){
+						if (!this.iLastLength) {
 							this.iLastLength = this.iLength;
 						}
 						this._loadResources(this.iLastLength);
 					}
 				}
-		
+
 				this._buildContexts(iLength);
 				return this.aContexts;
 			};

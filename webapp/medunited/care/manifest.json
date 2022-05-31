@@ -79,7 +79,13 @@
 				"settings": {
 					"groupProperties": {
 						"patientDetails": {
-							"submit": "Batch"
+							"submit": "Transaction"
+						},
+						"practitionerDetails": {
+							"submit": "Transaction"
+						},
+						"organizationDetails": {
+							"submit": "Transaction"
 						}
 					},
 					"defaultQueryParameters": {

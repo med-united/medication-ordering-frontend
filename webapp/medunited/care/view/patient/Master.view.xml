@@ -34,15 +34,12 @@
 
 		<!-- DynamicPage Content -->
 		<f:content>
-			<Table id="patientTable" inset="false"
-				items="{/Patient}"
-				class="sapFDynamicPageAlignContent" width="auto" growing="true" growingScrollToLoad="true" growingThreshold="10" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
+			<Table id="patientTable" inset="false" items="{/Patient}" class="sapFDynamicPageAlignContent" width="auto" growing="true" growingScrollToLoad="true" growingThreshold="10" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
 				<headerToolbar>
 					<OverflowToolbar>
 						<ToolbarSpacer />
 						<SearchField search="onSearch" width="17.5rem" />
-						<OverflowToolbarButton
-							icon="sap-icon://sort" type="Transparent" press="onSort" />
+						<OverflowToolbarButton icon="sap-icon://sort" type="Transparent" press="onSort" />
 					</OverflowToolbar>
 				</headerToolbar>
 				<columns>
@@ -63,14 +60,13 @@
 					</Column>
 				</columns>
 				<items>
-					<ColumnListItem type="Navigation"
-						press="onListItemPress">
+					<ColumnListItem type="Navigation" press="onListItemPress">
 						<cells>
 							<Text text="{name/0/given}" />
 							<Text text="{name/0/family}" />
 							<Text text="{path: 'birthDate', formatOptions: {style: 'short'}}" />
-							<Text text="{GeneralPractitioner}" />
-							<Text text="{ManagingOrganization}" />
+							<Text text="{path: 'generalPractitioner/0/reference', formatter: '.referencePhysician'}" />
+							<Text text="{path: 'managingOrganization/reference', formatter: '.referenceOrganization'}" />
 						</cells>
 					</ColumnListItem>
 				</items>
@@ -78,8 +74,8 @@
 		</f:content>
 		<f:footer>
 			<OverflowToolbar>
-				<ToolbarSpacer/>
-				<Button type="Reject" text="{i18n>btnDeleteSelected}" press="onDeleteSelected" />
+				<ToolbarSpacer />
+				<Button type="Reject" text="{i18n>DeleteSelected}" press="onDeleteSelected" />
 			</OverflowToolbar>
 		</f:footer>
 		<f:dependents>

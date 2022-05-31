@@ -1,41 +1,59 @@
 sap.ui.define([
 	"medunited/base/controller/AbstractMasterController",
-	'sap/ui/model/Filter',
-	'sap/ui/model/FilterOperator'
-], function (AbstractMasterController, Filter, FilterOperator) {
+	'medunited/care/utils/ScriptDownloader',
+	'medunited/care/utils/BriefSender',
+	'sap/ui/model/xml/XMLModel'
+], function (AbstractMasterController, ScriptDownloader, BriefSender, XMLModel) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
-		getEntityName: function() {
+
+		onInit: function () {
+			this.eArztbriefModel = new XMLModel("./medunited/template/Arztbrief-Minimal.XML");
+		},
+
+		getEntityName: function () {
 			return "Medication";
 		},
-		groupOnSubject: function(oMedicationStatement) {
+
+		groupOnSubject: function (oMedicationStatement) {
 			try {
 				const sPatientPath = oMedicationStatement.getProperty("subject").reference;
 				return this.getNameForPath("/" + sPatientPath);
-			} catch(e) {
+			} catch (e) {
 				console.log(e);
 				return "Patient unbekannt";
 			}
 		},
+
 		getNameForPath: function (sObjectPath) {
 			const oFhirModel = this.getView().getModel();
 			const oObject = oFhirModel.getProperty(sObjectPath);
 			return oObject.name[0].given[0] + " " + oObject.name[0].family;
 		},
-		referencePhysician: function(sPractitionerPath) {
+
+		referencePhysician: function (sPractitionerPath) {
 			try {
-				if(sPractitionerPath) {
-					return this.getNameForPath("/"+sPractitionerPath);
+				if (sPractitionerPath) {
+					return this.getNameForPath("/" + sPractitionerPath);
 				}
-			} catch(e) {
+			} catch (e) {
 				console.log(e);
 				return "Arzt unbekannt";
 			}
 		},
-		onRequestEPrescriptions: function (oEvent){
-			const aResources = this.byId(this.getEntityName().toLowerCase()+"Table").getSelectedItems().map(oItem => oItem.getBindingContext().getPath());
 
+		onRequestEPrescriptions: function () {
+			// TODO: switch between normal eArztbrief and Powershell Script
+			//ScriptDownloader.makePowershellScript(this.getView());
+
+			const medicationTableEntity = this.getEntityName().toLowerCase() + "Table";
+			const selectedPlans = this.byId(medicationTableEntity).getSelectedItems()
+				.map(
+					oItem =>
+						oItem.getBindingContext().getPath());
+
+			BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 		}
 	});
 }, true);
