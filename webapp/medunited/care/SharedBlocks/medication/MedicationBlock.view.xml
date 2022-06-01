@@ -17,6 +17,9 @@
                 <Text text="{i18n>columnLabelMedicationDosage}"/>
             </Column>
             <Column hAlign="Left">
+                <Text text="{i18n>columnLabelMedicationNote}"/>
+            </Column>
+            <Column hAlign="Left">
                 <Text text="{i18n>columnLabelPractitioner}"/>
             </Column>
             <Column hAlign="Left">
@@ -38,6 +41,7 @@
                         suggestionItemSelected=".onSuggestionPZNSelected"
                         enabled="{appState>/editMode}"/>
                     <Input value="{dosage/0/text}" enabled="{appState>/editMode}"/>
+                    <Input value="{note}" enabled="{appState>/editMode}"/>
                     <ComboBox items="{/Practitioner}" selectedKey="{informationSource/reference}" enabled="{appState>/editMode}">
                         <core:Item key="Practitioner/{id}" text="{name/0/given/0} {name/0/family}" />
                     </ComboBox>
