@@ -33,7 +33,7 @@ sap.ui.define([
 			// npm install -g local-cors-proxy
 			// lcp --proxyUrl https://www.apotheken-umschau.de/
 			// http://localhost:8010/proxy
-			this._oMedicationSearchProvider.setSuggestUrl("http://localhost:8010/proxy/ajax/search/drugs/auto/?query={searchTerms}");
+			this._oMedicationSearchProvider.setSuggestUrl("https://medication.med-united.health/ajax/search/drugs/auto/?query={searchTerms}");
         },
 
 		initializeRouter: function(){
