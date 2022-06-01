@@ -2,7 +2,6 @@
 	xmlns="sap.m" 
 	xmlns:f="sap.f" 
 	xmlns:mvc="sap.ui.core.mvc"
-	xmlns:u="sap.ui.unified"
 	xmlns:l="sap.ui.layout.form"
 	xmlns:medunited="medunited.base.control"
 	height="100%"
@@ -16,18 +15,9 @@
 					<Title text="{i18n>pageTitlePatients}" />
 				</f:heading>
 				<f:actions>
-					<l:SimpleForm editable="true">
-						<l:content>
-							<Label text="File Name"/>
-							<u:FileUploader id="idfileUploader" width="50%"
-								sameFilenameAllowed="false" buttonText="" fileType="CSV"
-								placeholder="Choose a CSV file" style="Emphasized">
-							</u:FileUploader>
-							<Button type="Accept" icon="sap-icon://upload" text="{i18n>buttonUploadFile}" press="onUploadFile" />
-						</l:content>
-					</l:SimpleForm>
 					<Button type="Emphasized" text="{i18n>CreatePatient}" press="onAdd" />
 					<Button text="{i18n>createPatientFromBMP}" press="onPressCreatePatientFromBMP" />
+					<Button  text="{i18n>ImportPatientFromCSV}" press="onImportPatientFromCSV" />
 				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>

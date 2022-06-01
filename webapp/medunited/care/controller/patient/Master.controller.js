@@ -2,8 +2,11 @@ sap.ui.define([
 	'medunited/base/controller/AbstractMasterController',
 	'sap/ui/model/Filter',
 	'sap/ui/model/FilterOperator',
-	'medunited/care/utils/ProcessUpload'
-], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload) {
+	'medunited/care/utils/ProcessUpload',
+	'sap/m/MessageBox',
+	'sap/m/MessageToast',
+	"sap/ui/core/Fragment"
+], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.patient.Master", {
@@ -23,12 +26,40 @@ sap.ui.define([
 		getSortField: function () {
 			return "family";
 		},
-		
-		onUploadFile: function () {
+		onImportPatientFromCSV: function() {
+			var oView = this.getView();
+			const me = this;
+			// create dialog lazily
+			if (!this.byId("importCSVDialog")) {
+				// load asynchronous XML fragment
+				Fragment.load({
+					id: oView.getId(),
+					name: "medunited.care.view.patient.ImportCSVDialog",
+					controller: this
+				}).then(function (oDialog) {
+					// connect dialog to the root view of this component (models, lifecycle)
+					oView.addDependent(oDialog);
+					oDialog.open();
+				}.bind(this));
+			} else {
+				this.byId("importCSVDialog").open();
+			}
+		},
+		onUploadCSVCancel: function() {
+			this.byId("importCSVDialog").close();
+		},
+		onUploadCSVFile: function () {
 			let fileUploader = this.getView().byId("idfileUploader");
 			let domRef = fileUploader.getFocusDomRef();
 			let file = domRef.files[0];
-			ProcessUpload.processUploadedFile(file,this.getView());
+			const me = this;
+			ProcessUpload.processUploadedFile(file,this.getView())
+			.then((aResources) => {
+				MessageToast.show(me.translate("msgCountCreated", aResources.length));
+				me.byId("importCSVDialog").close();
+			}, (oError) => {
+				MessageBox.show(me.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
+			})
 		},
 
 		onPressCreatePatientFromBMP: function () {
