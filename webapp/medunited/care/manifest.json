@@ -10,12 +10,39 @@
 		"dataSources": {
 			"fhir": {
 				"uri": "https://fhir.med-united.health/fhir",
-				"type": "FHIR"
+				"type": "FHIR",
+				"settings": {
+					"groupProperties": {
+						"patientDetails": {
+							"submit": "Batch"
+						}
+					}
+				}
 			},
 			"app-state": {
 				"uri": "../../resources/local/state.json",
 				"type": "JSON"
-			}
+			},
+			"patient": {
+				"uri": "../../resources/local/patient.json",
+				"type": "JSON"
+			},
+			"medicationStatement": {
+				"uri": "../../resources/local/medicationStatement.json",
+				"type": "JSON"
+			},
+			"practitioner": {
+				"uri": "../../resources/local/practitioner.json",
+				"type": "JSON"
+			},
+			"organization": {
+				"uri": "../../resources/local/organization.json",
+				"type": "JSON"
+			},
+			"medication": {
+				"uri": "../../resources/local/medication.json",
+				"type": "JSON"
+			}			
 		}
 	},
 	"sap.ui": {
@@ -75,7 +102,28 @@
 			"appState": {
 				"dataSource": "app-state",
 				"type": "sap.ui.model.json.JSONModel"
+			},
+			"patient": {
+				"dataSource": "patient",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"medicationStatement": {
+				"dataSource": "medicationStatement",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"practitioner": {
+				"dataSource": "practitioner",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"organization": {
+				"dataSource": "organization",
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"medication": {
+				"dataSource": "medication",
+				"type": "sap.ui.model.json.JSONModel"
 			}
+
 		},
 		"resources": {
 			"js": [

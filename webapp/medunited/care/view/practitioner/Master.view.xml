@@ -7,10 +7,10 @@
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:heading>
-					<Title text="{i18n>practitionerTabTitle}" />
+					<Title text="{i18n>pageTitlePractitioners}" />
 				</f:heading>
 				<f:actions>
-					<Button type="Emphasized" text="{i18n>Create}" press="onAdd" />
+					<Button type="Emphasized" text="{i18n>buttonCreate}" press="onAdd" />
 				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>

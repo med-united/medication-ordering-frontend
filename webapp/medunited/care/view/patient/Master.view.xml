@@ -1,14 +1,23 @@
-<mvc:View displayBlock="true" controllerName="medunited.care.controller.patient.Master" height="100%" xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc" xmlns:medunited="medunited.base.control">
-	<f:DynamicPage id="patientPageId" toggleHeaderOnTitleClick="false">
+<mvc:View controllerName="medunited.care.controller.patient.Master" 
+	xmlns="sap.m" 
+	xmlns:f="sap.f" 
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:l="sap.ui.layout.form"
+	xmlns:medunited="medunited.base.control"
+	height="100%"
+	displayBlock="true">
+	<f:DynamicPage id="patientPageId"
+		toggleHeaderOnTitleClick="false">
 		<!-- DynamicPage Title -->
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:heading>
-					<Title text="{i18n>Patients}" />
+					<Title text="{i18n>pageTitlePatients}" />
 				</f:heading>
 				<f:actions>
-					<Button type="Emphasized" text="{i18n>Create}" press="onAdd" />
+					<Button type="Emphasized" text="{i18n>CreatePatient}" press="onAdd" />
 					<Button text="{i18n>createPatientFromBMP}" press="onPressCreatePatientFromBMP" />
+					<Button  text="{i18n>ImportPatientFromCSV}" press="onImportPatientFromCSV" />
 				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>
@@ -47,7 +56,7 @@
 							<Text text="{name/0/family}" />
 							<Text text="{path: 'birthDate', formatOptions: {style: 'short'}}" />
 							<Text text="{path: 'generalPractitioner/0/reference', formatter: '.referencePhysician'}" />
-							<Text text="{managingOrganization/reference}" />
+							<Text text="{path: 'managingOrganization/reference', formatter: '.referenceOrganization'}" />
 						</cells>
 					</ColumnListItem>
 				</items>

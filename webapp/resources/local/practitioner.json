@@ -1,0 +1,50 @@
+{
+    "resourceType": "Practitioner",
+    "meta": {
+        "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner"
+        ]
+    },
+    "extension": [
+        {
+            "url": "http://synthetichealth.github.io/synthea/utilization-encounters-extension",
+            "valueInteger": 36
+        }
+    ],
+    "identifier": [
+        {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "9999999391"
+        }
+    ],
+    "active": true,
+    "name": [
+        {
+            "family": "",
+            "given": [""],
+            "prefix": [""]
+        }
+    ],
+    "telecom": [
+        {
+            "system": "phone",
+            "value": "",
+            "use": "work"
+        },
+        {
+            "system": "email",
+            "value": "",
+            "use": "work"
+        }
+    ],
+    "address": [
+        {
+            "line": [""],
+            "city": "",
+            "state": "",
+            "postalCode": "",
+            "country": "DE"
+        }
+    ],
+    "gender": ""
+}

@@ -1,8 +1,12 @@
 sap.ui.define([
-	"medunited/base/controller/AbstractMasterController",
+	'medunited/base/controller/AbstractMasterController',
 	'sap/ui/model/Filter',
-	'sap/ui/model/FilterOperator'
-], function (AbstractMasterController, Filter, FilterOperator) {
+	'sap/ui/model/FilterOperator',
+	'medunited/care/utils/ProcessUpload',
+	'sap/m/MessageBox',
+	'sap/m/MessageToast',
+	"sap/ui/core/Fragment"
+], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.patient.Master", {
@@ -22,13 +26,44 @@ sap.ui.define([
 		getSortField: function () {
 			return "family";
 		},
+		onImportPatientFromCSV: function() {
+			var oView = this.getView();
+			const me = this;
+			// create dialog lazily
+			if (!this.byId("importCSVDialog")) {
+				// load asynchronous XML fragment
+				Fragment.load({
+					id: oView.getId(),
+					name: "medunited.care.view.patient.ImportCSVDialog",
+					controller: this
+				}).then(function (oDialog) {
+					// connect dialog to the root view of this component (models, lifecycle)
+					oView.addDependent(oDialog);
+					oDialog.open();
+				}.bind(this));
+			} else {
+				this.byId("importCSVDialog").open();
+			}
+		},
+		onUploadCSVCancel: function() {
+			this.byId("importCSVDialog").close();
+		},
+		onUploadCSVFile: function () {
+			let fileUploader = this.getView().byId("idfileUploader");
+			let domRef = fileUploader.getFocusDomRef();
+			let file = domRef.files[0];
+			const me = this;
+			ProcessUpload.processUploadedFile(file,this.getView())
+			.then((aResources) => {
+				MessageToast.show(me.translate("msgCountCreated", aResources.length));
+				me.byId("importCSVDialog").close();
+			}, (oError) => {
+				MessageBox.show(me.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
+			})
+		},
+
 		onPressCreatePatientFromBMP: function () {
 			this.byId("extScanner").open();
-		},
-		getNameForPath: function (sObjectPath) {
-			const oFhirModel = this.getView().getModel();
-			const oObject = oFhirModel.getProperty(sObjectPath);
-			return oObject.name[0].given[0] + " " + oObject.name[0].family;
 		},
 		referencePhysician: function (sPractitionerPath) {
 			try {
@@ -40,6 +75,27 @@ sap.ui.define([
 				return "Arzt unbekannt";
 			}
 		},
+		getNameForPath: function (sObjectPath) {
+			const oFhirModel = this.getView().getModel();
+			const oObject = oFhirModel.getProperty(sObjectPath);
+			return oObject.name[0].given[0] + " " + oObject.name[0].family;
+		},
+		referenceOrganization: function (sOrganizationPath) {
+			try {
+				if (sOrganizationPath) {
+					return this.getPharmacyNameForPath("/" + sOrganizationPath);
+				}
+			} catch (e) {
+				console.log(e);
+				return "Apotheke unbekannt";
+			}
+		},
+		getPharmacyNameForPath: function (sObjectPath) {
+			const oFhirModel = this.getView().getModel();
+			const oObject = oFhirModel.getProperty(sObjectPath);
+			return oObject.name;
+		},
+
 		onValueScanned: function (oEvent) {
 			try {
 				// <MP v="025" U="02BD2867FB024401A590D59D94E1FFAE" l="de-DE"><P g="Jürgen" f="Wernersen" b="19400324"/><A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/><S><M p="230272" m="1" du="1" r="Herz/Blutdruck"/><M p="2223945" m="1" du="1" r="Blutdruck"/><M p="558736" m="20" v="20" du="p" i="Wechseln der Injektionsstellen, unmittelbar vor einer Mahlzeit spritzen" r="Diabetes"/><M p="9900751" v="1" du="1" r="Blutfette"/></S><S t="zu besonderen Zeiten anzuwendende Medikamente"><M p="2239828" t="alle drei Tage 1" du="1" i="auf wechselnde Stellen aufkleben" r="Schmerzen"/></S><S c="418"><M p="2455874" m="1" du="1" r="Stimmung"/></S></MP>
