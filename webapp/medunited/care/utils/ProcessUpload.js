@@ -155,13 +155,12 @@ sap.ui.define([
                         const mParameters = {
                             urlParameters: oPatient.key,
                             success: function(oResponse){
-                                let sPatientId=null;
-                                if (!oResponse.entry){
-                                    sPatientId = oModel.create("Patient", oPatient.data, "patientDetails");
+                                if (oResponse.entry){
+                                    const sPatientId = oResponse.entry[0].resource.id;
+                                    oPatient.setPatientId(sPatientId);
                                 } else {
-                                    sPatientId = oResponse.entry[0].id;
+                                    const transactionId = oModel.create("Patient", oPatient.data, "patientDetails");
                                 }
-                                oPatient.setPatientId(sPatientId);
                             },
                             error: function(oError){
                                 console.log(oError.code, `${oError.message}\n${oError.additionalText}`);
@@ -171,6 +170,13 @@ sap.ui.define([
                     }
                     Promise.all(aRequests).then(() => {
                         oModel.submitChanges("patientDetails", (aFHIRResources) => {
+                            for (let aFHIRResource of aFHIRResources){
+                                for (let oPatient of oBundle.patients){
+                                    if (!oPatient.idInDB && aFHIRResource.birthDate===oPatient.birthDate){
+                                        oPatient.setPatientId(aFHIRResource.id);
+                                    }
+                                }
+                            }
                             resolve(aFHIRResources);
                         }, function (oError) {
                             reject(oError);
