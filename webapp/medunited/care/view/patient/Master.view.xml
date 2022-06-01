@@ -24,7 +24,14 @@
 
 		<!-- DynamicPage Content -->
 		<f:content>
-			<Table id="patientTable" inset="false" items="{/Patient}" class="sapFDynamicPageAlignContent" width="auto" growing="true" growingScrollToLoad="true" growingThreshold="10" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
+			<Table id="patientTable" inset="false" items="{path: '/Patient',
+					parameters: {
+						request: {
+							_include: ['Patient:general-practitioner',
+							'Patient:organization']
+						}
+					}
+				}" class="sapFDynamicPageAlignContent" width="auto" growing="true" growingScrollToLoad="true" growingThreshold="10" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
 				<headerToolbar>
 					<OverflowToolbar>
 						<ToolbarSpacer />
