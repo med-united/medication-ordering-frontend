@@ -39,13 +39,11 @@ sap.ui.define([
 				}
 			} catch (e) {
 				console.log(e);
-				return "Arzt unbekannt";
 			}
 		},
 
 		onRequestEPrescriptions: function () {
 			// TODO: switch between normal eArztbrief and Powershell Script
-			//ScriptDownloader.makePowershellScript(this.getView());
 
 			const medicationTableEntity = this.getEntityName().toLowerCase() + "Table";
 			const selectedPlans = this.byId(medicationTableEntity).getSelectedItems()
@@ -53,7 +51,11 @@ sap.ui.define([
 					oItem =>
 						oItem.getBindingContext().getPath());
 
-			BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
+			ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
+
+
+
+			// BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 		}
 	});
 }, true);
