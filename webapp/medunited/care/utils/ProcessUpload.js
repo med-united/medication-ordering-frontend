@@ -58,7 +58,7 @@ sap.ui.define([
                             [{ use:    "official",
                                given: [oDataRow["PatientGivenName"]],
                                family: oDataRow["PatientFamilyName"] }],
-                        birthdate: oDataRow["PatientBirthdate"],
+                        birthDate: oDataRow["PatientBirthdate"],
                     };
                     oPatient.key = {
                         family:    oDataRow["PatientFamilyName"],
@@ -152,7 +152,7 @@ sap.ui.define([
                     const aRequests = [];
                     // DB existence check
                     for (let oPatient of oBundle.patients) {
-                        var mParameters = {
+                        const mParameters = {
                             urlParameters: oPatient.key,
                             success: function(oResponse){
                                 let sPatientId=null;
@@ -166,12 +166,11 @@ sap.ui.define([
                             error: function(oError){
                                 console.log(oError.code, `${oError.message}\n${oError.additionalText}`);
                             }
-                        };                    
+                        };
                         aRequests.push(oModel.sendGetRequest('/Patient', mParameters).getRequest());
                     }
                     Promise.all(aRequests).then(() => {
                         oModel.submitChanges("patientDetails", (aFHIRResources) => {
-                            console.log(aFHIRResources);
                             resolve(aFHIRResources);
                         }, function (oError) {
                             reject(oError);

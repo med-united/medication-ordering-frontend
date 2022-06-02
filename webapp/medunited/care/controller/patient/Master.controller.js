@@ -196,7 +196,8 @@ sap.ui.define([
 						dosage: [
 							{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
 						],
-						subject: { reference: "urn:uuid:" + sPatientId }
+						subject: { reference: "urn:uuid:" + sPatientId },
+						note: "Grund: "+sReason+" Hinweis: "+sAdditionalInformation
 					};
 					if (sPractitionerId) {
 						oMedicationStatement.informationSource = {

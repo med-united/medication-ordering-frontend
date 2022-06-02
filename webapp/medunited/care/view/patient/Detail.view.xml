@@ -1,4 +1,4 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:uxap="sap.uxap" xmlns:name="medunited.care.SharedBlocks.name" xmlns:address="medunited.care.SharedBlocks.address" xmlns:biological="medunited.care.SharedBlocks.biological" xmlns:insurance="medunited.care.SharedBlocks.insurance" xmlns:medication="medunited.care.SharedBlocks.medication" controllerName="medunited.care.controller.patient.Detail" xmlns:html="http://www.w3.org/1999/xhtml">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:uxap="sap.uxap" xmlns:medunited="medunited.base.control" xmlns:name="medunited.care.SharedBlocks.name" xmlns:address="medunited.care.SharedBlocks.address" xmlns:biological="medunited.care.SharedBlocks.biological" xmlns:insurance="medunited.care.SharedBlocks.insurance" xmlns:medication="medunited.care.SharedBlocks.medication" controllerName="medunited.care.controller.patient.Detail" xmlns:html="http://www.w3.org/1999/xhtml">
     <Page showHeader="false">
         <content>
             <uxap:ObjectPageLayout id="objectPageLayout" showTitleInHeaderContent="true">
@@ -51,6 +51,15 @@
                             </uxap:ObjectPageSubSection>
 				        </uxap:subSections>
                     </uxap:ObjectPageSection>
+                    <uxap:ObjectPageSection id="insuranceSection" title="{i18n>titleSectionInsurance}">
+                        <uxap:subSections>
+                          <uxap:ObjectPageSubSection id="insuranceSubSection" title="{i18n>titleSectionInsurance}">
+                                <uxap:blocks>
+                                    <insurance:InsuranceBlock id="insuranceBlock"/>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
 					<uxap:ObjectPageSection id="medicationSection" title="{i18n>titleSectionMedication}">
                         <uxap:subSections>
                           <uxap:ObjectPageSubSection id="medicationSubSection" title="{i18n>titleSectionMedication}">
@@ -58,14 +67,8 @@
                                     <medication:MedicationBlock id="medicationBlock"/>
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
-                        </uxap:subSections>
-                    </uxap:ObjectPageSection>
-                    <uxap:ObjectPageSection id="insuranceSection" title="{i18n>titleSectionInsurance}">
-                        <uxap:subSections>
-                          <uxap:ObjectPageSubSection id="insuranceSubSection" title="{i18n>titleSectionInsurance}">
-                                <uxap:blocks>
-                                    <insurance:InsuranceBlock id="insuranceBlock"/>
-                                </uxap:blocks>
+                            <uxap:ObjectPageSubSection id="dataMatrixSubSection" title="{i18n>titleSectionMedicationDataMatrix}">
+                                <medunited:DataMatrixCode msg="{path: 'id', formatter: '.formatPatientDataMatrix'}" backgroundColor="#f7f7f7" />
                             </uxap:ObjectPageSubSection>
                         </uxap:subSections>
                     </uxap:ObjectPageSection>
