@@ -43,7 +43,6 @@ sap.ui.define([
 		},
 
 		onRequestEPrescriptions: function () {
-			// TODO: switch between normal eArztbrief and Powershell Script
 
 			const medicationTableEntity = this.getEntityName().toLowerCase() + "Table";
 			const selectedPlans = this.byId(medicationTableEntity).getSelectedItems()
@@ -51,9 +50,9 @@ sap.ui.define([
 					oItem =>
 						oItem.getBindingContext().getPath());
 
-			ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
+			// TODO: switch between normal eArztbrief and Powershell Script according to the Erezept Schnittstellle setting
 
-
+			//ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
 
 			// BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 		}
