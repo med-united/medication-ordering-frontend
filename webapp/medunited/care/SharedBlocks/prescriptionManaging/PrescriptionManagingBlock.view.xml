@@ -1,8 +1,45 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core" controllerName="medunited.care.SharedBlocks.prescriptionManaging.PrescriptionManagingBlock">
-   	<!-- Open a dropdown menu -->
-	<Select id="prescriptionModeSelect" forceSelection="false" selectedKey="currentInterface" >
-		<items>
-			<core:Item text="{extension/0/valueString}" key="currentInterface" />
-		</items>
-	</Select>
+	<form:SimpleForm id="prescriptionInterfaceFormRead"
+        editable="false"
+        layout="ResponsiveGridLayout"
+        labelSpanXL="3"
+        labelSpanL="3"
+        labelSpanM="3"
+        labelSpanS="12"
+        emptySpanXL="4"
+        emptySpanL="4"
+        emptySpanM="4"
+        emptySpanS="0"
+        columnsXL="2"
+        columnsL="2"
+        columnsM="2"
+        visible="{= !${appState>/editMode}}">
+        <form:content>
+            <Label text="{i18n>prescriptionMode}" labelFor="prescriptionModeText"/>
+            <Text id="prescriptionModeText" text="{extension/0/valueString}" />
+        </form:content>
+    </form:SimpleForm>
+    <form:SimpleForm id="prescriptionInterfacelFormEdit"
+        editable="true"
+        layout="ResponsiveGridLayout"
+        labelSpanXL="3"
+        labelSpanL="3"
+        labelSpanM="3"
+        labelSpanS="12"
+        emptySpanXL="4"
+        emptySpanL="4"
+        emptySpanM="4"
+        emptySpanS="0"
+        columnsXL="2"
+        columnsL="2"
+        columnsM="2"
+        visible="{appState>/editMode}">
+        <form:content>
+            <Label text="{i18n>prescriptionMode}" labelFor="prescriptionModeSelect"/>
+            <Select id="prescriptionModeSelect" forceSelection="false" selectedKey="{extension/0/valueString}">
+                <core:Item key="t2med" text="T2Med"/>
+                <core:Item key="earztbrief" text="Earztbrief"/>
+            </Select>
+        </form:content>
+    </form:SimpleForm>
 </mvc:View>
