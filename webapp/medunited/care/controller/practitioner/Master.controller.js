@@ -50,19 +50,7 @@ sap.ui.define([
 		onSuggestionItemSelected: function (oEvent) {
 			const oItem = oEvent.getParameter("selectedItem");
 			const oDoctorFromOSM = oItem.getBindingContext("Suggestions").getProperty("tags");
-			// addr:city: "Berlin"
-			// addr:country: "DE"
-			// addr:housenumber: "18"
-			// addr:postcode: "10707"
-			// addr:street: "Pariser Straße"
-			// addr:suburb: "Wilmersdorf"
-			// amenity: "doctors"
-			// contact:website: "https://www.praxis-marcelberger.de/"
-			// healthcare: "doctor"
-			// healthcare:speciality: "internal"
-			// name: "Praxis Marcel Berger"
-			// wheelchair: "no"
-
+			
 			let doctorFullName = oDoctorFromOSM["name"];
 			let doctorGivenName = "";
 			let doctorFamilyName = "";
