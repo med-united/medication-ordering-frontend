@@ -5,8 +5,9 @@ sap.ui.define([
 	'medunited/care/utils/ProcessUpload',
 	'sap/m/MessageBox',
 	'sap/m/MessageToast',
-	"sap/ui/core/Fragment"
-], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment) {
+	"sap/ui/core/Fragment",
+	"sap/ui/model/json/JSONModel"
+], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment, JSONModel) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.patient.Master", {
@@ -164,7 +165,9 @@ sap.ui.define([
 					}
 				}
 
+				console.log("oPatient:", oPatient);
 				const sPatientId = oModel.create(this.getEntityName(), oPatient, "patientDetails");
+				console.log("sPatientId ::::::: ", sPatientId);
 
 				const aMedication = Array.from(oEMP.querySelectorAll("M"));
 				// https://www.vesta-gematik.de/standard/formhandler/324/gemSpec_Info_AMTS_V1_5_0.pdf
@@ -191,19 +194,31 @@ sap.ui.define([
 					// reason
 					let sReason = oMedication.getAttribute("r");
 					let sAdditionalInformation = oMedication.getAttribute("i");
-					const oMedicationStatement = {
-						identifier: [{ "value": sPZN }],
-						dosage: [
-							{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
-						],
-						subject: { reference: "urn:uuid:" + sPatientId }
-					};
-					if (sPractitionerId) {
-						oMedicationStatement.informationSource = {
-							reference: "urn:uuid:" + sPractitionerId
+
+					var oMedicationModel = new JSONModel();
+					var loaded = oMedicationModel.loadData("https://medication.med-united.health/ajax/search/drugs/auto/?query=" + sPZN);
+
+					oMedicationModel.attachRequestCompleted(function(aEvent) {
+						var model = aEvent.getSource();
+						var medicationName = model.getProperty("/results/0/name");
+
+						const oMedicationStatement = {
+							identifier: [{ "value": sPZN }],
+							medicationCodeableConcept: { "text": medicationName },
+							dosage: [
+								{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+							],
+							subject: { reference: "urn:uuid:" + sPatientId }
 						};
-					}
-					oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
+						if (sPractitionerId) {
+							oMedicationStatement.informationSource = {
+								reference: "urn:uuid:" + sPractitionerId
+							};
+						}
+						console.log("Subject reference for MedicationStatement ::::: ", oMedicationStatement.subject.reference);
+						// The MedicationStatements are not being created:
+						oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
+					});
 				}
 				this.save();
 			} catch (e) {
