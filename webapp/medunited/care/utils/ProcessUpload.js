@@ -157,7 +157,8 @@ sap.ui.define([
                         organisations: [],
                         medicationStatements:[],
                     };
-    
+
+                    // collect unique resources from rows
                     let isInBundle = false;
                     for (const oDataRow of oData) {
                         const oPatient = getPatient(oDataRow);
@@ -177,33 +178,34 @@ sap.ui.define([
                         if (!isInBundle) oBundle.medicationStatements.push(oMedicationStatement);
                     };
     
-                    const aRequests = [];
                     // DB existence check
-                    for (let oPatient of oBundle.patients) {
-                        const mParameters = {
-                            urlParameters: oPatient.getKey(),
+                    const transactionGroup = "patientDetails"
+                    const aRequests = [];
+                    const aResources = [...oBundle.patients, ...oBundle.practitioners, ...oBundle.organisations, ...oBundle.medicationStatements];
+                    aResources.forEach(oResource => {
+                        aRequests.push(oModel.sendGetRequest('/'+oResource.resource.resourceType, {
+                            urlParameters: oResource.getKey(),
                             success: function(oResponse){
                                 if (oResponse.entry){
-                                    oPatient.id = oResponse.entry[0].resource.id;
+                                    oResource.id = oResponse.entry[0].resource.id;
                                 } else {
-                                    const transactionId = oModel.create(oPatient.resource.resourceType, oPatient.resource, "patientDetails");
+                                    const transactionId = oModel.create(oResource.resource.resourceType, oResource.resource, transactionGroup);
                                 }
                             },
                             error: function(oError){
                                 console.log(oError.code, `${oError.message}\n${oError.additionalText}`);
                             }
-                        };
-                        aRequests.push(oModel.sendGetRequest('/'+oPatient.resource.resourceType, mParameters).getRequest());
-                    }
+                        }).getRequest());
+                    });
 
                     Promise.all(aRequests)
                     .then( () => {
-                        oModel.submitChanges("patientDetails", (aFHIRResources) => {
-                            for (let oPatient of oBundle.patients){
-                                if (!oPatient.id){
+                        oModel.submitChanges(transactionGroup, (aFHIRResources) => {
+                            for (let oResource of aResources){
+                                if (!oResource.id){
                                     for (let aFHIRResource of aFHIRResources){
-                                        if (oPatient.isTheSameAs(aFHIRResource)){
-                                            oPatient.id = aFHIRResource.id;
+                                        if (oResource.isTheSameAs(aFHIRResource)){
+                                            oResource.id = aFHIRResource.id;
                                             break;
                                         }
                                     }
