@@ -48,7 +48,7 @@
                     </uxap:ObjectPageSection>
                     <uxap:ObjectPageSection id="prescriptionManagementSection" >
                         <uxap:subSections>
-                            <uxap:ObjectPageSubSection id="prescriptionSubSection" title="{i18n>prescriptionManageMode}">
+                            <uxap:ObjectPageSubSection id="prescriptionSubSection" title="{i18n>prescriptionInterface}">
                                 <uxap:blocks>
                                     <prescription:PrescriptionManagingBlock id="prescriptionManagingBlock" columnLayout="1"/>
                                 </uxap:blocks>

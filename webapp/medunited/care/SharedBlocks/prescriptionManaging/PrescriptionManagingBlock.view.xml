@@ -1,9 +1,8 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core" controllerName="medunited.care.SharedBlocks.prescriptionManaging.PrescriptionManagingBlock">
    	<!-- Open a dropdown menu -->
-	<Select id="prescriptionModeSelect" forceSelection="false" selectedKey="arztbrief">
+	<Select id="prescriptionModeSelect" forceSelection="false" selectedKey="currentInterface" >
 		<items>
-			<core:Item text="{i18n>t2MedMode}" key="t2med" />
-			<core:Item text="{i18n>eArztbriefMode}" key="arztbrief" />
+			<core:Item text="{extension/0/valueString}" key="currentInterface" />
 		</items>
 	</Select>
 </mvc:View>
