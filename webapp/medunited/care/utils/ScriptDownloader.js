@@ -4,19 +4,13 @@ sap.ui.define([], function () {
 
         makePowershellScript: function (oView, selectedPlans) {
 
-            const oFhirModel =oView.getModel();
+            const oFhirModel = oView.getModel();
 
             const medicationPlansT2Med = selectedPlans.map(plan => {
                 return oFhirModel.getProperty(plan);
             });
 
-            const patientsT2Med = medicationPlansT2Med.map(val => {
-                return val.subject.reference.split("/")[1];
-            });
-
-            const medicationsT2Med = medicationPlansT2Med.map(val => {
-                return val.medicationCodeableConcept.text;
-            });
+            const patientsAndMedications = this._mapPatientsToMedicationsFrom(medicationPlansT2Med);
 
             const name = oFhirModel.getProperty("/Patient/" + patientsT2Med[0] + "/name/0/given/0");
             const surname = oFhirModel.getProperty("/Patient/" + patientsT2Med[0] + "/name/0/family");
@@ -45,6 +39,24 @@ sap.ui.define([], function () {
                         oLink.dispatchEvent(oEvent);
                     }
                 })
+        },
+
+        _mapPatientsToMedicationsFrom(medicationPlansT2Med) {
+            const patientsAndMedications = new Map();
+            medicationPlansT2Med.forEach(plan => {
+                const patient = plan.subject.reference.split("/")[1];
+                if (patientsAndMedications.has(patient)) {
+                    const medications = patientsAndMedications.get(patient);
+                    medications.push(plan.medicationCodeableConcept.text);
+                    patientsAndMedications.set(patient, medications);
+                } else {
+                    const medications = [];
+                    medications.push(plan.medicationCodeableConcept.text);
+                    patientsAndMedications.set(patient, medications);
+                }
+            });
+
+            return patientsAndMedications;
         }
     };
 

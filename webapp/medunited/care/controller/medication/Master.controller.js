@@ -50,12 +50,20 @@ sap.ui.define([
 					oItem =>
 						oItem.getBindingContext().getPath());
 
-			// TODO: switch between normal eArztbrief and Powershell Script according to the Erezept Schnittstellle setting
+			const practitioner = this.getView().getModel().getProperty(selectedPlans[0]).informationSource.reference
+			const prescriptionInterface = this.getView().getModel().getProperty("/" + practitioner).extension[0].valueString
 
-			//ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
+			this._requestPrescriptionsAccordingTo(prescriptionInterface, selectedPlans);
+		},
 
-			// BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
+		_requestPrescriptionsAccordingTo: function(prescriptionInterface, selectedPlans){
+			if(prescriptionInterface === "t2med") {
+				ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
+			} else {
+				// BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
+			}
 		}
+
 	});
 }, true);
 
