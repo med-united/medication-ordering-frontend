@@ -198,8 +198,12 @@ sap.ui.define([
                         }).getRequest());
                     });
 
-                    Promise.all(aRequests)
-                    .then( () => {
+                    Promise.allSettled(aRequests)
+                    .then( (aResults) => {
+                        // aResults = [
+                        //    {"status":"fulfilled","value":{"resourceType":"Bundle" ...},
+                        //    {"status":"rejected","value":{"resourceType":"Bundle" ...},
+                        // ]
                         oModel.submitChanges(transactionGroup, (aFHIRResources) => {
                             for (let oResource of aResources){
                                 if (!oResource.id){
