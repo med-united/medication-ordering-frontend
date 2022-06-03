@@ -5,9 +5,8 @@ sap.ui.define([
 	'medunited/care/utils/ProcessUpload',
 	'sap/m/MessageBox',
 	'sap/m/MessageToast',
-	"sap/ui/core/Fragment",
-	"sap/ui/model/json/JSONModel"
-], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment, JSONModel) {
+	"sap/ui/core/Fragment"
+], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.patient.Master", {
@@ -185,9 +184,7 @@ sap.ui.define([
 					}
 				}
 
-				console.log("oPatient:", oPatient);
 				const sPatientId = oModel.create(this.getEntityName(), oPatient, "patientDetails");
-				console.log("sPatientId ::::::: ", sPatientId);
 
 				const aMedication = Array.from(oEMP.querySelectorAll("M"));
 				// https://www.vesta-gematik.de/standard/formhandler/324/gemSpec_Info_AMTS_V1_5_0.pdf
@@ -230,8 +227,6 @@ sap.ui.define([
 							reference: "urn:uuid:" + sPractitionerId
 						};
 					}
-					console.log("Subject reference for MedicationStatement ::::: ", oMedicationStatement.subject.reference);
-					// The MedicationStatements are not being created:
 					oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
 				}
 				this.save();

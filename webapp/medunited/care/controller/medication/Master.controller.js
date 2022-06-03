@@ -18,11 +18,7 @@ sap.ui.define([
 
 		groupOnSubject: function (oMedicationStatement) {
 			try {
-				console.log("-----------------------------------");
 				const sPatientPath = oMedicationStatement.getProperty("subject").reference;
-				console.log("Medication name :::::: ", oMedicationStatement.getProperty("medicationCodeableConcept/text"));
-				console.log("sPatientPath ::::::: ", sPatientPath);
-				console.log("Patient name ::::: ", this.getNameForPath("/" + sPatientPath));
 				return this.getNameForPath("/" + sPatientPath);
 			} catch (e) {
 				console.log(e);
