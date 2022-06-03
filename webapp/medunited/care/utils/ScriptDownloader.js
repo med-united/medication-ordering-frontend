@@ -2,12 +2,13 @@ sap.ui.define([], function () {
     "use strict";
     return {
 
-        makePowershellScript: function (oView) {
+        makePowershellScript: function (oView, selectedPlans) {
 
             const oFhirModel =oView.getModel();
-            const medicationPlans = oFhirModel.getProperty("/MedicationStatement");
 
-            const medicationPlansT2Med = this.filterPlansByDoctor(medicationPlans);
+            const medicationPlansT2Med = selectedPlans.map(plan => {
+                return oFhirModel.getProperty(plan);
+            });
 
             const patientsT2Med = medicationPlansT2Med.map(val => {
                 return val.subject.reference.split("/")[1];
@@ -44,20 +45,7 @@ sap.ui.define([], function () {
                         oLink.dispatchEvent(oEvent);
                     }
                 })
-        },
-
-        filterPlansByDoctor: function (medicationPlans) {
-            const t2medPlans = [];
-            Object.values(medicationPlans).forEach(val => {
-                if ((val.hasOwnProperty("informationSource"))) {
-                    const practitionerId = val.informationSource.reference.split("/")[1];
-                    if (practitionerId == "56") {
-                        t2medPlans.push(val);
-                    }
-                }
-            });
-            return t2medPlans;
-        },
+        }
     };
 
 }, true);
