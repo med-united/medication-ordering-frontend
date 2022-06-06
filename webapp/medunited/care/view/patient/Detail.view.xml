@@ -1,4 +1,4 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:uxap="sap.uxap" xmlns:medunited="medunited.base.control" xmlns:name="medunited.care.SharedBlocks.name" xmlns:address="medunited.care.SharedBlocks.address" xmlns:biological="medunited.care.SharedBlocks.biological" xmlns:generalPractitioner="medunited.care.SharedBlocks.generalPractitioner" xmlns:insurance="medunited.care.SharedBlocks.insurance" xmlns:medication="medunited.care.SharedBlocks.medication" controllerName="medunited.care.controller.patient.Detail" xmlns:html="http://www.w3.org/1999/xhtml">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:uxap="sap.uxap" xmlns:medunited="medunited.base.control" xmlns:name="medunited.care.SharedBlocks.name" xmlns:address="medunited.care.SharedBlocks.address" xmlns:biological="medunited.care.SharedBlocks.biological" xmlns:generalPractitioner="medunited.care.SharedBlocks.generalPractitioner" xmlns:defaultOrganization="medunited.care.SharedBlocks.defaultOrganization" xmlns:insurance="medunited.care.SharedBlocks.insurance" xmlns:medication="medunited.care.SharedBlocks.medication" controllerName="medunited.care.controller.patient.Detail" xmlns:html="http://www.w3.org/1999/xhtml">
     <Page showHeader="false">
         <content>
             <uxap:ObjectPageLayout id="objectPageLayout" showTitleInHeaderContent="true">
@@ -52,6 +52,11 @@
                             <uxap:ObjectPageSubSection id="generalPractitionerSubSection" title="{i18n>titleSubSectionGeneralPractitioner}">
                                 <uxap:blocks>
                                     <generalPractitioner:GeneralPractitionerBlock id="generalPractitionerBlock" columnLayout="1"/>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                            <uxap:ObjectPageSubSection id="defaultOrganizationSubSection" title="{i18n>titleSubSectionDefaultOrganization}">
+                                <uxap:blocks>
+                                    <defaultOrganization:DefaultOrganizationBlock id="defaultOrganizationBlock" columnLayout="1"/>
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
 				        </uxap:subSections>
