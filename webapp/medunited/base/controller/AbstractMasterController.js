@@ -123,11 +123,15 @@ sap.ui.define([
 		},
 		onSave: function (oEvent) {
 			this.save();
-			this.byId("createDialog").close()
+			this.byId("createDialog").close();
+			this.oRouter = this.getOwnerComponent().getRouter();
+			this.oRouter.navTo(this.getEntityName().toLowerCase() + "-master");
 		},
 		onCancel: function (oEvent) {
 			this.getOwnerComponent().getModel().resetChanges();
 			oEvent.getSource().getParent().close();
+			this.oRouter = this.getOwnerComponent().getRouter();
+			this.oRouter.navTo(this.getEntityName().toLowerCase() + "-master");
 		},
 		onSort: function (oEvent) {
 			this._bDescendingSort = !this._bDescendingSort;
