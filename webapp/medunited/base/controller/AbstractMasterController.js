@@ -149,7 +149,10 @@ sap.ui.define([
 			const iCount = aResources.length;
 			const oModel = this.getView().getModel();
 			const me = this;
+			const sPageId = this.getEntityName().toLowerCase()+"PageId";
+			const oPage = this.byId(sPageId);
 			oModel.remove(aResources);
+			oPage.setShowFooter();
 
 			oModel.submitChanges(function () {
 				MessageToast.show(me.translate("msgCountDeleted", iCount));
