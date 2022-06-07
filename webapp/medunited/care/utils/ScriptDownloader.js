@@ -12,8 +12,13 @@ sap.ui.define([], function () {
 
             const patientsAndMedications = this._mapPatientsToMedicationsFrom(medicationPlansT2Med);
 
-            const name = oFhirModel.getProperty("/Patient/" + patientsT2Med[0] + "/name/0/given/0");
-            const surname = oFhirModel.getProperty("/Patient/" + patientsT2Med[0] + "/name/0/family");
+            //Create script for the first patient in the map and for the first medication
+            const testPatient = patientsAndMedications.keys().next().value
+            const testPzn = patientsAndMedications.get(testPatient)
+
+
+            const name = oFhirModel.getProperty("/Patient/" + testPatient + "/name/0/given/0");
+            const surname = oFhirModel.getProperty("/Patient/" + testPatient + "/name/0/family");
 
             fetch('resources/local/t2med.ps1')
                 .then(response => response.blob())
@@ -21,8 +26,15 @@ sap.ui.define([], function () {
                     const reader = new FileReader();
                     reader.readAsText(blob);
                     reader.onload = () => {
+
                         const sText = reader.result;
-                        const sNewText = sText.replace("$patientName", name).replace("$patientSurname", surname);
+
+                        const sNewText = sText
+                            .replace("$patientName", name)
+                            .replace("$patientSurname", surname)
+                            .replace("$PZN", testPzn[0])
+                            .replace("$PZN", testPzn[0]);
+
                         const newBlob = new Blob([sNewText], { type: "text/plain" });
                         const sFileName = "t2med";
                         const sFileType = "text/plain";
@@ -47,11 +59,11 @@ sap.ui.define([], function () {
                 const patient = plan.subject.reference.split("/")[1];
                 if (patientsAndMedications.has(patient)) {
                     const medications = patientsAndMedications.get(patient);
-                    medications.push(plan.medicationCodeableConcept.text);
+                    medications.push(plan.identifier[0].value);
                     patientsAndMedications.set(patient, medications);
                 } else {
                     const medications = [];
-                    medications.push(plan.medicationCodeableConcept.text);
+                    medications.push(plan.identifier[0].value);
                     patientsAndMedications.set(patient, medications);
                 }
             });
