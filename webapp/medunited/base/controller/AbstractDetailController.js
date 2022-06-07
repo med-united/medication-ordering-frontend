@@ -38,7 +38,7 @@ sap.ui.define([
 		onSave: function (oEvent) {
             var fnSuccess = function(oData){
                 this.enableEditMode(false);
-                MessageToast.show(this.translate(this, "msgPatientSaved"));
+                MessageToast.show(this.translate("msgPatientSaved"));
             }.bind(this);
 
             var fnError = function(oError){
