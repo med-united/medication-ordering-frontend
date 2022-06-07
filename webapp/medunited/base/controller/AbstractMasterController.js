@@ -112,7 +112,7 @@ sap.ui.define([
 		},
 		save: function () {
 			var fnSuccess = function(oData){
-                MessageToast.show(this.translate(this, "msgPatientSaved"));
+                MessageToast.show(this.translate("msgPatientSaved"));
 			}.bind(this);
 			
             var fnError = function(oError){
