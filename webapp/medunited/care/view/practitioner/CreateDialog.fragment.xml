@@ -34,6 +34,8 @@
 				<Input type="text" id="email" value="{telecom/0/value}" />
                 <Label text="{i18n>Phone}" />
 				<Input type="text" id="phone" value="{telecom/1/value}" />
+				<Label text="{i18n>Fax}" />
+				<Input type="text" id="fax" value="{telecom/2/value}" />
 			</form:content>
 		</form:SimpleForm>
 		<beginButton>

@@ -1,0 +1,50 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form">
+    <form:SimpleForm id="practitionerContactFormRead"
+        editable="false"
+        layout="ResponsiveGridLayout"
+        labelSpanXL="3"
+        labelSpanL="3"
+        labelSpanM="3"
+        labelSpanS="12"
+        emptySpanXL="4"
+        emptySpanL="4"
+        emptySpanM="4"
+        emptySpanS="0"
+        columnsXL="2"
+        columnsL="2"
+        columnsM="2"
+        visible="{= !${appState>/editMode}}">
+        <form:content>
+            <Label text="{i18n>Email}" labelFor="practitionerEmailText"/>
+            <Text id="practitionerEmailText" text="{telecom/0/value}" />
+            <Label text="{i18n>Phone}" labelFor="practitionerPhoneText"/>
+            <Text id="practitionerPhoneText" text="{telecom/1/value}" />
+            <Label text="{i18n>Fax}" labelFor="practitionerFaxText"/>
+            <Text id="practitionerFaxText" text="{telecom/2/value}" />
+        </form:content>
+    </form:SimpleForm>
+    <form:SimpleForm id="practitionerContactFormEdit"
+        editable="true"
+        layout="ResponsiveGridLayout"
+        labelSpanXL="3"
+        labelSpanL="3"
+        labelSpanM="3"
+        labelSpanS="12"
+        emptySpanXL="4"
+        emptySpanL="4"
+        emptySpanM="4"
+        emptySpanS="0"
+        columnsXL="2"
+        columnsL="2"
+        columnsM="2"
+        visible="{appState>/editMode}">
+        <form:content>
+            <Label text="{i18n>Email}" labelFor="practitionerEmailInput"/>
+			<Input id="practitionerEmailInput" value="{telecom/0/value}" />
+            <Label text="{i18n>Phone}" labelFor="practitionerPhoneInput"/>
+			<Input id="practitionerPhoneInput" value="{telecom/1/value}" />
+            <Label text="{i18n>Fax}" labelFor="practitionerFaxInput"/>
+			<Input id="practitionerFaxInput" value="{telecom/2/value}" />
+        </form:content>
+    </form:SimpleForm>
+</mvc:View>

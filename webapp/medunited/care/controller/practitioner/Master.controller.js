@@ -56,6 +56,7 @@ sap.ui.define([
 			let doctorFamilyName = "";
 			let phoneNumber = "";
 			let emailAddress = "";
+			let fax = "";
 
 			let doctorsPrefixes = ["Dr. med ", "Dr. med. ", "Dr.-Med. ", "Dr. ", "Dipl.- Med. ", "Dipl.-Med. ", "Dipl. med. "];
 			let punctuationAndSymbols = [",", ";", "/"];
@@ -101,7 +102,6 @@ sap.ui.define([
 			else if (oDoctorFromOSM["contact:email"] && oDoctorFromOSM["email"]) {
 				emailAddress = oDoctorFromOSM["contact:email"];
 			}
-
 			this.byId("email").setValue(emailAddress);
 
 			if (!oDoctorFromOSM["contact:phone"] && oDoctorFromOSM["phone"]) {
@@ -114,6 +114,17 @@ sap.ui.define([
 				phoneNumber = oDoctorFromOSM["contact:phone"];
 			}
 			this.byId("phone").setValue(phoneNumber);
+
+			if (!oDoctorFromOSM["contact:fax"] && oDoctorFromOSM["fax"]) {
+				fax = oDoctorFromOSM["fax"];
+			}
+			else if (!oDoctorFromOSM["fax"] && oDoctorFromOSM["contact:fax"]) {
+				fax = oDoctorFromOSM["contact:fax"];
+			}
+			else if (oDoctorFromOSM["contact:fax"] && oDoctorFromOSM["fax"]) {
+				fax = oDoctorFromOSM["contact:fax"];
+			}
+			this.byId("fax").setValue(fax);
 		}
 	});
 }, true);
