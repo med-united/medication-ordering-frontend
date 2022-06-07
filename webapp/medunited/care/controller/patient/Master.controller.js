@@ -97,13 +97,33 @@ sap.ui.define([
 		},
 
 		onValueScanned: function (oEvent) {
+			
+			const mPZN2Name = {};
+			const sEMP = oEvent.getParameter("value")
+			const parser = new DOMParser();
+			const oEMP = parser.parseFromString(sEMP, "application/xml");
+
+			Promise.all(
+				Array.from(oEMP.querySelectorAll("M"))
+					.map( m => m.getAttribute("p"))
+					.map(sPZN => fetch("https://medication.med-united.health/ajax/search/drugs/auto/?query="+sPZN)
+						.then(r => r.json())
+						.then(oMedication => {
+							if(oMedication.results.length > 0) {
+								mPZN2Name[sPZN] = oMedication.results[0].name;
+							}
+							return true;
+						})
+					)).then(() => {
+						this.createMedicationStatementWithNames(oEMP, mPZN2Name);
+					});
+
+			
+		},
+		createMedicationStatementWithNames: function (oEMP, mPZN2Name) {
 			try {
 				// <MP v="025" U="02BD2867FB024401A590D59D94E1FFAE" l="de-DE"><P g="Jürgen" f="Wernersen" b="19400324"/><A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/><S><M p="230272" m="1" du="1" r="Herz/Blutdruck"/><M p="2223945" m="1" du="1" r="Blutdruck"/><M p="558736" m="20" v="20" du="p" i="Wechseln der Injektionsstellen, unmittelbar vor einer Mahlzeit spritzen" r="Diabetes"/><M p="9900751" v="1" du="1" r="Blutfette"/></S><S t="zu besonderen Zeiten anzuwendende Medikamente"><M p="2239828" t="alle drei Tage 1" du="1" i="auf wechselnde Stellen aufkleben" r="Schmerzen"/></S><S c="418"><M p="2455874" m="1" du="1" r="Stimmung"/></S></MP>
 				const oModel = this.getView().getModel();
-				const sEMP = oEvent.getParameter("value")
-				const parser = new DOMParser();
-				const oEMP = parser.parseFromString(sEMP, "application/xml");
-
 				const sBirthdate = oEMP.querySelector("P").getAttribute("b");
 				// TODO: prevent duplicates
 				const oPatient = {
@@ -191,8 +211,12 @@ sap.ui.define([
 					// reason
 					let sReason = oMedication.getAttribute("r");
 					let sAdditionalInformation = oMedication.getAttribute("i");
+
+					const medicationName = mPZN2Name[sPZN];
+
 					const oMedicationStatement = {
 						identifier: [{ "value": sPZN }],
+						medicationCodeableConcept: { "text": medicationName },
 						dosage: [
 							{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
 						],

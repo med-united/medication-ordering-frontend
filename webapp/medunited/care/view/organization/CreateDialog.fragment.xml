@@ -35,7 +35,7 @@
 			</form:content>
 		</form:SimpleForm>
 		<beginButton>
-			<Button type="Reject" text="{i18n>textCancelButton}" press="onCancel" />
+			<Button type="Reject" text="{i18n>buttonCancel}" press="onCancel" />
 		</beginButton>
 		<endButton>
 			<Button type="Accept" text="{i18n>Create}" press="onSave" />

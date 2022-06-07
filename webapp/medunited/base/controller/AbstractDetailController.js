@@ -38,12 +38,12 @@ sap.ui.define([
 		onSave: function (oEvent) {
             var fnSuccess = function(oData){
                 this.enableEditMode(false);
-                MessageToast.show(this.translate(this, "msgPatientSaved"));
+                MessageToast.show(this.translate(this.getEntityName()) + ' ' + this.translate("msgSaveResourceSuccessful"));
             }.bind(this);
 
             var fnError = function(oError){
                 this.enableEditMode(false);
-                MessageBox.show(this.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
+                MessageBox.show(this.translate(this.getEntityName()) + ' ' + this.translate("msgSaveResouceFailed", [oError.statusCode, oError.statusText]));
             }.bind(this);
 
             var oRequest = this.getView().getModel().submitChanges(this.getEntityName().toLowerCase()+"Details", fnSuccess, fnError);

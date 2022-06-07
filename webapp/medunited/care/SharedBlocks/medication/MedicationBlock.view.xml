@@ -4,16 +4,16 @@
     </HBox>
     <Table id="medicationTable" items="{path: '/MedicationStatement', parameters : {request: { _include: 'MedicationStatement:medication'}}}" mode="{= ${appState>/editMode} ? 'MultiSelect' : 'None'}">
         <columns>
-            <Column hAlign="Left">
+            <Column width="30%" hAlign="Left">
                 <Text text="{i18n>columnLabelMedicationName}"/>
             </Column>
-            <Column hAlign="Left">
+            <Column width="13%" hAlign="Left">
                 <Text text="{i18n>columnLabelMedicationEffectiveDate}"/>
             </Column>
-            <Column hAlign="Left">
+            <Column width="9%" hAlign="Left">
                 <Text text="{i18n>columnLabelMedicationPZN}"/>
             </Column>
-            <Column hAlign="Left">
+            <Column width="9%" hAlign="Left">
                 <Text text="{i18n>columnLabelMedicationDosage}"/>
             </Column>
             <Column hAlign="Left">

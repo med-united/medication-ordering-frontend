@@ -1,4 +1,4 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:uxap="sap.uxap" xmlns:name="medunited.care.SharedBlocks.name" xmlns:prescription="medunited.care.SharedBlocks.prescriptionManaging" xmlns:address="medunited.care.SharedBlocks.address" controllerName="medunited.care.controller.practitioner.Detail" xmlns:html="http://www.w3.org/1999/xhtml">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:uxap="sap.uxap" xmlns:name="medunited.care.SharedBlocks.name" xmlns:prescription="medunited.care.SharedBlocks.prescriptionManaging" xmlns:address="medunited.care.SharedBlocks.address" xmlns:practitionerContact="medunited.care.SharedBlocks.practitionerContact" controllerName="medunited.care.controller.practitioner.Detail" xmlns:html="http://www.w3.org/1999/xhtml">
     <Page showHeader="false">
         <content>
             <uxap:ObjectPageLayout id="objectPageLayout" showTitleInHeaderContent="true">
@@ -39,9 +39,14 @@
                                     <name:NameBlock id="nameBlock" showSubSectionMore="true" columnLayout="1"/>
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
-                             <uxap:ObjectPageSubSection id="addressSubSection" title="{i18n>titleSubSectionAddress}">
+                            <uxap:ObjectPageSubSection id="addressSubSection" title="{i18n>titleSubSectionAddress}">
                                 <uxap:blocks>
                                     <address:AddressBlock id="addressBlock" columnLayout="1"/>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                            <uxap:ObjectPageSubSection id="contactSubSection" title="{i18n>titleSubSectionPractitionerContact}">
+                                <uxap:blocks>
+                                    <practitionerContact:PractitionerContactBlock id="practitionerContactBlock" columnLayout="1"/>
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
 				        </uxap:subSections>

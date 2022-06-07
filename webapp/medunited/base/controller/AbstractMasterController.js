@@ -112,22 +112,26 @@ sap.ui.define([
 		},
 		save: function () {
 			var fnSuccess = function(oData){
-                MessageToast.show(this.translate(this, "msgPatientSaved"));
+                MessageToast.show(this.translate(this.getEntityName()) + ' ' + this.translate("msgSaveResourceSuccessful"));
 			}.bind(this);
 			
             var fnError = function(oError){
-				MessageBox.show(this.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
+				MessageBox.show(this.translate(this.getEntityName()) + ' ' + this.translate("msgSaveResouceFailed", [oError.statusCode, oError.statusText]));
             }.bind(this);
 			
             var oRequest = this.getView().getModel().submitChanges(this.getEntityName().toLowerCase()+"Details", fnSuccess, fnError);
 		},
 		onSave: function (oEvent) {
 			this.save();
-			this.byId("createDialog").close()
+			this.byId("createDialog").close();
+			this.oRouter = this.getOwnerComponent().getRouter();
+			this.oRouter.navTo(this.getEntityName().toLowerCase() + "-master");
 		},
 		onCancel: function (oEvent) {
 			this.getOwnerComponent().getModel().resetChanges();
 			oEvent.getSource().getParent().close();
+			this.oRouter = this.getOwnerComponent().getRouter();
+			this.oRouter.navTo(this.getEntityName().toLowerCase() + "-master");
 		},
 		onSort: function (oEvent) {
 			this._bDescendingSort = !this._bDescendingSort;
@@ -149,7 +153,10 @@ sap.ui.define([
 			const iCount = aResources.length;
 			const oModel = this.getView().getModel();
 			const me = this;
+			const sPageId = this.getEntityName().toLowerCase()+"PageId";
+			const oPage = this.byId(sPageId);
 			oModel.remove(aResources);
+			oPage.setShowFooter();
 
 			oModel.submitChanges(function () {
 				MessageToast.show(me.translate("msgCountDeleted", iCount));
