@@ -55,7 +55,13 @@ sap.ui.define(
                     pal: [oControl.getColor(), oControl.getBackgroundColor()],
                     vrb: 0
                 });
+
+                oRm.write("<span");
+                oRm.writeControlData(oControl);
+                oRm.write(">");
+                
                 oRm.write(oSvgNode.outerHTML);
+                oRm.write("</span>");
             }
         });
     });

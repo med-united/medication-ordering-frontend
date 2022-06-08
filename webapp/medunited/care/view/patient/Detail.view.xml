@@ -78,7 +78,7 @@
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
                             <uxap:ObjectPageSubSection id="dataMatrixSubSection" title="{i18n>titleSectionMedicationDataMatrix}">
-                                <medunited:DataMatrixCode msg="{path: 'id', formatter: '.formatPatientDataMatrix'}" backgroundColor="#f7f7f7" />
+                                <medunited:DataMatrixCode id="medicationPlanDataMatrixCode" msg="{path: 'id', formatter: '.formatPatientDataMatrix'}" backgroundColor="#f7f7f7" />
                             </uxap:ObjectPageSubSection>
                         </uxap:subSections>
                     </uxap:ObjectPageSection>
