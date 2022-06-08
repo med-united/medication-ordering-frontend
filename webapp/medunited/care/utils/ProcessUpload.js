@@ -91,7 +91,7 @@ sap.ui.define([
                     return oPatient;
                 }
     
-                const getMedicationStatement = function (oDataRow, oPatientResource, oPractitionerResource, oOrganizationResource){
+                const getMedicationStatement = function (oDataRow, oPatient, oPractitioner, oOrganization){
                     const oMedicationStatement = {};
                     oMedicationStatement.resource = {
                         resourceType: "MedicationStatement",
@@ -130,23 +130,15 @@ sap.ui.define([
                             && oMedicationStatement.resource.medicationCodeableConcept.code.coding.code.value == resource.medicationCodeableConcept.code.coding.code.value
                             && oMedicationStatement.resource.medicationCodeableConcept.amount.numerator.value == resource.medicationCodeableConcept.amount.numerator.value;
                     };
-                    // oMedicationStatement.patientReference      = oPatientResource.getKey();
-                    // oMedicationStatement.practitionerReference = oPractitionerResource.getKey();
-                    // oMedicationStatement.organizationReference = oOrganizationResource.getKey();
-
                     oMedicationStatement.setPatientReference = () => {
-                        oMedicationStatement.resource.subject.reference = oPatientResource.resourceType+"/"+oPatientResource.id;
+                        oMedicationStatement.resource.subject.reference = oPatient.resource.resourceType+"/"+oPatient.id;
                     };
                     oMedicationStatement.setPractitionerReference = () => {
-                        oMedicationStatement.resource.informationSource.reference = oPractitionerResource.resourceType+"/"+oPractitionerResource.id;
+                        oMedicationStatement.resource.informationSource.reference = oPractitioner.resource.resourceType+"/"+oPractitioner.id;
                     };
                     oMedicationStatement.setOrganizationReference = () => {
-                        oMedicationStatement.resource.organization.reference = oOrganizationResource.resourceType+"/"+oOrganizationResource.id;
+                        oMedicationStatement.resource.organization.reference = oOrganization.resource.resourceType+"/"+oOrganization.id;
                     };
-                    // oMedicationStatement.setPatientReference(oPatientResource);
-                    // oMedicationStatement.setPractitionerReference(oPractitionerResource);
-                    // oMedicationStatement.setOrganizationReference(oOrganizationResource);
-
                     return oMedicationStatement;
                 }
                
@@ -179,7 +171,7 @@ sap.ui.define([
                         if (foundObj) oOrganization = foundObj;
                         else oBundle.organizations.push(oOrganization);
     
-                        const oMedicationStatement = getMedicationStatement(oDataRow, oPatient.resource, oPractitioner.resource, oOrganization.resource);
+                        const oMedicationStatement = getMedicationStatement(oDataRow, oPatient, oPractitioner, oOrganization);
                         foundObj = oBundle.medicationStatements.find(p=>oMedicationStatement.isTheSameAs(p.resource));
                         if (!foundObj) oBundle.medicationStatements.push(oMedicationStatement);
                     };
@@ -210,6 +202,14 @@ sap.ui.define([
                         //    {"status":"rejected","value":{"resourceType":"Bundle" ...},
                         // ]
                         if (aGetResponses.every(oGetResponse=>oGetResponse.status==="fulfilled" && "entry" in oGetResponse.value)){
+                            // set patient, organization and practitioner IDs in MedicationStatements
+                            for (let oMS of oBundle.medicationStatements){
+                                oMS.setPatientReference();
+                                oMS.setPractitionerReference();
+                                oMS.setOrganizationReference();
+                                oModel.create(oMS.resource.resourceType, oMS.resource, transactionGroup);
+                            }
+                            oModel.submitChanges(transactionGroup);
                             resolve([]);
                             return;
                         }
