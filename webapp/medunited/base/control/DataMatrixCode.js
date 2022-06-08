@@ -47,21 +47,25 @@ sap.ui.define(
                 }
             },
             renderer: function (oRm, oControl) {
-                const oSvgNode = DATAMatrix({
-                    msg: oControl.getMsg(),
-                    dim: oControl.getDim(),
-                    rct: oControl.getRct(),
-                    pad: oControl.getPad(),
-                    pal: [oControl.getColor(), oControl.getBackgroundColor()],
-                    vrb: 0
-                });
-
+                
+                const sSVG = oControl.getSVGXml();
                 oRm.write("<span");
                 oRm.writeControlData(oControl);
                 oRm.write(">");
                 
-                oRm.write(oSvgNode.outerHTML);
+                oRm.write(sSVG);
                 oRm.write("</span>");
+            },
+            getSVGXml: function () {
+                const oSvgNode = DATAMatrix({
+                    msg: this.getMsg(),
+                    dim: this.getDim(),
+                    rct: this.getRct(),
+                    pad: this.getPad(),
+                    pal: [this.getColor(), this.getBackgroundColor()],
+                    vrb: 0
+                });
+                return oSvgNode.outerHTML;
             }
         });
     });
