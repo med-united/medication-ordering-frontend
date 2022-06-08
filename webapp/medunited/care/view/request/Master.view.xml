@@ -1,0 +1,55 @@
+<mvc:View displayBlock="true" controllerName="medunited.care.controller.request.Master" height="100%" xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
+    <f:DynamicPage id="requestPageId" toggleHeaderOnTitleClick="false">
+        <!-- DynamicPage Title -->
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="{i18n>medicationRequestTabFilter}" />
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <!-- DynamicPage Content -->
+        <f:content>
+            <Table id="requestTable" inset="false" items="{path: '/MedicationRequest'}" class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <ToolbarSpacer />
+                        <SearchField search="onSearch" width="17.5rem" />
+                        <OverflowToolbarButton icon="sap-icon://sort" type="Transparent" press="onSort" />
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column width="35%" importance="High" autoPopinWidth="10">
+                        <Text text="{i18n>Patient}" />
+                    </Column>
+                    <Column width="35%" importance="High">
+                        <Text text="{i18n>medicationPZN}" />
+                    </Column>
+                    <Column width="30%" importance="High">
+                        <Text text="{i18n>requestStatus}" />
+                    </Column>
+                    <Column width="30%" importance="High">
+                        <Text text="{i18n>requestCreationDate}" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{path: 'subject/reference', formatter: '.referencePatient'}" />
+                            <Text text="{medicationCodeableConcept/coding/0/code}" />
+                            <Text text="{status}" />
+                            <Text text="{authoredOn}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+        <f:footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button type="Reject" text="{i18n>DeleteSelected}" press="onDeleteSelected" />
+            </OverflowToolbar>
+        </f:footer>
+    </f:DynamicPage>
+</mvc:View>

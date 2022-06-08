@@ -17,11 +17,6 @@
 			</html:style>
 			<customHeader>
 				<f:ShellBar title="{i18n>medicationsTitle}" secondTitle="Medikamentbeschaffung" homeIcon="./images/logo_med-united_white.png" showCopilot="false" showSearch="false" showNotifications="false" showProductSwitcher="false" showNavButton="{= ${/layout} === 'EndColumnFullScreen'}" notificationsNumber="0" navButtonPressed="handleBackButtonPressed">
-					<!-- <f:menu>
-						<Menu>
-							<MenuItem text="{i18n>medicationsTitle}" icon="sap-icon://flight" />
-						</Menu>
-					</f:menu> -->
 					<f:profile>
 						<Avatar initials="{JWT>/sub}" tooltip="{
 							parts: [
@@ -41,6 +36,7 @@
 							<items>
 								<IconTabFilter key="patient-master" text="{i18n>patientsTabFilter}" />
 								<IconTabFilter key="medication-master" text="{i18n>medicationTabFilter}" />
+								<IconTabFilter key="request-master" text="{i18n>medicationRequestTabFilter}" />
 								<IconTabFilter key="practitioner-master" text="{i18n>practitionerTabFilter}" />
 								<IconTabFilter key="organization-master" text="{i18n>pharmacyTabFilter}" />
 							</items>
