@@ -37,10 +37,10 @@ sap.ui.define([
                     return oPractitioner;
                 };
               
-                const getOrganisation = function (oDataRow){
-                    const oOrganisation = {};
-                    oOrganisation.resource = {
-                        resourceType: "Organisation",
+                const getOrganization = function (oDataRow){
+                    const oOrganization = {};
+                    oOrganization.resource = {
+                        resourceType: "Organization",
                         name: oDataRow["PharmacyName"],
                         address: 
                             [{ line:      [oDataRow["PharmacyAddress"]],
@@ -51,18 +51,18 @@ sap.ui.define([
                             [{ system: "phone", value: oDataRow["PharmacyPhone"], use: "work" },
                              { system: "email", value: oDataRow["PharmacyEMail"], use: "work" }]
                     }
-                    oOrganisation.getKey = () => {
+                    oOrganization.getKey = () => {
                         return {
-                            name:    oOrganisation.resource.name,
-                            address: oOrganisation.resource.address[0].line
+                            name:    oOrganization.resource.name,
+                            address: oOrganization.resource.address[0].line
                         };
                     };
-                    oOrganisation.isTheSameAs = (resource) => {
-                        return oOrganisation.resource.name            == resource.name
-                            && oOrganisation.resource.address[0].line == resource.address[0].line;
+                    oOrganization.isTheSameAs = (resource) => {
+                        return oOrganization.resource.name               == resource.name
+                            && oOrganization.resource.address[0].line[0] == resource.address[0].line[0];
                     };
 
-                    return oOrganisation;
+                    return oOrganization;
                 };            
     
                 const getPatient = function (oDataRow){
@@ -91,14 +91,13 @@ sap.ui.define([
                     return oPatient;
                 }
     
-                const getMedicationStatement = function (oDataRow, oPatientResource, oPractitionerResource, oOrganisationResource){
+                const getMedicationStatement = function (oDataRow, oPatientResource, oPractitionerResource, oOrganizationResource){
                     const oMedicationStatement = {};
                     oMedicationStatement.resource = {
                         resourceType: "MedicationStatement",
                         subject: { reference: "" },
                         informationSource: { reference: "" },
-                        organisation: { reference: "" },
-                        status: "Active",
+                        organization: { reference: "" },
                         medicationCodeableConcept: {
                             code: {
                                 coding: {
@@ -122,7 +121,7 @@ sap.ui.define([
                             subject:           oMedicationStatement.resource.subject.reference,
                             informationSource: oMedicationStatement.resource.informationSource.reference,
                             medication:        oMedicationStatement.resource.medicationCodeableConcept.code.coding.code.value,
-                            amount:            oMedicationStatement.resource.medicationCodeableConcept.amount.numerator.value,
+                            patient:           oMedicationStatement.resource.subject.reference,
                         };
                     };
                     oMedicationStatement.isTheSameAs = (resource) => {
@@ -130,19 +129,23 @@ sap.ui.define([
                             && oMedicationStatement.resource.informationSource.reference                      == resource.informationSource.reference
                             && oMedicationStatement.resource.medicationCodeableConcept.code.coding.code.value == resource.medicationCodeableConcept.code.coding.code.value
                             && oMedicationStatement.resource.medicationCodeableConcept.amount.numerator.value == resource.medicationCodeableConcept.amount.numerator.value;
-                    };                    
-                    oMedicationStatement.setPatientReference = (oReferredResource) => {
-                        oMedicationStatement.resource.subject.reference = oReferredResource.resourceType+"/"+oReferredResource.id;
                     };
-                    oMedicationStatement.setPractitionerReference = (oReferredResource) => {
-                        oMedicationStatement.resource.informationSource.reference = oReferredResource.resourceType+"/"+oReferredResource.id;
+                    // oMedicationStatement.patientReference      = oPatientResource.getKey();
+                    // oMedicationStatement.practitionerReference = oPractitionerResource.getKey();
+                    // oMedicationStatement.organizationReference = oOrganizationResource.getKey();
+
+                    oMedicationStatement.setPatientReference = () => {
+                        oMedicationStatement.resource.subject.reference = oPatientResource.resourceType+"/"+oPatientResource.id;
                     };
-                    oMedicationStatement.setOrganisationReference = (oReferredResource) => {
-                        oMedicationStatement.resource.organisation.reference = oReferredResource.resourceType+"/"+oReferredResource.id;
+                    oMedicationStatement.setPractitionerReference = () => {
+                        oMedicationStatement.resource.informationSource.reference = oPractitionerResource.resourceType+"/"+oPractitionerResource.id;
                     };
-                    oMedicationStatement.setPatientReference(oPatientResource);
-                    oMedicationStatement.setPractitionerReference(oPractitionerResource);
-                    oMedicationStatement.setOrganisationReference(oOrganisationResource);                
+                    oMedicationStatement.setOrganizationReference = () => {
+                        oMedicationStatement.resource.organization.reference = oOrganizationResource.resourceType+"/"+oOrganizationResource.id;
+                    };
+                    // oMedicationStatement.setPatientReference(oPatientResource);
+                    // oMedicationStatement.setPractitionerReference(oPractitionerResource);
+                    // oMedicationStatement.setOrganizationReference(oOrganizationResource);
 
                     return oMedicationStatement;
                 }
@@ -154,42 +157,44 @@ sap.ui.define([
                     const oBundle = {
                         patients:[],
                         practitioners:[],
-                        organisations: [],
+                        organizations: [],
                         medicationStatements:[],
                     };
 
                     // collect unique resources from rows
-                    let isInBundle = false;
+                    let foundObj = null;
                     for (const oDataRow of oData) {
-                        const oPatient = getPatient(oDataRow);
-                        isInBundle = oBundle.patients.find(p=>oPatient.isTheSameAs(p.resource));
-                        if (!isInBundle) oBundle.patients.push(oPatient);
+                        let oPatient = getPatient(oDataRow);
+                        foundObj = oBundle.patients.find(p=>oPatient.isTheSameAs(p.resource));
+                        if (foundObj) oPatient = foundObj;
+                        else oBundle.patients.push(oPatient);
     
-                        const oPractitioner = getPractitioner(oDataRow);
-                        isInBundle = oBundle.practitioners.find(p=>oPractitioner.isTheSameAs(p.resource));
-                        if (!isInBundle) oBundle.practitioners.push(oPractitioner);
+                        let oPractitioner = getPractitioner(oDataRow);
+                        foundObj = oBundle.practitioners.find(p=>oPractitioner.isTheSameAs(p.resource));
+                        if (foundObj) oPractitioner = foundObj;
+                        else oBundle.practitioners.push(oPractitioner);
     
-                        const oOrganisation = getOrganisation(oDataRow);
-                        isInBundle = oBundle.organisations.find(p=>oOrganisation.isTheSameAs(p.resource));
-                        if (!isInBundle) oBundle.organisations.push(oOrganisation);
+                        let oOrganization = getOrganization(oDataRow);
+                        foundObj = oBundle.organizations.find(p=>oOrganization.isTheSameAs(p.resource));
+                        if (foundObj) oOrganization = foundObj;
+                        else oBundle.organizations.push(oOrganization);
     
-                        const oMedicationStatement = getMedicationStatement(oDataRow, oPatient.resource, oOrganisation.resource, oPractitioner.resource);
-                        isInBundle = oBundle.medicationStatements.find(p=>oMedicationStatement.isTheSameAs(p.resource));
-                        if (!isInBundle) oBundle.medicationStatements.push(oMedicationStatement);
+                        const oMedicationStatement = getMedicationStatement(oDataRow, oPatient.resource, oPractitioner.resource, oOrganization.resource);
+                        foundObj = oBundle.medicationStatements.find(p=>oMedicationStatement.isTheSameAs(p.resource));
+                        if (!foundObj) oBundle.medicationStatements.push(oMedicationStatement);
                     };
     
                     // DB existence check
                     const transactionGroup = "patientDetails"
-                    const aRequests = [];
-                    const aResources = [...oBundle.patients, ...oBundle.practitioners, ...oBundle.organisations, ...oBundle.medicationStatements];
-                    aResources.forEach(oResource => {
-                        aRequests.push(oModel.sendGetRequest('/'+oResource.resource.resourceType, {
-                            urlParameters: oResource.getKey(),
-                            success: function(oResponse){
-                                if (oResponse.entry){
-                                    oResource.id = oResponse.entry[0].resource.id;
+                    const aGetRequests = [];
+                    [...oBundle.patients, ...oBundle.practitioners, ...oBundle.organizations].forEach(oCSVResource => {
+                        aGetRequests.push(oModel.sendGetRequest('/'+oCSVResource.resource.resourceType, {
+                            urlParameters: oCSVResource.getKey(),
+                            success: function(oGetResponse){
+                                if (oGetResponse.entry){
+                                    oCSVResource.id = oGetResponse.entry[0].resource.id;
                                 } else {
-                                    const transactionId = oModel.create(oResource.resource.resourceType, oResource.resource, transactionGroup);
+                                    oModel.create(oCSVResource.resource.resourceType, oCSVResource.resource, transactionGroup);
                                 }
                             },
                             error: function(oError){
@@ -198,24 +203,36 @@ sap.ui.define([
                         }).getRequest());
                     });
 
-                    Promise.allSettled(aRequests)
-                    .then( (aResults) => {
-                        // aResults = [
+                    Promise.allSettled(aGetRequests)
+                    .then( (aGetResponses) => {
+                        // aGetResponses = [
                         //    {"status":"fulfilled","value":{"resourceType":"Bundle" ...},
                         //    {"status":"rejected","value":{"resourceType":"Bundle" ...},
                         // ]
-                        oModel.submitChanges(transactionGroup, (aFHIRResources) => {
-                            for (let oResource of aResources){
-                                if (!oResource.id){
-                                    for (let aFHIRResource of aFHIRResources){
-                                        if (oResource.isTheSameAs(aFHIRResource)){
-                                            oResource.id = aFHIRResource.id;
+                        if (aGetResponses.every(oGetResponse=>oGetResponse.status==="fulfilled" && "entry" in oGetResponse.value)){
+                            resolve([]);
+                            return;
+                        }
+                        oModel.submitChanges(transactionGroup, (aCreatedResources) => {
+                            for (let oCSVResource of [...oBundle.patients, ...oBundle.practitioners, ...oBundle.organizations]){
+                                if (!oCSVResource.id){
+                                    for (let oCreatedResource of aCreatedResources){
+                                        if (oCSVResource.isTheSameAs(oCreatedResource)){
+                                            oCSVResource.id = oCreatedResource.id;
                                             break;
                                         }
                                     }
                                 }
                             }
-                            resolve(aFHIRResources);
+                            // set patient, organization and practitioner IDs in MedicationStatements
+                            for (let oMS of oBundle.medicationStatements){
+                                oMS.setPatientReference();
+                                oMS.setPractitionerReference();
+                                oMS.setOrganizationReference();
+                                oModel.create(oMS.resource.resourceType, oMS.resource, transactionGroup);
+                            }
+                            oModel.submitChanges(transactionGroup);
+                            resolve(aCreatedResources);
                         }, (oError) => {
                             reject(oError);
                         });
