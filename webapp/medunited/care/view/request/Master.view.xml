@@ -23,6 +23,12 @@
                     <Column width="35%" importance="High" autoPopinWidth="10">
                         <Text text="{i18n>Patient}" />
                     </Column>
+                    <Column width="35%" importance="High" autoPopinWidth="10">
+                        <Text text="{i18n>Practitioner}" />
+                    </Column>
+                    <Column width="35%" importance="High" autoPopinWidth="10">
+                        <Text text="{i18n>ManagingOrganization}" />
+                    </Column>
                     <Column width="35%" importance="High">
                         <Text text="{i18n>medicationPZN}" />
                     </Column>
@@ -37,6 +43,8 @@
                     <ColumnListItem>
                         <cells>
                             <Text text="{path: 'subject/reference', formatter: '.referencePatient'}" />
+                            <Text text="{path: 'performer/reference', formatter: '.referencePhysician'}" />
+                            <Text text="{path: 'subject/reference', formatter: '.referencePharmacy'}" />
                             <Text text="{medicationCodeableConcept/coding/0/code}" />
                             <Text text="{status}" />
                             <Text text="{authoredOn}" />

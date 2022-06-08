@@ -90,6 +90,12 @@ sap.ui.define([
 						subject: {
 							reference: this.getView().getModel().getProperty(plan).subject.reference
 						},
+						performer: {
+							reference: this.getView().getModel().getProperty(plan).informationSource.reference
+						},
+						dispenseRequest: {
+							performer: this.getView().getModel().getProperty(plan)
+						},
 						authoredOn: requestedOn
 					};
 
