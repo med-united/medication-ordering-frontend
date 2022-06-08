@@ -20,7 +20,7 @@ sap.ui.define([
 			if(!oMedicationStatement) {
 				return "";
 			}
-			const aMedicationStatementForPatient = Object.values(oMedicationStatement).filter(aMS => aMS.subject.reference === "Patient/"+sId);
+			const aMedicationStatementForPatient = Object.values(oMedicationStatement).filter(aMS => aMS.subject && aMS.subject.reference === "Patient/"+sId);
 			// <MP v="025" U="02BD2867FB024401A590D59D94E1FFAE" l="de-DE">
 			// 	<P g="Jürgen" f="Wernersen" b="19400324"/>
 			// 	<A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/>

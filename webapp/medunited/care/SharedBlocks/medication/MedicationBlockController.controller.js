@@ -49,7 +49,9 @@ sap.ui.define([
         filterMedicationTableToPatient: function(sPatientId){
             var aFilters = [];
             aFilters.push(new FHIRFilter({ path: "subject", operator : FHIRFilterOperator.StartsWith, value1: "Patient/" + sPatientId, valueType: FHIRFilterType.string}));
-            this.getView().byId("medicationTable").getBinding("items").filter(aFilters);
+            const oTable = this.getView().byId("medicationTable");
+            const oBinding = oTable.getBinding("items");
+            oBinding.filter(aFilters);
         },
         addMedication: function(){
             var sPatientId = this.byId("medicationTable").getBindingContext().getPath().split("/")[2];
@@ -64,7 +66,7 @@ sap.ui.define([
 
 			oModel.submitChanges(function () {
 				MessageToast.show(me.translate("msgCountDeleted", iCount));
-			}, function (oError) {
+			}.bind(this), function (oError) {
 				MessageBox.show(me.translate("msgDeleteFailed", [oError.statusCode, oError.statusText]));
 			});
         },
