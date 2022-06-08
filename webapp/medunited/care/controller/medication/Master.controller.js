@@ -69,7 +69,11 @@ sap.ui.define([
 		},
 
 		_buildMedicationRequests: function (selectedPlans) {
+
+			const requestedOn = this._makeCurrentDateTime();
+			
 			selectedPlans.forEach(
+
 				plan => {
 					const medicationRequest = {
 						resourceType: "MedicationRequest",
@@ -85,7 +89,8 @@ sap.ui.define([
 						},
 						subject: {
 							reference: this.getView().getModel().getProperty(plan).subject.reference
-						}
+						},
+						authoredOn: requestedOn
 					};
 
 					const oFhirModel = this.getView().getModel();
@@ -101,6 +106,13 @@ sap.ui.define([
 					this.getView().getModel().submitChanges();
 				}
 			);
+		},
+
+		_makeCurrentDateTime: function() {
+			const today = new Date();
+			const date = today.getFullYear() + '-' + ("0" + (today.getMonth() + 1)).slice(-2) + '-' + ("0" + today.getDate()).slice(-2);
+			const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "." + today.getMilliseconds() + "Z";
+			return date + 'T' + time;
 		}
 
 	});
