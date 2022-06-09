@@ -29,7 +29,7 @@ sap.ui.define([
 		getNameForPath: function (sObjectPath) {
 			const oFhirModel = this.getView().getModel();
 			const oObject = oFhirModel.getProperty(sObjectPath);
-			return oObject.name[0].given[0] + " " + oObject.name[0].family;
+			return oObject.name[0]?.given[0] + " " + oObject.name[0]?.family;
 		},
 
 		referencePractitioner: function (sPractitionerPath) {
