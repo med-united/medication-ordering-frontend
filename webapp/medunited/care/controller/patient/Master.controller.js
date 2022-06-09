@@ -65,7 +65,7 @@ sap.ui.define([
 		onPressCreatePatientFromBMP: function () {
 			this.byId("extScanner").open();
 		},
-		referencePhysician: function (sPractitionerPath) {
+		referencePractitioner: function (sPractitionerPath) {
 			try {
 				if (sPractitionerPath) {
 					return this.getNameForPath("/" + sPractitionerPath);

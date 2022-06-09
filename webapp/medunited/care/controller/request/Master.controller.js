@@ -19,7 +19,7 @@ sap.ui.define([
 			}
 		},
 
-		referencePhysician: function (sPractitionerPath) {
+		referencePractitioner: function (sPractitionerPath) {
 			try {
 				if (sPractitionerPath) {
 					return this.getNameForPath("/" + sPractitionerPath);

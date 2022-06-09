@@ -43,7 +43,7 @@
                     <ColumnListItem>
                         <cells>
                             <Text text="{path: 'subject/reference', formatter: '.referencePatient'}" />
-                            <Text text="{path: 'performer/reference', formatter: '.referencePhysician'}" />
+                            <Text text="{path: 'performer/reference', formatter: '.referencePractitioner'}" />
                             <Text text="{path: 'subject/reference', formatter: '.referencePharmacy'}" />
                             <Text text="{medicationCodeableConcept/coding/0/code}" />
                             <Text text="{status}" />

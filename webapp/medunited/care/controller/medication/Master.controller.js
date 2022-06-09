@@ -32,7 +32,7 @@ sap.ui.define([
 			return oObject.name[0].given[0] + " " + oObject.name[0].family;
 		},
 
-		referencePhysician: function (sPractitionerPath) {
+		referencePractitioner: function (sPractitionerPath) {
 			try {
 				if (sPractitionerPath) {
 					return this.getNameForPath("/" + sPractitionerPath);
@@ -111,6 +111,7 @@ sap.ui.define([
 				}
 			);
 
+			//TODO: handle success and error
 			this.getView().getModel().submitChanges();
 		},
 
