@@ -86,7 +86,7 @@ Write-Host "Case reference: " $caseReference
 #Get Behandlungsort
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Basic dDJ1c2VyOg==")
-$headers.Add("Content-Type", "application/json")
+$headers.Add("Content-Type", "application/json;charset=UTF-8")
 $headers.Add("Cookie", "JSESSIONID=84CD7A70DA8F9AF196515AC16C96D20B")
 
 $response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/praxis/praxisstruktur/kontextauswaehlen/arztrollenbehandlungorte' -Method 'GET' -Headers $headers
@@ -97,7 +97,7 @@ Write-Host "Case location reference: " $caseLocationReference
 #Search medication by PZN
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Basic dDJ1c2VyOg==")
-$headers.Add("Content-Type", "application/json")
+$headers.Add("Content-Type", "application/json;charset=UTF-8")
 $headers.Add("Cookie", "JSESSIONID=84CD7A70DA8F9AF196515AC16C96D20B")
 
 $body = "{
@@ -166,7 +166,7 @@ $wirkstaerkeEinheit = $response | Select-Object -ExpandProperty "entries" | Sele
 
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Basic dDJ1c2VyOg==")
-$headers.Add("Content-Type", "application/json")
+$headers.Add("Content-Type", "application/json;charset=UTF-8")
 $headers.Add("Cookie", "JSESSIONID=732C7DCE9699BAE4710C3376814F386B")
 
 $body = "{
@@ -295,6 +295,7 @@ $body = "{
 `n                    `"fiktivZugelassenesMedikament`": false,
 `n                    `"handelsname`": `"$handelsname`",
 `n                    `"herstellername`": `"$herstellername`",
+`n                    `"name`": `"$name`",
 `n                    `"lifeStyleStatus`": 0,
 `n                    `"lifestyleStatusAnzeigen`": true,
 `n                    `"medizinprodukt`": false,
@@ -304,7 +305,7 @@ $body = "{
 `n                    `"otcStatus`": false,
 `n                    `"otxStatus`": false,
 `n                    `"packungsgroesse`": `"N1`",
-`n                    `"pzn`": `"01686206`",
+`n                    `"pzn`": `"$PZN`",
 `n                    `"reimport`": false,
 `n                    `"removed`": false,
 `n                    `"rezeptStatus`": 2,
@@ -336,6 +337,8 @@ $body = "{
 `n    ]
 `n}"
 
-$response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/verordnung/rezept/ausstellen/saveerezepte' -Method 'POST' -Headers $headers -Body $body
+$postData = [System.Text.Encoding]::UTF8.GetBytes($body)
+
+$response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/verordnung/rezept/ausstellen/saveerezepte' -Method 'POST' -Headers $headers -Body $postData
 $response | ConvertTo-Json
 

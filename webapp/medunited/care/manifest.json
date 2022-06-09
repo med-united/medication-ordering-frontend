@@ -228,6 +228,13 @@
 					]
 				},
 				{
+					"pattern": "request/:layout:",
+					"name": "request-master",
+					"target": [
+						"request-master"
+					]
+				},
+				{
 					"pattern": "organization/action/add",
 					"name": "organization-add",
 					"target": [
@@ -283,6 +290,11 @@
 				},
 				"medication-master": {
 					"viewName": "medication/Master",
+					"controlAggregation": "beginColumnPages",
+					"clearControlAggregation": true
+				},
+				"request-master": {
+					"viewName": "request/Master",
 					"controlAggregation": "beginColumnPages",
 					"clearControlAggregation": true
 				},

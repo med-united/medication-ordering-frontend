@@ -67,7 +67,7 @@
 							<Text text="{medication/amount}" />
 							<Text
 								text="{dosage/0/text}" />
-							<Text text="{path: 'informationSource/reference', formatter: '.referencePhysician'}" />
+							<Text text="{path: 'informationSource/reference', formatter: '.referencePractitioner'}" />
 						</cells>
 					</ColumnListItem>
 				</items>
