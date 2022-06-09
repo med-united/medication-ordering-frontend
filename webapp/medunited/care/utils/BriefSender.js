@@ -8,20 +8,23 @@ sap.ui.define([
             const oXmlDoc = earztbriefModel.getData();
             const sXml = new XMLSerializer().serializeToString(oXmlDoc.documentElement);
 
+            const that = this;
+
             selectedPlans.forEach(function (plan) {
-                const patientGivenName = extractNameFrom(oView, plan);
-                const patientFamilyName = extractSurnameFrom(oView, plan);
-                const doctorEmail = extractDoctorEmailFrom(oView, plan);
-                const patientBirthDate = extractPatientBirthDateFrom(oView, plan);
+                const patientGivenName = that._extractNameFrom(oView, plan);
+                const patientFamilyName = that._extractSurnameFrom(oView, plan);
+                const doctorEmail = that._extractDoctorEmailFrom(oView, plan);
+                const patientBirthDate = that._extractPatientBirthDateFrom(oView, plan);
 
-                bindXmlProperties(earztbriefModel, patientGivenName, patientFamilyName, doctorEmail, patientBirthDate);
+                that._bindXmlProperties(earztbriefModel, patientGivenName, patientFamilyName, doctorEmail, patientBirthDate);
 
-                const templateParams = createRequestParams(
+                const templateParams = that._createRequestParams(
                     earztbriefModel,
                     patientGivenName,
                     patientFamilyName,
                     doctorEmail,
-                    patientBirthDate);
+                    patientBirthDate,
+                    sXml);
 
                 fetch('https://earztbrief-sender.med-united.health/sendEmail', {
                     method: 'POST',
@@ -34,29 +37,29 @@ sap.ui.define([
             });
         },
 
-        extractPatientBirthDateFrom: function (oView, plan) {
+        _extractPatientBirthDateFrom: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/subject/reference/birthDate");
         },
 
-        extractDoctorEmailFrom: function (oView, plan) {
+        _extractDoctorEmailFrom: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/subject/reference/generalPractitioner/0/reference/telecom/1/value");
         },
 
-        extractSurnameFrom: function (oView, plan) {
+        _extractSurnameFrom: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/subject/reference/name/0/family");
         },
 
-        extractNameFrom: function (oView, plan) {
+        _extractNameFrom: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/subject/reference/name/0/given/0");
         },
 
-        bindXmlProperties: function (earztbriefModel, patientGivenName, patientFamilyName, doctorEmail, patientBirthDate) {
+        _bindXmlProperties: function (earztbriefModel, patientGivenName, patientFamilyName, doctorEmail, patientBirthDate) {
             earztbriefModel.setProperty("/recordTarget/patientRole/patient/name/given", patientGivenName);
             earztbriefModel.setProperty("/recordTarget/patientRole/patient/name/family", patientFamilyName);
             earztbriefModel.setProperty("/recordTarget/patientRole/patient/birthTime/@value", patientBirthDate);
         },
 
-        createRequestParams: function (earztbriefModel, patientGivenName, patientFamilyName, doctorEmail, patientBirthDate) {
+        _createRequestParams: function (earztbriefModel, patientGivenName, patientFamilyName, doctorEmail, patientBirthDate, sXml) {
             return {
                 contactname: patientGivenName + " " + patientFamilyName,
                 contactemail: "simone.stifano@incentergy.de",
