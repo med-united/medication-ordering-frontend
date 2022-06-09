@@ -64,16 +64,15 @@ sap.ui.define([
 				//ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
 			} else {
 				alert("Sending Brief");
-				// BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
+				//BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 			}
 		},
 
 		_buildMedicationRequests: function (selectedPlans) {
 
 			const requestedOn = this._makeCurrentDateTime();
-			
-			selectedPlans.forEach(
 
+			selectedPlans.forEach(
 				plan => {
 					const medicationRequest = {
 						resourceType: "MedicationRequest",
@@ -100,6 +99,7 @@ sap.ui.define([
 					};
 
 					const oFhirModel = this.getView().getModel();
+
 					oFhirModel.create("MedicationRequest", medicationRequest, {
 						success: function () {
 							console.log("MedicationRequest created");
@@ -108,13 +108,13 @@ sap.ui.define([
 							console.log(oError);
 						}
 					});
-
-					this.getView().getModel().submitChanges();
 				}
 			);
+
+			this.getView().getModel().submitChanges();
 		},
 
-		_makeCurrentDateTime: function() {
+		_makeCurrentDateTime: function () {
 			const today = new Date();
 			const date = today.getFullYear() + '-' + ("0" + (today.getMonth() + 1)).slice(-2) + '-' + ("0" + today.getDate()).slice(-2);
 			const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "." + today.getMilliseconds() + "Z";
