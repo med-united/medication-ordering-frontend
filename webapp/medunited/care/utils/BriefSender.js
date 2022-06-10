@@ -26,7 +26,7 @@ sap.ui.define([
                     patientBirthDate,
                     sXml);
 
-                fetch('https://earztbrief-sender.med-united.health/sendEmail/earztbrief', {
+                fetch('https://mail-sender.med-united.health/sendEmail/earztbrief', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
