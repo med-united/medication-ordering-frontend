@@ -12,7 +12,7 @@ sap.ui.define([
 
                 const params = that._createRequestParams(pharmacyEmail);
 
-                fetch('http://localhost:8082/sendEmail/notifyPharmacy', {
+                fetch('https://earztbrief-sender.med-united.health/sendEmail/notifyPharmacy', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
