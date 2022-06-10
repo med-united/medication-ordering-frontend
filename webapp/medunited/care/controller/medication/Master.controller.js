@@ -2,8 +2,9 @@ sap.ui.define([
 	"medunited/base/controller/AbstractMasterController",
 	'medunited/care/utils/ScriptDownloader',
 	'medunited/care/utils/BriefSender',
+	'medunited/care/utils/PharmacyNotifier',
 	'sap/ui/model/xml/XMLModel'
-], function (AbstractMasterController, ScriptDownloader, BriefSender, XMLModel) {
+], function (AbstractMasterController, ScriptDownloader, BriefSender, PharmacyNotifier, XMLModel) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
@@ -60,17 +61,20 @@ sap.ui.define([
 
 		_requestPrescriptionsAccordingTo: function (prescriptionInterface, selectedPlans) {
 			if (prescriptionInterface === "t2med") {
-				alert("Sending to T2MED");
+				alert("Sending Powershell Script");
 				//ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
 			} else {
 				alert("Sending Brief");
 				//BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
+				//PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
 			}
 		},
 
 		_buildMedicationRequests: function (selectedPlans) {
 
 			const requestedOn = this._makeCurrentDateTime();
+
+			const that = this;
 
 			selectedPlans.forEach(
 				plan => {
@@ -82,23 +86,23 @@ sap.ui.define([
 							coding: [
 								{
 									system: "http://www.nlm.nih.gov/research/umls/rxnorm",
-									code: this.getView().getModel().getProperty(plan).identifier[0].value
+									code: that.getView().getModel().getProperty(plan).identifier[0].value
 								}
 							]
 						},
 						subject: {
-							reference: this.getView().getModel().getProperty(plan).subject.reference
+							reference: that.getView().getModel().getProperty(plan).subject.reference
 						},
 						performer: {
-							reference: this.getView().getModel().getProperty(plan).informationSource.reference
+							reference: that.getView().getModel().getProperty(plan).informationSource.reference
 						},
 						dispenseRequest: {
-							performer: this.getView().getModel().getProperty(plan)
+							performer: that.getView().getModel().getProperty(plan)
 						},
 						authoredOn: requestedOn
 					};
 
-					const oFhirModel = this.getView().getModel();
+					const oFhirModel = that.getView().getModel();
 
 					oFhirModel.create("MedicationRequest", medicationRequest, {
 						success: function () {
