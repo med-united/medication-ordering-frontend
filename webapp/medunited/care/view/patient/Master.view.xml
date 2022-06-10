@@ -62,7 +62,7 @@
 							<Text text="{name/0/given}" />
 							<Text text="{name/0/family}" />
 							<Text text="{path: 'birthDate', formatOptions: {style: 'short'}}" />
-							<Text text="{path: 'generalPractitioner/0/reference', formatter: '.referencePhysician'}" />
+							<Text text="{path: 'generalPractitioner/0/reference', formatter: '.referencePractitioner'}" />
 							<Text text="{path: 'managingOrganization/reference', formatter: '.referenceOrganization'}" />
 						</cells>
 					</ColumnListItem>
