@@ -32,9 +32,8 @@ Write-Host "User reference: " $userReference
 #----------------------------------------------------------------------------------------------------------------------
 #Get Doctor's role
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic dDJ1c2VyOg==")
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
 $headers.Add("Content-Type", "application/json")
-$headers.Add("Cookie", "JSESSIONID=4F399F364F7DA6C41A1BCBF0DC17F4D4")
 
 $body = "{
 `n    `"benutzerRef`": {
@@ -53,9 +52,8 @@ Write-Host "Doctor reference: " $doctorReference
 #Filter patients by surname, name
 
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic dDJ1c2VyOg==")
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
 $headers.Add("Content-Type", "application/json")
-$headers.Add("Cookie", "JSESSIONID=4F399F364F7DA6C41A1BCBF0DC17F4D4")
 
 $body = "{
 `n    `"searchString`": `"$patientSurname, $patientName`"
@@ -68,9 +66,8 @@ Write-Host "Patient reference: " $patientReference
 
 #Get most recent behandlungsfall
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic dDJ1c2VyOg==")
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
 $headers.Add("Content-Type", "application/json")
-$headers.Add("Cookie", "JSESSIONID=84CD7A70DA8F9AF196515AC16C96D20B")
 
 $body = "{
 `n    `"objectId`": {
@@ -85,9 +82,8 @@ Write-Host "Case reference: " $caseReference
 #----------------------------------------------------------------------------------------------------------------------
 #Get Behandlungsort
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic dDJ1c2VyOg==")
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
 $headers.Add("Content-Type", "application/json;charset=UTF-8")
-$headers.Add("Cookie", "JSESSIONID=84CD7A70DA8F9AF196515AC16C96D20B")
 
 $response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/praxis/praxisstruktur/kontextauswaehlen/arztrollenbehandlungorte' -Method 'GET' -Headers $headers
 $caseLocationReference = $response | Select-Object -ExpandProperty "behandlungsorte" | Select-Object -ExpandProperty "ref" -First 1 | Select-Object -ExpandProperty "objectId" -First 1 | Select-Object -ExpandProperty "id"
@@ -96,9 +92,8 @@ Write-Host "Case location reference: " $caseLocationReference
 #----------------------------------------------------------------------------------------------------------------------
 #Search medication by PZN
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic dDJ1c2VyOg==")
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
 $headers.Add("Content-Type", "application/json;charset=UTF-8")
-$headers.Add("Cookie", "JSESSIONID=84CD7A70DA8F9AF196515AC16C96D20B")
 
 $body = "{
     `n    `"amdbSearchQueries`": [
