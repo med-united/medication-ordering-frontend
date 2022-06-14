@@ -62,6 +62,7 @@ $body = "{
 $response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/praxis/patient/liste/pagefilter' -Method 'POST' -Headers $headers -Body $body
 
 $patientReference = $response | Select-Object -ExpandProperty "patientSearchResultDTOS" | Select-Object -ExpandProperty "ref" -First 1 | Select-Object -ExpandProperty "objectId" | Select-Object -ExpandProperty "id"
+
 Write-Host "Patient reference: " $patientReference
 
 #Get most recent behandlungsfall
@@ -79,8 +80,8 @@ $response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/praxis/beha
 $caseReference = $response | Select-Object -ExpandProperty "zeilenMaps" | Select-Object -ExpandProperty "AKTUELL" | Select-Object -ExpandProperty "ref" -First 1 | Select-Object -ExpandProperty "objectId" | Select-Object -ExpandProperty "id"
 Write-Host "Case reference: " $caseReference
 
-#----------------------------------------------------------------------------------------------------------------------
-#Get Behandlungsort
+# #----------------------------------------------------------------------------------------------------------------------
+# #Get Behandlungsort
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
 $headers.Add("Content-Type", "application/json;charset=UTF-8")
@@ -89,8 +90,8 @@ $response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/praxis/prax
 $caseLocationReference = $response | Select-Object -ExpandProperty "behandlungsorte" | Select-Object -ExpandProperty "ref" -First 1 | Select-Object -ExpandProperty "objectId" -First 1 | Select-Object -ExpandProperty "id"
 Write-Host "Case location reference: " $caseLocationReference
 
-#----------------------------------------------------------------------------------------------------------------------
-#Search medication by PZN
+# #----------------------------------------------------------------------------------------------------------------------
+# #Search medication by PZN
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
 $headers.Add("Content-Type", "application/json;charset=UTF-8")
@@ -156,8 +157,16 @@ $wirkstoff = $response | Select-Object -ExpandProperty "entries" | Select-Object
 $wirkstaerkeWert = $response | Select-Object -ExpandProperty "entries" | Select-Object -ExpandProperty "packung" -First 1 | Select-Object -ExpandProperty "wirkstoffWirkstaerken" | Select-Object -ExpandProperty "wirkstaerke" -First 1 | Select-Object -ExpandProperty "wert"
 $wirkstaerkeEinheit = $response | Select-Object -ExpandProperty "entries" | Select-Object -ExpandProperty "packung" -First 1 | Select-Object -ExpandProperty "wirkstoffWirkstaerken" | Select-Object -ExpandProperty "wirkstaerke" -First 1 | Select-Object -ExpandProperty "einheit"
 
-#----------------------------------------------------------------------------------------------------------------------
-#Create and save prescription
+Write-Host "Medication name: " $name
+Write-Host "Medication handelsname: " $handelsname
+Write-Host "Medication erezeptName: " $erezeptName
+Write-Host "Medication herstellername: " $herstellername
+Write-Host "Medication wirkstoff: " $wirkstoff
+Write-Host "Medication wirkstaerkeWert: " $wirkstaerkeWert
+Write-Host "Medication wirkstaerkeEinheit: " $wirkstaerkeEinheit
+
+# #----------------------------------------------------------------------------------------------------------------------
+# #Create and save prescription
 
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Basic dDJ1c2VyOg==")
@@ -243,11 +252,11 @@ $body = "{
 `n                `"benutzeSekundaerenRezeptinformationstyp`": false,
 `n                `"btmKennzeichen`": null,
 `n                `"dosierschema`": {
-`n                    `"abends`": null,
+`n                    `"abends`": $abends,
 `n                    `"freitext`": null,
-`n                    `"mittags`": null,
-`n                    `"morgens`": null,
-`n                    `"nachts`": null
+`n                    `"mittags`": $mittags,
+`n                    `"morgens`": $morgens,
+`n                    `"nachts`": $nachts
 `n                },
 `n                `"dosierungAufRezept`": true,
 `n                `"erezeptZusatzdaten`": {
@@ -310,15 +319,7 @@ $body = "{
 `n                    `"verordnungsfaehigesMedizinprodukt`": false,
 `n                    `"vertriebsStatus`": null,
 `n                    `"vertriebsstatusAnzeigen`": true,
-`n                    `"wirkstoffWirkstaerken`": [
-`n                        {
-`n                            `"wirkstaerke`": {
-`n                                `"einheit`": `"$wirkstaerkeEinheit`",
-`n                                `"wert`": $wirkstaerkeWert
-`n                            },
-`n                            `"wirkstoff`": `"$wirkstoff`"
-`n                        }
-`n                    ]
+`n                    `"wirkstoffWirkstaerken`": []
 `n                },
 `n                `"pimPraeparat`": false,
 `n                `"primaererRezeptinformationstyp`": 34,

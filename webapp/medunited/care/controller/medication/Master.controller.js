@@ -1,5 +1,5 @@
 sap.ui.define([
-	"medunited/base/controller/AbstractMasterController",
+	'medunited/base/controller/AbstractMasterController',
 	'medunited/care/utils/ScriptDownloader',
 	'medunited/care/utils/BriefSender',
 	'medunited/care/utils/PharmacyNotifier',
@@ -66,8 +66,8 @@ sap.ui.define([
 			} else {
 				alert("Sending Brief");
 				//BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
-				//PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
 			}
+			//PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
 		},
 
 		_buildMedicationRequests: function (selectedPlans) {

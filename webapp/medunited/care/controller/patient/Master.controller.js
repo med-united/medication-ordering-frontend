@@ -26,7 +26,7 @@ sap.ui.define([
 		getSortField: function () {
 			return "family";
 		},
-		onImportPatientFromCSV: function() {
+		onImportPatientFromCSV: function () {
 			var oView = this.getView();
 			const me = this;
 			// create dialog lazily
@@ -45,7 +45,7 @@ sap.ui.define([
 				this.byId("importCSVDialog").open();
 			}
 		},
-		onUploadCSVCancel: function() {
+		onUploadCSVCancel: function () {
 			this.byId("importCSVDialog").close();
 		},
 		onUploadCSVFile: function () {
@@ -53,13 +53,13 @@ sap.ui.define([
 			let domRef = fileUploader.getFocusDomRef();
 			let file = domRef.files[0];
 			const me = this;
-			ProcessUpload.processUploadedFile(file,this.getView())
-			.then((aResources) => {
-				MessageToast.show(me.translate("msgCountCreated", aResources.length));
-				me.byId("importCSVDialog").close();
-			}, (oError) => {
-				MessageBox.show(me.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
-			})
+			ProcessUpload.processUploadedFile(file, this.getView())
+				.then((aResources) => {
+					MessageToast.show(me.translate("msgCountCreated", aResources.length));
+					me.byId("importCSVDialog").close();
+				}, (oError) => {
+					MessageBox.show(me.translate("msgPatientSavedFailed", [oError.statusCode, oError.statusText]));
+				})
 		},
 
 		onPressCreatePatientFromBMP: function () {
@@ -97,7 +97,7 @@ sap.ui.define([
 		},
 
 		onValueScanned: function (oEvent) {
-			
+
 			const mPZN2Name = {};
 			const sEMP = oEvent.getParameter("value")
 			const parser = new DOMParser();
@@ -105,11 +105,11 @@ sap.ui.define([
 
 			Promise.all(
 				Array.from(oEMP.querySelectorAll("M"))
-					.map( m => m.getAttribute("p"))
-					.map(sPZN => fetch("https://medication.med-united.health/ajax/search/drugs/auto/?query="+sPZN)
+					.map(m => m.getAttribute("p"))
+					.map(sPZN => fetch("https://medication.med-united.health/ajax/search/drugs/auto/?query=" + sPZN)
 						.then(r => r.json())
 						.then(oMedication => {
-							if(oMedication.results.length > 0) {
+							if (oMedication.results.length > 0) {
 								mPZN2Name[sPZN] = oMedication.results[0].name;
 							}
 							return true;
@@ -118,7 +118,7 @@ sap.ui.define([
 						this.createMedicationStatementWithNames(oEMP, mPZN2Name);
 					});
 
-			
+
 		},
 		createMedicationStatementWithNames: function (oEMP, mPZN2Name) {
 			try {
@@ -221,7 +221,7 @@ sap.ui.define([
 							{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
 						],
 						subject: { reference: "urn:uuid:" + sPatientId },
-						note: "Grund: "+sReason+" Hinweis: "+sAdditionalInformation
+						note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
 					};
 					if (sPractitionerId) {
 						oMedicationStatement.informationSource = {

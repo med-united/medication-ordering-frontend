@@ -4,7 +4,7 @@ sap.ui.define([
     return {
 
         notifyPharmacy: function (oView, selectedPlans) {
-            
+
             const that = this;
 
             selectedPlans.forEach(function (plan) {
@@ -12,14 +12,7 @@ sap.ui.define([
 
                 const params = that._createRequestParams(pharmacyEmail);
 
-                fetch('https://mail-sender.med-united.health/sendEmail/notifyPharmacy', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(params)
-                });
+                that._callPharmacyNotificationService(params);
             });
         },
 
@@ -31,6 +24,18 @@ sap.ui.define([
             return {
                 pharmacyEmail: pharmacyEmail,
             };
+        },
+
+        _callPharmacyNotificationService: function (params) {
+
+            fetch('https://mail-sender.med-united.health/sendEmail/notifyPharmacy', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            });
         }
     };
 }, true);
