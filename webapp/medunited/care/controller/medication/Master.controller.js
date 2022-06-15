@@ -62,7 +62,7 @@ sap.ui.define([
 		_requestPrescriptionsAccordingTo: function (prescriptionInterface, selectedPlans) {
 			if (prescriptionInterface === "t2med") {
 				alert("Sending Powershell Script");
-				//ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
+				ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
 			} else {
 				alert("Sending Brief");
 				//BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
