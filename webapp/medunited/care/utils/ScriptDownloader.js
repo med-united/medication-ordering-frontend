@@ -23,7 +23,7 @@ sap.ui.define([], function () {
             const name = oFhirModel.getProperty("/Patient/" + testPatient + "/name/0/given/0");
             const surname = oFhirModel.getProperty("/Patient/" + testPatient + "/name/0/family");
 
-            this._parameterizeScript(name, surname, pzn, dosage, doctorEmail);
+            this._parameterizeScriptAndSend(name, surname, pzn, dosage, doctorEmail);
         },
 
         _mapPatientsToMedicationsFrom(medicationPlansT2Med, oFhirModel) {
@@ -66,7 +66,8 @@ sap.ui.define([], function () {
             }
         },
 
-        _parameterizeScript(name, surname, pzn, dosage, doctorEmail) {
+        _parameterizeScriptAndSend(name, surname, pzn, dosage, doctorEmail) {
+
             fetch('resources/local/t2med.ps1')
                 .then(response => response.blob())
                 .then(blob => {
@@ -76,22 +77,11 @@ sap.ui.define([], function () {
 
                         const sText = reader.result;
 
-                        const sNewText = sText
-                            .replace("$patientName", name)
-                            .replace("$patientSurname", surname)
-                            .replace("$PZN", pzn)
-                            .replace("$PZN", pzn)
-                            .replace("$PZN", pzn)
-                            .replace("$morgens", dosage.morning)
-                            .replace("$mittags", dosage.midday)
-                            .replace("$abends", dosage.evening)
-                            .replace("$nachts", dosage.night);
+                        const sNewText = this._replaceInScript(sText, name, surname, pzn, dosage);
 
                         const newBlob = new Blob([sNewText], { type: "text/plain" });
-                        const sFileName = "t2med";
                         const sFileType = "text/plain";
-                        const sFileExtension = "ps1";
-                        const sFileNameWithExtension = sFileName + "." + sFileExtension;
+                        const sFileNameWithExtension = "t2med.ps1";
                         const sFile = new File([newBlob], sFileNameWithExtension, { type: sFileType });
                         const oEvent = new MouseEvent("click", {
                             view: window,
@@ -100,26 +90,38 @@ sap.ui.define([], function () {
                         });
                         const oLink = document.createElement("a");
                         oLink.href = URL.createObjectURL(sFile);
-                        oLink.download = sFileName + "." + sFileExtension;
+                        oLink.download = sFileNameWithExtension;
                         oLink.dispatchEvent(oEvent);
 
                         var formdata = new FormData();
                         formdata.append("file", sFile);
-                        formdata.append("email", "simonestifano@gmail.com")
+                        formdata.append("email", doctorEmail)
 
-                        var requestOptions = {
+                        const requestOptions = {
                             method: 'POST',
                             body: formdata,
                             redirect: 'follow'
                         };
 
-                        fetch("https://localhost:8082/sendEmail/powershell", requestOptions)
+                        fetch("http://localhost:8082/sendEmail/powershell", requestOptions)
                             .then(response => response.text())
                             .then(result => console.log(result))
                             .catch(error => console.log('error', error));
-
                     }
                 })
+        },
+
+        _replaceInScript(sText, name, surname, pzn, dosage) {
+            return sText
+                .replace("$patientName", name)
+                .replace("$patientSurname", surname)
+                .replace("$PZN", pzn)
+                .replace("$PZN", pzn)
+                .replace("$PZN", pzn)
+                .replace("$morgens", dosage.morning)
+                .replace("$mittags", dosage.midday)
+                .replace("$abends", dosage.evening)
+                .replace("$nachts", dosage.night);
         }
     };
 
