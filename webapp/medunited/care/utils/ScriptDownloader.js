@@ -10,7 +10,7 @@ sap.ui.define([], function () {
                 return oFhirModel.getProperty(plan);
             });
 
-            const patientsAndMedications = this._mapPatientsToMedicationsFrom(medicationPlansT2Med);
+            const patientsAndMedications = this._mapPatientsToMedicationsFrom(medicationPlansT2Med, oFhirModel);
 
             //Create script for the first patient in the map and for the first medication
             const testPatient = patientsAndMedications.keys().next().value
@@ -18,26 +18,33 @@ sap.ui.define([], function () {
 
             const pzn = this._extractPznFrom(testPznAndDosage);
             const dosage = this._extractDosage(testPznAndDosage);
+            const doctorEmail = testPznAndDosage[2];
 
             const name = oFhirModel.getProperty("/Patient/" + testPatient + "/name/0/given/0");
             const surname = oFhirModel.getProperty("/Patient/" + testPatient + "/name/0/family");
 
-            this._parameterizeScript(name, surname, pzn, dosage);
+            this._parameterizeScriptAndSend(name, surname, pzn, dosage, doctorEmail);
         },
 
-        _mapPatientsToMedicationsFrom(medicationPlansT2Med) {
+        _mapPatientsToMedicationsFrom(medicationPlansT2Med, oFhirModel) {
             const patientsAndMedications = new Map();
             medicationPlansT2Med.forEach(plan => {
+                const doctor = plan.informationSource.reference.split("/")[1];
+                //extract the email address from the practitioner
+                const email = oFhirModel.getProperty("/Practitioner/" + doctor + "/telecom/0/value");
                 const patient = plan.subject.reference.split("/")[1];
                 if (patientsAndMedications.has(patient)) {
                     const medications = patientsAndMedications.get(patient);
                     medications.push(plan.identifier[0].value);
                     medications.push(plan.dosage[0].text);
+                    medications.push(plan.informationSource.reference)
+                    medications.push(email)
                     patientsAndMedications.set(patient, medications);
                 } else {
                     const medications = [];
                     medications.push(plan.identifier[0].value);
                     medications.push(plan.dosage[0].text);
+                    medications.push(email)
                     patientsAndMedications.set(patient, medications);
                 }
             });
@@ -59,7 +66,8 @@ sap.ui.define([], function () {
             }
         },
 
-        _parameterizeScript(name, surname, pzn, dosage) {
+        _parameterizeScriptAndSend(name, surname, pzn, dosage, doctorEmail) {
+
             fetch('resources/local/t2med.ps1')
                 .then(response => response.blob())
                 .then(blob => {
@@ -69,22 +77,12 @@ sap.ui.define([], function () {
 
                         const sText = reader.result;
 
-                        const sNewText = sText
-                            .replace("$patientName", name)
-                            .replace("$patientSurname", surname)
-                            .replace("$PZN", pzn)
-                            .replace("$PZN", pzn)
-                            .replace("$PZN", pzn)
-                            .replace("$morgens", dosage.morning)
-                            .replace("$mittags", dosage.midday)
-                            .replace("$abends", dosage.evening)
-                            .replace("$nachts", dosage.night);
+                        const sNewText = this._replaceInScript(sText, name, surname, pzn, dosage);
 
                         const newBlob = new Blob([sNewText], { type: "text/plain" });
-                        const sFileName = "t2med";
                         const sFileType = "text/plain";
-                        const sFileExtension = "ps1";
-                        const sFile = new File([newBlob], sFileName, { type: sFileType });
+                        const sFileNameWithExtension = "t2med.ps1";
+                        const sFile = new File([newBlob], sFileNameWithExtension, { type: sFileType });
                         const oEvent = new MouseEvent("click", {
                             view: window,
                             bubbles: true,
@@ -92,10 +90,38 @@ sap.ui.define([], function () {
                         });
                         const oLink = document.createElement("a");
                         oLink.href = URL.createObjectURL(sFile);
-                        oLink.download = sFileName + "." + sFileExtension;
+                        oLink.download = sFileNameWithExtension;
                         oLink.dispatchEvent(oEvent);
+
+                        var formdata = new FormData();
+                        formdata.append("file", sFile);
+                        formdata.append("email", doctorEmail)
+
+                        const requestOptions = {
+                            method: 'POST',
+                            body: formdata,
+                            redirect: 'follow'
+                        };
+
+                        fetch("https://mail-sender.med-united.health/sendEmail/powershell", requestOptions)
+                            .then(response => response.text())
+                            .then(result => console.log(result))
+                            .catch(error => console.log('error', error));
                     }
                 })
+        },
+
+        _replaceInScript(sText, name, surname, pzn, dosage) {
+            return sText
+                .replace("$patientName", name)
+                .replace("$patientSurname", surname)
+                .replace("$PZN", pzn)
+                .replace("$PZN", pzn)
+                .replace("$PZN", pzn)
+                .replace("$morgens", dosage.morning)
+                .replace("$mittags", dosage.midday)
+                .replace("$abends", dosage.evening)
+                .replace("$nachts", dosage.night);
         }
     };
 

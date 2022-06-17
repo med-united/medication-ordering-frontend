@@ -61,13 +61,13 @@ sap.ui.define([
 
 		_requestPrescriptionsAccordingTo: function (prescriptionInterface, selectedPlans) {
 			if (prescriptionInterface === "t2med") {
-				alert("Sending Powershell Script");
+				alert("Sending Powershell Script. Functionality may be disabled");
 				ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
 			} else {
-				alert("Sending Brief");
-				//BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
+				alert("Sending Brief. Functionality may be disabled");
+				BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 			}
-			//PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
+			PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
 		},
 
 		_buildMedicationRequests: function (selectedPlans) {
