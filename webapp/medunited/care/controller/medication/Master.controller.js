@@ -62,7 +62,7 @@ sap.ui.define([
 		_requestPrescriptionsAccordingTo: function (prescriptionInterface, selectedPlans) {
 			if (prescriptionInterface === "t2med") {
 				alert("Sending Powershell Script. Functionality may be disabled");
-				ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
+				//ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
 			} else {
 				alert("Sending Brief. Functionality may be disabled");
 				BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
