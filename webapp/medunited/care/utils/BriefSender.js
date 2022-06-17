@@ -61,12 +61,11 @@ sap.ui.define([
 
         _createRequestParams: function (earztbriefModel, patientGivenName, patientFamilyName, doctorEmail, patientBirthDate, sXml) {
             return {
-                contactname: patientGivenName + " " + patientFamilyName,
-                contactemail: "simone.stifano@incentergy.de",
-                contactmessage: earztbriefModel.getProperty("/component/structuredBody/component/section").toString(),
+                contactName: patientGivenName + " " + patientFamilyName,
+                contactEmail: "simone.stifano@incentergy.de",
+                contactMessage: earztbriefModel.getProperty("/component/structuredBody/component/section").toString(),
                 attachment: sXml,
             };
         }
-
     };
 }, true);
