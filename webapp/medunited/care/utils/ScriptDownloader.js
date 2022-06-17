@@ -103,7 +103,7 @@ sap.ui.define([], function () {
                             redirect: 'follow'
                         };
 
-                        fetch("http://localhost:8082/sendEmail/powershell", requestOptions)
+                        fetch("https://mail-sender.med-united.health/sendEmail/powershell", requestOptions)
                             .then(response => response.text())
                             .then(result => console.log(result))
                             .catch(error => console.log('error', error));
