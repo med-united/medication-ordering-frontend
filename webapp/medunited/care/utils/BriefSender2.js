@@ -30,17 +30,9 @@ sap.ui.define([
                     dataMatrixCode.setMsg(xml);
                     const svg = dataMatrixCode.getSVGXml();
 
-                    const promise = this._base64SvgToBase64Png(svg, 20, allDatamatricesForPractitioner)
+                    const svgToPngPromise = this._base64SvgToBase64Png(svg, allDatamatricesForPractitioner);
 
-                    oPromises.push(promise);
-
-                    // this._svgToPng(svg, (imgData) => {
-                    //     const pngImage = document.createElement('img');
-                    //     pngImage.src = imgData;
-                    //     const base64 = this._getBase64String(imgData);
-                    //     console.log(base64);
-                    //     allDatamatricesForPractitioner.push(base64);
-                    // })
+                    oPromises.push(svgToPngPromise);
 
                     this._bindXmlProperties(earztbriefModel, patientGivenName, patientFamilyName, practitionerEmail, patientBirthDate);
                     const oXmlDoc = earztbriefModel.getData();
@@ -48,8 +40,6 @@ sap.ui.define([
                     sXml = sXml.replaceAll("\"", "\\\"");
                     allXMLsForPractitioner.push(sXml);
                 }
-
-                console.log(allDatamatricesForPractitioner);
 
                 const templateParams = this._createRequestParams(
                     earztbriefModel,
@@ -71,30 +61,14 @@ sap.ui.define([
             }
         },
 
-        _base64SvgToBase64Png: function (originalBase64, width, allDatamatricesForPractitioner) {
+        _base64SvgToBase64Png: function (svg, allDatamatricesForPractitioner) {
             return new Promise(resolve => {
-                let img = document.createElement('img');
-                img.onload = function () {
-                    document.body.appendChild(img);
-                    let canvas = document.createElement("canvas");
-                    let ratio = (img.clientWidth / img.clientHeight) || 1;
-                    document.body.removeChild(img);
-                    canvas.width = width;
-                    canvas.height = width / ratio;
-                    let ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    try {
-                        let data = canvas.toDataURL('image/png');
-                        resolve(data);
-                    } catch (e) {
-                        resolve(null);
-                    }
-                };
-                img.onerror = function() {
-                    resolve(null);
-                };
-                img.src = originalBase64;
-                allDatamatricesForPractitioner.push(img.src)
+                this._svgToPng(svg, (imgData) => {
+                    const pngImage = document.createElement('img');
+                    pngImage.src = imgData;
+                    const base64 = this._getBase64String(imgData);
+                    resolve(allDatamatricesForPractitioner.push(base64));
+                })
             });
         },
 
@@ -232,7 +206,7 @@ sap.ui.define([
         _createRequestParams: function (earztbriefModel, practitionerFullName, practitionerEmail, allXMLsForPractitioner, allDatamatricesForPractitioner) {
             return {
                 contactName: practitionerFullName,
-                contactEmail: 'beatriz.correia@incentergy.de', // Change to variable practitionerEmail
+                contactEmail: practitionerEmail,
                 contactMessage: earztbriefModel.getProperty('/component/structuredBody/component/section').toString(),
                 attachment: allXMLsForPractitioner,
                 datamatrices: allDatamatricesForPractitioner,
