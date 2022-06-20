@@ -1,6 +1,7 @@
 sap.ui.define([
-    'medunited/care/utils/DateTimeMaker'
-], function (DateTimeMaker) {
+    'medunited/care/utils/DateTimeMaker',
+    'medunited/care/utils/PropertyExtractor',
+], function (DateTimeMaker, PropertyExtractor) {
     "use strict";
     return {
 
@@ -9,53 +10,31 @@ sap.ui.define([
             const that = this;
 
             selectedPlans.forEach(function (plan) {
-                const pharmacyEmail = that._extractPharmacyEmailFrom(oView, plan);
+                const pharmacyEmail = PropertyExtractor.extractPharmacyEmailFrom(oView, plan);
 
-                const patientName = that._extractNameFrom(oView, plan);
+                const patient = {
+                    name: PropertyExtractor.extractPatientNameFrom(oView, plan),
+                    surname: PropertyExtractor.extractPatientSurnameFrom(oView, plan),
+                };
 
-                const patientSurname = that._extractSurnameFrom(oView, plan);
+                const doctor = {
+                    name: PropertyExtractor.extractDoctorNameFrom(oView, plan),
+                    surname: PropertyExtractor.extractDoctorSurnameFrom(oView, plan),
+                };
 
-                const doctorName= that._extractDoctorNameFrom(oView, plan);
+                const pzn = PropertyExtractor.extractPznFrom(oView, plan);
 
-                const doctorSurname = that._extractDoctorSurnameFrom(oView, plan);
-
-                const pzn = that._extractPznFrom(oView, plan);
-
-                const params = that._createRequestParams(pharmacyEmail, patientName, patientSurname, doctorName, doctorSurname, pzn);
+                const params = that._createRequestParams(pharmacyEmail, patient, doctor, pzn);
 
                 that._callPharmacyNotificationService(params);
             });
         },
 
-        _extractPharmacyEmailFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/subject/reference/managingOrganization/reference/telecom/1/value");
-        },
-
-        _extractSurnameFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/subject/reference/name/0/family");
-        },
-
-        _extractNameFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/subject/reference/name/0/given/0");
-        },
-
-        _extractDoctorNameFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/informationSource/reference/name/0/family");
-        },
-
-        _extractDoctorSurnameFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/informationSource/reference/name/0/given/0");
-        },
-
-        _extractPznFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/identifier/0/value");
-        },
-
-        _createRequestParams: function (pharmacyEmail, patientName, patientSurname, doctorName, doctorSurname, pzn) {
+        _createRequestParams: function (pharmacyEmail, patient, doctor, pzn) {
             return {
                 pharmacyEmail: pharmacyEmail,
-                patient: patientName + patientSurname,
-                doctor: doctorName + doctorSurname,
+                patient: patient.name + " " + patient.surname,
+                doctor: doctor.name + " " + doctor.surname,
                 pzn: pzn,
                 status: "active",
                 requestDate: DateTimeMaker.makeCurrentDateTime()
