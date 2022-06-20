@@ -1,5 +1,7 @@
 sap.ui.define([
-], function () {
+    'medunited/care/utils/DateTimeMaker',
+    'medunited/care/utils/PropertyExtractor',
+], function (DateTimeMaker, PropertyExtractor) {
     "use strict";
     return {
 
@@ -8,21 +10,34 @@ sap.ui.define([
             const that = this;
 
             selectedPlans.forEach(function (plan) {
-                const pharmacyEmail = that._extractPharmacyEmailFrom(oView, plan);
+                const pharmacyEmail = PropertyExtractor.extractPharmacyEmailFrom(oView, plan);
 
-                const params = that._createRequestParams(pharmacyEmail);
+                const patient = {
+                    name: PropertyExtractor.extractPatientNameFrom(oView, plan),
+                    surname: PropertyExtractor.extractPatientSurnameFrom(oView, plan),
+                };
+
+                const doctor = {
+                    name: PropertyExtractor.extractDoctorNameFrom(oView, plan),
+                    surname: PropertyExtractor.extractDoctorSurnameFrom(oView, plan),
+                };
+
+                const pzn = PropertyExtractor.extractPznFrom(oView, plan);
+
+                const params = that._createRequestParams(pharmacyEmail, patient, doctor, pzn);
 
                 that._callPharmacyNotificationService(params);
             });
         },
 
-        _extractPharmacyEmailFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/subject/reference/managingOrganization/reference/telecom/1/value");
-        },
-
-        _createRequestParams: function (pharmacyEmail) {
+        _createRequestParams: function (pharmacyEmail, patient, doctor, pzn) {
             return {
                 pharmacyEmail: pharmacyEmail,
+                patient: patient.name + " " + patient.surname,
+                doctor: doctor.name + " " + doctor.surname,
+                pzn: pzn,
+                status: "active",
+                requestDate: DateTimeMaker.makeCurrentDateTime()
             };
         },
 

@@ -24,7 +24,7 @@ $doctorPassword = Read-Host
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
 
-$response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/benutzer/login/authenticate' -Method 'GET' -Headers $headers
+$response = Invoke-RestMethod 'http://localhost:16567/aps/rest/benutzer/login/authenticate' -Method 'GET' -Headers $headers
 
 $userReference = $response | Select-Object -ExpandProperty "benutzer" | Select-Object -ExpandProperty "benutzer" | Select-Object -ExpandProperty "ref" | Select-Object -ExpandProperty "objectId" | Select-Object -ExpandProperty "id"
 Write-Host "User reference: " $userReference
@@ -43,7 +43,7 @@ $body = "{
 `n    }
 `n}"
 
-$response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/praxis/praxisstruktur/kontextauswaehlen/arztrollenFuerBenutzer' -Method 'POST' -Headers $headers -Body $body
+$response = Invoke-RestMethod 'http://localhost:16567/aps/rest/praxis/praxisstruktur/kontextauswaehlen/arztrollenFuerBenutzer' -Method 'POST' -Headers $headers -Body $body
 
 $doctorReference = $response | Select-Object -ExpandProperty "arztrollen" | Select-Object -ExpandProperty "ref" | Select-Object -ExpandProperty "objectId" | Select-Object -ExpandProperty "id"
 Write-Host "Doctor reference: " $doctorReference
@@ -59,7 +59,7 @@ $body = "{
 `n    `"searchString`": `"$patientSurname, $patientName`"
 `n}"
 
-$response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/praxis/patient/liste/pagefilter' -Method 'POST' -Headers $headers -Body $body
+$response = Invoke-RestMethod 'http://localhost:16567/aps/rest/praxis/patient/liste/pagefilter' -Method 'POST' -Headers $headers -Body $body
 
 $patientReference = $response | Select-Object -ExpandProperty "patientSearchResultDTOS" | Select-Object -ExpandProperty "ref" -First 1 | Select-Object -ExpandProperty "objectId" | Select-Object -ExpandProperty "id"
 
@@ -76,7 +76,7 @@ $body = "{
 `n    }
 `n}"
 
-$response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/praxis/behandlungsfaelle/faellefuerpatientinkrementell' -Method 'POST' -Headers $headers -Body $body
+$response = Invoke-RestMethod 'http://localhost:16567/aps/rest/praxis/behandlungsfaelle/faellefuerpatientinkrementell' -Method 'POST' -Headers $headers -Body $body
 $caseReference = $response | Select-Object -ExpandProperty "zeilenMaps" | Select-Object -ExpandProperty "AKTUELL" | Select-Object -ExpandProperty "ref" -First 1 | Select-Object -ExpandProperty "objectId" | Select-Object -ExpandProperty "id"
 Write-Host "Case reference: " $caseReference
 
@@ -86,7 +86,7 @@ $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
 $headers.Add("Content-Type", "application/json;charset=UTF-8")
 
-$response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/praxis/praxisstruktur/kontextauswaehlen/arztrollenbehandlungorte' -Method 'GET' -Headers $headers
+$response = Invoke-RestMethod 'http://localhost:16567/aps/rest/praxis/praxisstruktur/kontextauswaehlen/arztrollenbehandlungorte' -Method 'GET' -Headers $headers
 $caseLocationReference = $response | Select-Object -ExpandProperty "behandlungsorte" | Select-Object -ExpandProperty "ref" -First 1 | Select-Object -ExpandProperty "objectId" -First 1 | Select-Object -ExpandProperty "id"
 Write-Host "Case location reference: " $caseLocationReference
 
@@ -142,7 +142,7 @@ $body = "{
     `n}
     `n"
 
-$response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/verordnung/rezept/ausstellen/amdb/page' -Method 'POST' -Headers $headers -Body $body
+$response = Invoke-RestMethod 'http://localhost:16567/aps/rest/verordnung/rezept/ausstellen/amdb/page' -Method 'POST' -Headers $headers -Body $body
 
 $name = $response | Select-Object -ExpandProperty "entries" | Select-Object -ExpandProperty "packung" -First 1 | Select-Object -ExpandProperty "name"
 $handelsname = $response | Select-Object -ExpandProperty "entries" | Select-Object -ExpandProperty "packung" -First 1 | Select-Object -ExpandProperty "handelsname"
@@ -335,6 +335,6 @@ $body = "{
 
 $postData = [System.Text.Encoding]::UTF8.GetBytes($body)
 
-$response = Invoke-RestMethod 'https://157.90.254.136:16567/aps/rest/verordnung/rezept/ausstellen/saveerezepte' -Method 'POST' -Headers $headers -Body $postData
+$response = Invoke-RestMethod 'http://localhost:16567/aps/rest/verordnung/rezept/ausstellen/saveerezepte' -Method 'POST' -Headers $headers -Body $postData
 $response | ConvertTo-Json
 
