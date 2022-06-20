@@ -6,16 +6,16 @@ sap.ui.define([
 
         sendEarztBrief: function (oView, selectedPlans, earztbriefModel) {
 
-            const oXmlDoc = earztbriefModel.getData();
-            const sXml = new XMLSerializer().serializeToString(oXmlDoc.documentElement);
-
             // structure = { Practitioner : { Patient : [ MedicationStatements ]}}
             const structure = this._populateStructure(oView, selectedPlans);
 
             // generate datamatrices of MedicationStatements in PNG for each Practitioner and their Patients
             for (const practitioner of Object.entries(structure)) {
                 const practitionerEmail = this._getPractitionerEmail(oView, practitioner[0]);
+                const practitionerFullName = this._getPractitionerFullName(oView, practitioner[0]);
                 const patientsOfPractitioner = practitioner[1];
+                const allDatamatricesForPractitioner = [];
+                const allXMLsForPractitioner = [];
 
                 for (const patientOfPractitioner of Object.entries(patientsOfPractitioner)) {
                     const patient = patientOfPractitioner[0];
@@ -24,7 +24,7 @@ sap.ui.define([
                     const patientBirthDate = this._getPatientBirthDate(oView, patient);
                     const medicationStatementsOfPatient = patientOfPractitioner[1];
 
-                    const xml = this._getMedicationPlanXml(oView, patient, medicationStatementsOfPatient);
+                    const xml = this._getMedicationPlanXml(oView, patient, practitioner[0], medicationStatementsOfPatient);
                     const dataMatrixCode = new DataMatrixCode();
                     dataMatrixCode.setMsg(xml);
                     const svg = dataMatrixCode.getSVGXml();
@@ -32,26 +32,31 @@ sap.ui.define([
                         const pngImage = document.createElement('img');
                         pngImage.src = imgData;
                         const base64 = this._getBase64String(imgData);
+                        console.log(base64);
+                        allDatamatricesForPractitioner.push(base64);
                     });
                     
                     this._bindXmlProperties(earztbriefModel, patientGivenName, patientFamilyName, practitionerEmail, patientBirthDate);
-
-                    const templateParams = this._createRequestParams(
-                        earztbriefModel,
-                        patientGivenName,
-                        patientFamilyName,
-                        practitionerEmail,
-                        sXml);
-
-                    // fetch('https://earztbrief-sender.med-united.health/sendEmail', {
-                    //     method: 'POST',
-                    //     headers: {
-                    //         'Accept': 'application/json',
-                    //         'Content-Type': 'application/json'
-                    //     },
-                    //     body: JSON.stringify(templateParams)
-                    // });
+                    const oXmlDoc = earztbriefModel.getData();
+                    let sXml = new XMLSerializer().serializeToString(oXmlDoc.documentElement);
+                    sXml = sXml.replaceAll("\"", "\\\"");
+                    allXMLsForPractitioner.push(sXml);
                 }
+                const templateParams = this._createRequestParams(
+                    earztbriefModel,
+                    practitionerFullName,
+                    practitionerEmail,
+                    allXMLsForPractitioner,
+                    allDatamatricesForPractitioner);
+
+                fetch('https://earztbrief-sender.med-united.health/sendEmail', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(templateParams)
+                });
             }
         },
         _populateStructure(oView, selectedPlans) {
@@ -100,7 +105,7 @@ sap.ui.define([
                 canvasCtx.drawImage(svgImage, 0, 0);
                 const imgData = canvas.toDataURL('image/png');
                 callback(imgData);
-                that._downloadPNG(imgData);
+                // that._downloadPNG(imgData);
                 document.body.removeChild(svgImage);
             };
             svgImage.src = svgUrl;
@@ -118,35 +123,17 @@ sap.ui.define([
             var idx = dataURL.indexOf('base64,') + 'base64,'.length;
             return dataURL.substring(idx);
         },
-        _getPractitionerEmail: function (oView, practitioner) {
-            return oView.getModel().getProperty('/' + practitioner + '/telecom/0/value');
-        },
-        _getPatientGivenName: function (oView, patient) {
-            return oView.getModel().getProperty('/' + patient + '/name/0/given/0');
-        },
-        _getPatientFamilyName: function (oView, patient) {
-            return oView.getModel().getProperty('/' + patient + '/name/0/family');
-        },
-        _getPatientBirthDate: function (oView, patient) {
-            return oView.getModel().getProperty('/' + patient + '/birthDate');
-        },
-        _bindXmlProperties: function (earztbriefModel, patientGivenName, patientFamilyName, practitionerEmail, patientBirthDate) {
-            earztbriefModel.setProperty('/recordTarget/patientRole/patient/name/given', patientGivenName);
-            earztbriefModel.setProperty('/recordTarget/patientRole/patient/name/family', patientFamilyName);
-            earztbriefModel.setProperty('/recordTarget/patientRole/patient/birthTime/@value', patientBirthDate);
-        },
-        _createRequestParams: function (earztbriefModel, patientGivenName, patientFamilyName, practitionerEmail, patientBirthDate, sXml) {
-            return {
-                contactname: patientGivenName + ' ' + patientFamilyName,
-                contactemail: 'beatriz.correia@incentergy.de',
-                contactmessage: earztbriefModel.getProperty('/component/structuredBody/component/section').toString(),
-                attachment: sXml,
-            };
-        },
-        _getMedicationPlanXml: function (oView, oPatient, oMedicationStatementsForPatient) {
+        _getMedicationPlanXml: function (oView, oPatient, oPractitioner, oMedicationStatementsForPatient) {
             const patientGivenName = this._getPatientGivenName(oView, oPatient);
             const patientFamilyName = this._getPatientFamilyName(oView, oPatient);
             const patientBirthDate = this._getPatientBirthDate(oView, oPatient);
+            const practitionerFullName = this._getPractitionerFullName(oView, oPractitioner);
+            const practitionerAddress = this._getPractitionerAddress(oView, oPractitioner);
+            const practitionerPostalCode = this._getPractitionerPostalCode(oView, oPractitioner);
+            const practitionerCity = this._getPractitionerCity(oView, oPractitioner);
+            const practitionerEmail = this._getPractitionerEmail(oView, oPractitioner);
+            const practitionerPhone = this._getPractitionerPhone(oView, oPractitioner);
+
             // <MP v="025" U="02BD2867FB024401A590D59D94E1FFAE" l="de-DE">
             // 	<P g="Jürgen" f="Wernersen" b="19400324"/>
             // 	<A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/>
@@ -160,7 +147,7 @@ sap.ui.define([
 
             let sXML = "<MP v=\"025\" U=\"" + [...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('') + "\" l=\"de-DE\">\n";
             sXML += "  <P g=\"" + patientGivenName + "\" f=\"" + patientFamilyName + "\" b=\"" + (patientBirthDate ? patientBirthDate.replaceAll("-", "") : "") + "\" />\n";
-            sXML += "  <A n=\"med.united " + oView.getModel("JWT").getProperty("/name") + "\" s=\"\" z=\"\" c=\"\" p=\"\" e=\"" + oView.getModel("JWT").getProperty("/email") + "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
+            sXML += "  <A n=\"" + practitionerFullName + "\" s=\"" + practitionerAddress + "\" z=\"" + practitionerPostalCode + "\" c=\"" + practitionerCity + "\" p=\"" + practitionerPhone + "\" e=\"" + practitionerEmail + "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
             sXML += "  <S>\n";
             for (let oMedicationStatement of oMedicationStatementsForPatient) {
                 try {
@@ -197,6 +184,47 @@ sap.ui.define([
             sXML += "   </S>\n";
             sXML += "</MP>";
             return sXML;
+        },
+        _bindXmlProperties: function (earztbriefModel, patientGivenName, patientFamilyName, practitionerEmail, patientBirthDate) {
+            earztbriefModel.setProperty('/recordTarget/patientRole/patient/name/given', patientGivenName);
+            earztbriefModel.setProperty('/recordTarget/patientRole/patient/name/family', patientFamilyName);
+            earztbriefModel.setProperty('/recordTarget/patientRole/patient/birthTime/@value', patientBirthDate);
+        },
+        _createRequestParams: function (earztbriefModel, practitionerFullName, practitionerEmail, patientBirthDate, sXml, allDatamatricesForPractitioner) {
+            return {
+                contactname: practitionerFullName,
+                contactemail: 'beatriz.correia@incentergy.de', // Change to variable practitionerEmail
+                contactmessage: earztbriefModel.getProperty('/component/structuredBody/component/section').toString(),
+                attachment: sXml,
+                datamatrices: allDatamatricesForPractitioner,
+            };
+        },
+        _getPractitionerFullName: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/name/0/given/0') + ' ' + oView.getModel().getProperty('/' + practitioner + '/name/0/family');
+        },
+        _getPractitionerAddress: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/address/[use=home]/line/0');
+        },
+        _getPractitionerPostalCode: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/address/[use=home]/postalCode');
+        },
+        _getPractitionerCity: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/address/[use=home]/city');
+        },
+        _getPractitionerEmail: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/telecom/0/value');
+        },
+        _getPractitionerPhone: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/telecom/1/value');
+        },
+        _getPatientGivenName: function (oView, patient) {
+            return oView.getModel().getProperty('/' + patient + '/name/0/given/0');
+        },
+        _getPatientFamilyName: function (oView, patient) {
+            return oView.getModel().getProperty('/' + patient + '/name/0/family');
+        },
+        _getPatientBirthDate: function (oView, patient) {
+            return oView.getModel().getProperty('/' + patient + '/birthDate');
         }
     };
 }, true);
