@@ -190,12 +190,12 @@ sap.ui.define([
             earztbriefModel.setProperty('/recordTarget/patientRole/patient/name/family', patientFamilyName);
             earztbriefModel.setProperty('/recordTarget/patientRole/patient/birthTime/@value', patientBirthDate);
         },
-        _createRequestParams: function (earztbriefModel, practitionerFullName, practitionerEmail, patientBirthDate, sXml, allDatamatricesForPractitioner) {
+        _createRequestParams: function (earztbriefModel, practitionerFullName, practitionerEmail, allXMLsForPractitioner, allDatamatricesForPractitioner) {
             return {
                 contactname: practitionerFullName,
                 contactemail: 'beatriz.correia@incentergy.de', // Change to variable practitionerEmail
                 contactmessage: earztbriefModel.getProperty('/component/structuredBody/component/section').toString(),
-                attachment: sXml,
+                attachment: allXMLsForPractitioner,
                 datamatrices: allDatamatricesForPractitioner,
             };
         },
