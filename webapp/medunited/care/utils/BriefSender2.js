@@ -16,6 +16,7 @@ sap.ui.define([
                 const patientsOfPractitioner = practitioner[1];
                 const allDatamatricesForPractitioner = [];
                 const allXMLsForPractitioner = [];
+                var oPromises = [];
 
                 for (const patientOfPractitioner of Object.entries(patientsOfPractitioner)) {
                     const patient = patientOfPractitioner[0];
@@ -29,13 +30,17 @@ sap.ui.define([
                     dataMatrixCode.setMsg(xml);
                     const svg = dataMatrixCode.getSVGXml();
 
-                    this._svgToPng(svg, (imgData) => {
-                        const pngImage = document.createElement('img');
-                        pngImage.src = imgData;
-                        const base64 = this._getBase64String(imgData);
-                        console.log(base64);
-                        allDatamatricesForPractitioner.push(base64);
-                    });
+                    const promise = this._base64SvgToBase64Png(svg, 20, allDatamatricesForPractitioner)
+
+                    oPromises.push(promise);
+
+                    // this._svgToPng(svg, (imgData) => {
+                    //     const pngImage = document.createElement('img');
+                    //     pngImage.src = imgData;
+                    //     const base64 = this._getBase64String(imgData);
+                    //     console.log(base64);
+                    //     allDatamatricesForPractitioner.push(base64);
+                    // })
 
                     this._bindXmlProperties(earztbriefModel, patientGivenName, patientFamilyName, practitionerEmail, patientBirthDate);
                     const oXmlDoc = earztbriefModel.getData();
@@ -52,17 +57,47 @@ sap.ui.define([
                     practitionerEmail,
                     allXMLsForPractitioner,
                     allDatamatricesForPractitioner);
-                
-                fetch('https://mail-sender.med-united.health/sendEmail/earztbrief', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(templateParams)
+
+                Promise.all(oPromises).then(function() {
+                    fetch('http://localhost:8082/sendEmail/earztbrief', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(templateParams)
+                    });
                 });
             }
         },
+
+        _base64SvgToBase64Png: function (originalBase64, width, allDatamatricesForPractitioner) {
+            return new Promise(resolve => {
+                let img = document.createElement('img');
+                img.onload = function () {
+                    document.body.appendChild(img);
+                    let canvas = document.createElement("canvas");
+                    let ratio = (img.clientWidth / img.clientHeight) || 1;
+                    document.body.removeChild(img);
+                    canvas.width = width;
+                    canvas.height = width / ratio;
+                    let ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    try {
+                        let data = canvas.toDataURL('image/png');
+                        resolve(data);
+                    } catch (e) {
+                        resolve(null);
+                    }
+                };
+                img.onerror = function() {
+                    resolve(null);
+                };
+                img.src = originalBase64;
+                allDatamatricesForPractitioner.push(img.src)
+            });
+        },
+
         _populateStructure(oView, selectedPlans) {
             const structure = {};
 
@@ -196,9 +231,9 @@ sap.ui.define([
         },
         _createRequestParams: function (earztbriefModel, practitionerFullName, practitionerEmail, allXMLsForPractitioner, allDatamatricesForPractitioner) {
             return {
-                contactname: practitionerFullName,
-                contactemail: 'beatriz.correia@incentergy.de', // Change to variable practitionerEmail
-                contactmessage: earztbriefModel.getProperty('/component/structuredBody/component/section').toString(),
+                contactName: practitionerFullName,
+                contactEmail: 'beatriz.correia@incentergy.de', // Change to variable practitionerEmail
+                contactMessage: earztbriefModel.getProperty('/component/structuredBody/component/section').toString(),
                 attachment: allXMLsForPractitioner,
                 datamatrices: allDatamatricesForPractitioner,
             };
