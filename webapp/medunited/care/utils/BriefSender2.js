@@ -28,6 +28,7 @@ sap.ui.define([
                     const dataMatrixCode = new DataMatrixCode();
                     dataMatrixCode.setMsg(xml);
                     const svg = dataMatrixCode.getSVGXml();
+
                     this._svgToPng(svg, (imgData) => {
                         const pngImage = document.createElement('img');
                         pngImage.src = imgData;
@@ -35,7 +36,7 @@ sap.ui.define([
                         console.log(base64);
                         allDatamatricesForPractitioner.push(base64);
                     });
-                    
+
                     this._bindXmlProperties(earztbriefModel, patientGivenName, patientFamilyName, practitionerEmail, patientBirthDate);
                     const oXmlDoc = earztbriefModel.getData();
                     let sXml = new XMLSerializer().serializeToString(oXmlDoc.documentElement);
@@ -51,8 +52,8 @@ sap.ui.define([
                     practitionerEmail,
                     allXMLsForPractitioner,
                     allDatamatricesForPractitioner);
-
-                fetch('https://mail-sender.med-united.health/sendEmail', {
+                
+                fetch('https://mail-sender.med-united.health/sendEmail/earztbrief', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
