@@ -66,10 +66,10 @@ sap.ui.define([
 				//ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
 			} else {
 				alert("Sending Brief");
-				// BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
+				//BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 				BriefSender2.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 			}
-			// PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
+			//PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
 		},
 
 		_buildMedicationRequests: function (selectedPlans) {
