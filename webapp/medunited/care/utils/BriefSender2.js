@@ -42,6 +42,9 @@ sap.ui.define([
                     sXml = sXml.replaceAll("\"", "\\\"");
                     allXMLsForPractitioner.push(sXml);
                 }
+
+                console.log(allDatamatricesForPractitioner);
+
                 const templateParams = this._createRequestParams(
                     earztbriefModel,
                     practitionerFullName,
@@ -49,7 +52,7 @@ sap.ui.define([
                     allXMLsForPractitioner,
                     allDatamatricesForPractitioner);
 
-                fetch('https://earztbrief-sender.med-united.health/sendEmail', {
+                fetch('https://mail-sender.med-united.health/sendEmail', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
