@@ -49,7 +49,7 @@ sap.ui.define([
                     allDatamatricesForPractitioner);
 
                 Promise.all(oPromises).then(function() {
-                    fetch('http://localhost:8082/sendEmail/earztbrief', {
+                    fetch('https://mail-sender.med-united.health/sendEmail/earztbrief', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
