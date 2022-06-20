@@ -1,5 +1,6 @@
 sap.ui.define([
-], function () {
+    'medunited/care/utils/PropertyExtractor'
+], function (PropertyExtractor) {
     "use strict";
     return {
 
@@ -11,10 +12,10 @@ sap.ui.define([
             const that = this;
 
             selectedPlans.forEach(function (plan) {
-                const patientGivenName = that._extractNameFrom(oView, plan);
-                const patientFamilyName = that._extractSurnameFrom(oView, plan);
-                const doctorEmail = that._extractDoctorEmailFrom(oView, plan);
-                const patientBirthDate = that._extractPatientBirthDateFrom(oView, plan);
+                const patientGivenName = PropertyExtractor.extractPatientNameFrom(oView, plan);
+                const patientFamilyName = PropertyExtractor.extractPatientSurnameFrom(oView, plan);
+                const doctorEmail = PropertyExtractor.extractDoctorEmailFrom(oView, plan);
+                const patientBirthDate = PropertyExtractor.extractPatientBirthDateFrom(oView, plan);
 
                 that._bindXmlProperties(earztbriefModel, patientGivenName, patientFamilyName, doctorEmail, patientBirthDate);
 
@@ -39,18 +40,6 @@ sap.ui.define([
 
         _extractPatientBirthDateFrom: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/subject/reference/birthDate");
-        },
-
-        _extractDoctorEmailFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/subject/reference/generalPractitioner/0/reference/telecom/1/value");
-        },
-
-        _extractSurnameFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/subject/reference/name/0/family");
-        },
-
-        _extractNameFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/subject/reference/name/0/given/0");
         },
 
         _bindXmlProperties: function (earztbriefModel, patientGivenName, patientFamilyName, doctorEmail, patientBirthDate) {
