@@ -2,9 +2,10 @@ sap.ui.define([
 	'medunited/base/controller/AbstractMasterController',
 	'medunited/care/utils/ScriptDownloader',
 	'medunited/care/utils/BriefSender',
+	'medunited/care/utils/BriefSender2',
 	'medunited/care/utils/PharmacyNotifier',
 	'sap/ui/model/xml/XMLModel'
-], function (AbstractMasterController, ScriptDownloader, BriefSender, PharmacyNotifier, XMLModel) {
+], function (AbstractMasterController, ScriptDownloader, BriefSender, BriefSender2, PharmacyNotifier, XMLModel) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
@@ -64,10 +65,11 @@ sap.ui.define([
 				alert("Sending Powershell Script. Functionality may be disabled");
 				ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
 			} else {
-				alert("Sending Brief. Functionality may be disabled");
-				BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
+				alert("Sending Brief");
+				// BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
+				BriefSender2.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 			}
-			PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
+			// PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
 		},
 
 		_buildMedicationRequests: function (selectedPlans) {
