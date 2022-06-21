@@ -74,6 +74,9 @@ sap.ui.define([
 			sXML    += "   </S>\n";
 			sXML    += "</MP>";
 			return sXML;
+		},
+		onCreateMedicationPlan: function() {
+			console.log("button was clicked");
 		}
 	});
 }, true);
