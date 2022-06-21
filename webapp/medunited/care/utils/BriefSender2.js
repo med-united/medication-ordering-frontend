@@ -37,7 +37,6 @@ sap.ui.define([
                     this._bindXmlProperties(earztbriefModel, patientGivenName, patientFamilyName, practitionerEmail, patientBirthDate);
                     const oXmlDoc = earztbriefModel.getData();
                     let sXml = new XMLSerializer().serializeToString(oXmlDoc.documentElement);
-                    sXml = sXml.replaceAll("\"", "\\\"");
                     allXMLsForPractitioner.push(sXml);
                 }
 
