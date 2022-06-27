@@ -17,6 +17,8 @@ Write-Host "Bitte geben Sie Ihren Benutzernamen ein:"
 $doctorUsername = Read-Host
 Write-Host "Bitte geben Sie Ihr Passwort ein:"
 $doctorPassword = Read-Host
+Write-Host "Bitte geben Sie Ihre Lebenslange Arztnummer ein:"
+$lanr = Read-Host
 Write-Host "Bitte geben Sie die IP-Adresse des Servers ein:"
 $serverAddress = Read-Host
 
@@ -39,18 +41,20 @@ $headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([Syste
 $headers.Add("Content-Type", "application/json")
 
 $body = "{
-`n    `"benutzerRef`": {
-`n        `"objectId`": {
-`n            `"id`": `"$userReference`"
-`n        }
-`n    }
-`n}"
+    `n    `"benutzerRef`": {
+    `n        `"objectId`": {
+    `n            `"id`": `"$userReference`"
+    `n        }
+    `n    },
+    `n    `"findOnlyAssigned`": true
+    `n}"
 
-$URI = "https://" + $serverAddress + ":16567/aps/rest/praxis/praxisstruktur/kontextauswaehlen/arztrollenFuerBenutzer"
+$URI = "https://" + $serverAddress + ":16567/aps/rest/benutzer/verwalten/find"
 $response = Invoke-RestMethod -Uri $URI -Method 'POST' -Headers $headers -Body $body
 
-$doctorReference = $response | Select-Object -ExpandProperty "arztrollen" | Select-Object -ExpandProperty "ref" -First 1 | Select-Object -ExpandProperty "objectId" | Select-Object -ExpandProperty "id"
-Write-Host "Doctor reference: " $doctorReference
+$doctorReference = $response | Select-Object -ExpandProperty "benutzerBearbeitenDTO" | Select-Object -ExpandProperty "arztrollen" | Select-Object -ExpandProperty "arztrolle" | Where-Object -Property lanr -eq -Value $lanr | Select-Object -ExpandProperty "ref" | Select-Object -ExpandProperty "objectId" | Select-Object -ExpandProperty "id"
+
+Write-Host "Patient reference: " $doctorReference
 
 #----------------------------------------------------------------------------------------------------------------------
 #Filter patients by surname, name
