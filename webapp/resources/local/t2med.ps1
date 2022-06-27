@@ -13,10 +13,12 @@ Add-Type -TypeDefinition $code -Language CSharp
 #----------------------------------------------------------------------------------------------------------------------
 #Ask doctor for credentials
 
-Write-Host "Please enter your username:"
+Write-Host "Bitte geben Sie Ihren Benutzernamen ein:"
 $doctorUsername = Read-Host
-Write-Host "Please enter your password:"
+Write-Host "Bitte geben Sie Ihr Passwort ein:"
 $doctorPassword = Read-Host
+Write-Host "Bitte geben Sie die IP-Adresse des Servers ein:"
+$serverAddress = Read-Host
 
 #----------------------------------------------------------------------------------------------------------------------
 #Login into the system
@@ -24,7 +26,7 @@ $doctorPassword = Read-Host
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
 
-$response = Invoke-RestMethod 'http://localhost:16567/aps/rest/benutzer/login/authenticate' -Method 'GET' -Headers $headers
+$response = Invoke-RestMethod 'http://' + $serverAddress + ':16567/aps/rest/benutzer/login/authenticate' -Method 'GET' -Headers $headers
 
 $userReference = $response | Select-Object -ExpandProperty "benutzer" | Select-Object -ExpandProperty "benutzer" | Select-Object -ExpandProperty "ref" | Select-Object -ExpandProperty "objectId" | Select-Object -ExpandProperty "id"
 Write-Host "User reference: " $userReference
