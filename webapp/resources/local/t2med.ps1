@@ -54,7 +54,7 @@ $response = Invoke-RestMethod -Uri $URI -Method 'POST' -Headers $headers -Body $
 
 $doctorReference = $response | Select-Object -ExpandProperty "benutzerBearbeitenDTO" | Select-Object -ExpandProperty "arztrollen" | Select-Object -ExpandProperty "arztrolle" | Where-Object -Property lanr -eq -Value $lanr | Select-Object -ExpandProperty "ref" | Select-Object -ExpandProperty "objectId" | Select-Object -ExpandProperty "id"
 
-Write-Host "Patient reference: " $doctorReference
+Write-Host "Doctor reference: " $doctorReference
 
 #----------------------------------------------------------------------------------------------------------------------
 #Filter patients by surname, name
