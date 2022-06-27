@@ -14,7 +14,7 @@
 				<Label text="{i18n>FamilyName}" />
 				<Input type="text" value="{name/[use=official]/family}" />
 				<Label text="{i18n>BirthDate}" />
-				<DatePicker value="{birthdate}" />
+				<DatePicker valueFormat="YYYY-MM-dd" value="{birthDate}" />
 				<Label text="{i18n>Street}" />
 				<Input type="text" value="{address/[use=home]/line/0}" />
 				<Label text="{i18n>PostalCode}" />

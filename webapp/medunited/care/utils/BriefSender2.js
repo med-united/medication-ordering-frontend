@@ -158,7 +158,7 @@ sap.ui.define([
             // </MP>
 
             let sXML = "<MP v=\"025\" U=\"" + [...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('') + "\" l=\"de-DE\">\n";
-            sXML += "  <P g=\"" + patientGivenName + "\" f=\"" + patientFamilyName + "\" b=\"" + (patientBirthDate ? patientBirthDate.replaceAll("-", "") : "") + "\" />\n";
+            sXML += "  <P g=\"" + patientGivenName + "\" f=\"" + patientFamilyName + "\" b=\"" + patientBirthDate.replaceAll("-", "") + "\" />\n";
             sXML += "  <A n=\"" + practitionerFullName + "\" s=\"" + practitionerAddress + "\" z=\"" + practitionerPostalCode + "\" c=\"" + practitionerCity + "\" p=\"" + practitionerPhone + "\" e=\"" + practitionerEmail + "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
             sXML += "  <S>\n";
             for (let oMedicationStatement of oMedicationStatementsForPatient) {
@@ -176,7 +176,9 @@ sap.ui.define([
                             3: "h"
                         };
                         for (let i = 0; i < aDosage.length; i++) {
-                            sXML += mDosage[i] + "=\"" + aDosage[i] + "\" ";
+                            if (aDosage[i] !== "0") {
+                                sXML += mDosage[i] + "=\"" + aDosage[i] + "\" ";
+                            }
                         }
                     }
                     const sNote = medicationStatementNote;
