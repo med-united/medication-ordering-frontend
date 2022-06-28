@@ -37,7 +37,7 @@ Write-Host "User reference: " $userReference
 #----------------------------------------------------------------------------------------------------------------------
 #Get Doctor's role
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:${doctorPassword}")))
 $headers.Add("Content-Type", "application/json")
 
 $body = "{
@@ -60,7 +60,7 @@ Write-Host "Doctor reference: " $doctorReference
 #Filter patients by surname, name
 
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:${doctorPassword}")))
 $headers.Add("Content-Type", "application/json")
 
 $body = "{
@@ -76,7 +76,7 @@ Write-Host "Patient reference: " $patientReference
 
 #Get most recent behandlungsfall
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:${doctorPassword}")))
 $headers.Add("Content-Type", "application/json")
 
 $body = "{
@@ -94,7 +94,7 @@ Write-Host "Case reference: " $caseReference
 # #----------------------------------------------------------------------------------------------------------------------
 # #Get Behandlungsort
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:${doctorPassword}")))
 $headers.Add("Content-Type", "application/json;charset=UTF-8")
 
 $URI = "https://" + $serverAddress + ":16567/aps/rest/praxis/praxisstruktur/kontextauswaehlen/arztrollenbehandlungorte"
@@ -106,7 +106,7 @@ Write-Host "Case location reference: " $caseLocationReference
 # #----------------------------------------------------------------------------------------------------------------------
 # #Search medication by PZN
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:")))
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:${doctorPassword}")))
 $headers.Add("Content-Type", "application/json;charset=UTF-8")
 
 $body = "{
@@ -183,7 +183,7 @@ Write-Host "Medication wirkstaerkeEinheit: " $wirkstaerkeEinheit
 # #Create and save prescription
 
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "Basic dDJ1c2VyOg==")
+$headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${doctorUsername}:${doctorPassword}")))
 $headers.Add("Content-Type", "application/json;charset=UTF-8")
 $headers.Add("Cookie", "JSESSIONID=732C7DCE9699BAE4710C3376814F386B")
 
