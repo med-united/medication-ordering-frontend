@@ -3,9 +3,17 @@ sap.ui.define([
 	"medunited/base/controller/AbstractController",
 	"sap/f/FlexibleColumnLayout",
 	"sap/base/Log",
-	"medunited/base/jwt/JWTUtil"
-], function (ResizeHandler, AbstractController, FlexibleColumnLayout, Log, JWTUtil) {
+	"medunited/base/jwt/JWTUtil",
+	"sap/m/Dialog",
+	"sap/m/Button",
+	"sap/m/library",
+	"sap/m/MessageToast",
+	"sap/m/Text"
+], function (ResizeHandler, AbstractController, FlexibleColumnLayout, Log, JWTUtil, Dialog, Button, mobileLibrary, MessageToast, Text) {
 	"use strict";
+
+	let ButtonType = mobileLibrary.ButtonType;
+	let DialogType = mobileLibrary.DialogType;
 
 	return AbstractController.extend("medunited.care.controller.App", {
 		onInit: function () {
@@ -88,6 +96,37 @@ sap.ui.define([
 			} catch(e) {
 				console.error("Exception while formatting name: "+e);
 			}
+		},
+		dialogToLogOut: function() {
+			if (!this.oLogoutDialog) {
+				this.oLogoutDialog = new Dialog({
+					type: DialogType.Message,
+					title: this.translate("logOut"),
+					content: new Text({ text: this.translate("doYouWantToLogOutOfTheSystem") }),
+					beginButton: new Button({
+						type: ButtonType.Emphasized,
+						text: this.translate("yes"),
+						press: function () {
+							MessageToast.show(this.translate("loggingOut"));
+							this.oLogoutDialog.close();
+							let keycloak = this.getView().getParent().keycloak;
+							const logoutOptions = { redirectUri : "https://care.med-united.health" };
+    						keycloak.logout(logoutOptions).then((success) => {
+            					console.log("Log out success ", success );
+    						}).catch((error) => {
+            					console.log("Log out error ", error );
+    						});
+						}.bind(this)
+					}),
+					endButton: new Button({
+						text: this.translate("cancel"),
+						press: function () {
+							this.oLogoutDialog.close();
+						}.bind(this)
+					})
+				});
+			}
+			this.oLogoutDialog.open();
 		}
 	});
 }, true);
