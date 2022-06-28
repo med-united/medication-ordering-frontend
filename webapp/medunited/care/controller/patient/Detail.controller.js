@@ -1,7 +1,10 @@
 sap.ui.define([
 	"medunited/base/controller/AbstractDetailController",
-	"../../utils/Formatter"
-], function (AbstractDetailController, Formatter) {
+	"../../utils/Formatter",
+	"sap/m/MessageBox",
+	"sap/ui/core/Fragment",
+	"sap/base/security/URLListValidator"
+], function (AbstractDetailController, Formatter, MessageBox, Fragment, URLListValidator) {
 	"use strict";
 
 	return AbstractDetailController.extend("medunited.care.controller.patient.Detail", {
@@ -35,7 +38,7 @@ sap.ui.define([
 			// 	</S>
 			// </MP>
 			
-			let sXML = "<MP v=\"025\" U=\""+[...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('')+"\" l=\"de-DE\">\n"; 
+			let sXML = "<MP xmlns=\"http://ws.gematik.de/fa/amtss/AMTS_Document/v1.6\" v=\"025\" U=\""+[...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('')+"\" l=\"de-DE\">\n"; 
 			if(oPatient && oPatient.name && oPatient.name.length > 0 && oPatient.name[0].given) {
 				sXML    += "  <P g=\""+oPatient.name[0].given[0]+"\" f=\""+oPatient.name[0].family+"\" b=\""+(oPatient.birthDate ? oPatient.birthDate.replaceAll("-", "") : "")+"\" />\n";
 			}
@@ -76,7 +79,48 @@ sap.ui.define([
 			return sXML;
 		},
 		onCreateMedicationPlan: function() {
-			console.log("button was clicked");
+			const sPatientId = this._entity;
+			fetch("https://medicationplan.med-united.health/medicationPlanPdf", {
+				method: "POST",
+				mode: "cors",
+				body: this.formatPatientDataMatrix(sPatientId),
+				headers: {
+					"Accept": "application/pdf",
+					"Content-Type": "application/xml"
+				}
+			})
+			.then((oResponse) => {
+				if (!oResponse.ok) {
+					throw Error(oResponse.statusText);
+				}
+				return oResponse;
+			})
+			.then(oResponse => oResponse.blob())
+			.then((oBlob) => {
+				const sObjectURL = URL.createObjectURL(oBlob);
+				if (!this.byId("medicationPlanDialog")) {
+					URLListValidator.add("blob");
+					// load asynchronous XML fragment
+					Fragment.load({
+						id: this.getView().getId(),
+						name: "medunited.care.view."+this.getEntityName().toLowerCase()+".MedicationPlanDialog",
+						controller: this
+					}).then((oDialog) => {
+						// connect dialog to the root view of this component (models, lifecycle)
+						this.getView().addDependent(oDialog);
+						this._openMedicationPlanDialog(oDialog, sObjectURL);
+					});
+				} else {
+					this._openMedicationPlanDialog(this.byId("medicationPlanDialog"), sObjectURL);
+				}
+			}).catch((oError) => MessageBox.show(this.translate("msgError", [oError])));
+		},
+		_openMedicationPlanDialog: function(oDialog, sObjectURL) {
+			oDialog.open();
+			this.byId("medicationPlanPdfViewer").setSource(sObjectURL);
+		},
+		onCloseMedicationPlan: function() {
+			this.byId("medicationPlanDialog").close();
 		}
 	});
 }, true);
