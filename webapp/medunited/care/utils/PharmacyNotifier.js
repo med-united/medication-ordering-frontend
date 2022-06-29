@@ -57,7 +57,7 @@ sap.ui.define([
 
         _callPharmacyNotificationService: function (params) {
 
-            fetch('http://mail-sender.med-united.health/sendEmail/notifyPharmacy', {
+            fetch('https://mail-sender.med-united.health/sendEmail/notifyPharmacy', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
