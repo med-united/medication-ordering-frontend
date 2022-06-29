@@ -2,10 +2,9 @@ sap.ui.define([
 	'medunited/base/controller/AbstractMasterController',
 	'medunited/care/utils/ScriptDownloader',
 	'medunited/care/utils/BriefSender',
-	'medunited/care/utils/BriefSender2',
 	'medunited/care/utils/PharmacyNotifier',
 	'sap/ui/model/xml/XMLModel'
-], function (AbstractMasterController, ScriptDownloader, BriefSender, BriefSender2, PharmacyNotifier, XMLModel) {
+], function (AbstractMasterController, ScriptDownloader, BriefSender, PharmacyNotifier, XMLModel) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
