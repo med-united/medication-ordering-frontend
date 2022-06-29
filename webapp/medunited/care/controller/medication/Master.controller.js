@@ -66,10 +66,9 @@ sap.ui.define([
 				ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
 			} else {
 				alert("Sending Brief");
-				//BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
-				BriefSender2.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
+				BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 			}
-			//PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
+			PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
 		},
 
 		_buildMedicationRequests: function (selectedPlans) {
@@ -124,7 +123,7 @@ sap.ui.define([
 		_makeCurrentDateTime: function () {
 			const today = new Date();
 			const date = today.getFullYear() + '-' + ("0" + (today.getMonth() + 1)).slice(-2) + '-' + ("0" + today.getDate()).slice(-2);
-			const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "." + today.getMilliseconds() + "Z";
+			const time = ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2) + "." + ("0" + today.getMilliseconds()).slice(-2) + "Z";
 			return date + 'T' + time;
 		}
 

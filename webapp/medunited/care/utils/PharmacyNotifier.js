@@ -9,33 +9,47 @@ sap.ui.define([
 
             const that = this;
 
-            selectedPlans.forEach(function (plan) {
-                const pharmacyEmail = PropertyExtractor.extractPharmacyEmailFrom(oView, plan);
+            const structure = this._populateStructure(oView, selectedPlans);
 
-                const patient = {
-                    name: PropertyExtractor.extractPatientNameFrom(oView, plan),
-                    surname: PropertyExtractor.extractPatientSurnameFrom(oView, plan),
-                };
+            for (const pharmacy of Object.entries(structure)) {
+                let pharmacyEmail = PropertyExtractor.extractPharmacyEmailFromPlan(oView, pharmacy[1][0]);
+                let patientNames = [];
+                let practitionerNames = [];
+                let pznNumbers = [];
+                for (const plan of Object.entries(pharmacy[1])) {
+                    patientNames.push(PropertyExtractor.extractPatientFullNameFromPlan(oView, plan[1]));
+                    practitionerNames.push(PropertyExtractor.extractDoctorFullNameFromPlan(oView, plan[1]));
+                    pznNumbers.push(PropertyExtractor.extractPznFromPlan(oView, plan[1]));
+                }
 
-                const doctor = {
-                    name: PropertyExtractor.extractDoctorNameFrom(oView, plan),
-                    surname: PropertyExtractor.extractDoctorSurnameFrom(oView, plan),
-                };
-
-                const pzn = PropertyExtractor.extractPznFrom(oView, plan);
-
-                const params = that._createRequestParams(pharmacyEmail, patient, doctor, pzn);
+                const params = that._createRequestParams(pharmacyEmail, patientNames, practitionerNames, pznNumbers);
 
                 that._callPharmacyNotificationService(params);
-            });
+            }
         },
 
-        _createRequestParams: function (pharmacyEmail, patient, doctor, pzn) {
+        _populateStructure(oView, selectedPlans) {
+            const structure = {};
+
+            for (const plan of selectedPlans) {
+                const pharmacy = oView.getModel().getProperty(plan + '/derivedFrom/0/reference');
+                if (pharmacy in structure) {
+                    structure[pharmacy].push(plan);
+                }
+                else {
+                    structure[pharmacy] = [];
+                    structure[pharmacy].push(plan);
+                }
+            }
+            return structure;
+        },
+
+        _createRequestParams: function (pharmacyEmail, listOfPatients, listOfPractitioners, listOfPzns) {
             return {
                 pharmacyEmail: pharmacyEmail,
-                patient: patient.name + " " + patient.surname,
-                doctor: doctor.name + " " + doctor.surname,
-                pzn: pzn,
+                patients: listOfPatients,
+                doctors: listOfPractitioners,
+                pzns: listOfPzns,
                 status: "active",
                 requestDate: DateTimeMaker.makeCurrentDateTime()
             };
@@ -43,7 +57,7 @@ sap.ui.define([
 
         _callPharmacyNotificationService: function (params) {
 
-            fetch('https://mail-sender.med-united.health/sendEmail/notifyPharmacy', {
+            fetch('http://mail-sender.med-united.health/sendEmail/notifyPharmacy', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

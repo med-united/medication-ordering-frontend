@@ -3,36 +3,99 @@ sap.ui.define([
     "use strict";
     return {
 
-        extractPatientNameFrom: function (oView, plan) {
+        // Extract property from MedicationStatement
+
+        extractPatientFirstNameFromPlan: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/subject/reference/name/0/given/0");
         },
 
-        extractPatientSurnameFrom: function (oView, plan) {
+        extractPatientSurnameFromPlan: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/subject/reference/name/0/family");
         },
 
-        extractPharmacyEmailFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/subject/reference/managingOrganization/reference/telecom/1/value");
+        extractPatientFullNameFromPlan: function (oView, plan) {
+            return oView.getModel().getProperty(plan + "/subject/reference/name/0/given/0") + " " + oView.getModel().getProperty(plan + "/subject/reference/name/0/family");
         },
 
-        extractDoctorEmailFrom: function (oView, plan) {
+        extractPharmacyNameFromPlan: function (oView, plan) {
+            return oView.getModel().getProperty(plan + "/derivedFrom/0/reference/name");
+        },
+
+        extractPharmacyEmailFromPlan: function (oView, plan) {
+            return oView.getModel().getProperty(plan + "/derivedFrom/0/reference/telecom/1/value");
+        },
+
+        extractDoctorEmailFromPlan: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/subject/reference/generalPractitioner/0/reference/telecom/1/value");
         },
 
-        extractDoctorNameFrom: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/informationSource/reference/name/0/family");
-        },
-
-        extractDoctorSurnameFrom: function (oView, plan) {
+        extractDoctorFirstNameFromPlan: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/informationSource/reference/name/0/given/0");
         },
 
-        extractPznFrom: function (oView, plan) {
+        extractDoctorSurnameFromPlan: function (oView, plan) {
+            return oView.getModel().getProperty(plan + "/informationSource/reference/name/0/family");
+        },
+
+        extractDoctorFullNameFromPlan: function (oView, plan) {
+            return oView.getModel().getProperty(plan + "/informationSource/reference/name/0/given/0") + " " + oView.getModel().getProperty(plan + "/informationSource/reference/name/0/family");
+        },
+
+        extractPznFromPlan: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/identifier/0/value");
         },
 
-        extractPatientBirthDateFrom: function (oView, plan) {
+        extractDosageFromPlan: function (oView, plan) {
+            return oView.getModel().getProperty(plan + '/dosage/0/text')
+        },
+
+        extractNoteFromPlan: function (oView, plan) {
+            return oView.getModel().getProperty(plan + '/note/0/text')
+        },
+
+        extractPatientBirthDateFromPlan: function (oView, plan) {
             return oView.getModel().getProperty(plan + "/subject/reference/birthDate");
         },
+
+        // Extract property from Patient
+
+        extractGivenNameFromPatient: function (oView, patient) {
+            return oView.getModel().getProperty('/' + patient + '/name/0/given/0');
+        },
+
+        extractFamilyNameFromPatient: function (oView, patient) {
+            return oView.getModel().getProperty('/' + patient + '/name/0/family');
+        },
+
+        extractBirthDateFromPatient: function (oView, patient) {
+            return oView.getModel().getProperty('/' + patient + '/birthDate');
+        },
+
+        // Extract property from Practitioner
+
+        extractFullNameFromPractitioner: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/name/0/given/0') + ' ' + oView.getModel().getProperty('/' + practitioner + '/name/0/family');
+        },
+
+        extractAddressFromPractitioner: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/address/[use=home]/line/0');
+        },
+
+        extractPostalCodeFromPractitioner: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/address/[use=home]/postalCode');
+        },
+
+        extractCityFromPractitioner: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/address/[use=home]/city');
+        },
+
+        extractEmailFromPractitioner: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/telecom/0/value');
+        },
+
+        extractPhoneFromPractitioner: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/telecom/1/value');
+        }
+
     };
 }, true);
