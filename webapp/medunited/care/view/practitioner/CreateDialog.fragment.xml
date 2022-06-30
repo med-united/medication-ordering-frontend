@@ -36,6 +36,11 @@
 				<Input type="text" id="phone" value="{telecom/1/value}" />
 				<Label text="{i18n>Fax}" />
 				<Input type="text" id="fax" value="{telecom/2/value}" />
+				<Label text="{i18n>prescriptionMode}" labelFor="prescriptionModeSelect"/>
+				<ComboBox id="prescriptionModeSelect" forceSelection="false" selectedKey="{extension/0/valueString}">
+                	<core:Item key="t2med" text="T2Med"/>
+                	<core:Item key="earztbrief" text="Earztbrief"/>
+				</ComboBox>
 			</form:content>
 		</form:SimpleForm>
 		<beginButton>
