@@ -27,22 +27,12 @@ sap.ui.define([
 			return this.getMedicationPlanXml(oPatient, aMedicationStatementForPatient);
 		},
 		getMedicationPlanXml: function (oPatient, aMedicationStatementForPatient) {
-			// <MP v="025" U="02BD2867FB024401A590D59D94E1FFAE" l="de-DE">
-			// 	<P g="Jürgen" f="Wernersen" b="19400324"/>
-			// 	<A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/>
-			// 	<S>
-			// 		<M p="230272" m="1" du="1" r="Herz/Blutdruck"/>
-			// 		<M p="2223945" m="1" du="1" r="Blutdruck"/>
-			// 		<M p="558736" m="20" v="20" du="p" i="Wechseln der Injektionsstellen, unmittelbar vor einer Mahlzeit spritzen" r="Diabetes"/>
-			// 		<M p="9900751" v="1" du="1" r="Blutfette"/>
-			// 	</S>
-			// </MP>
-
+			//https://update.kbv.de/ita-update/Verordnungen/Arzneimittel/BMP/EXT_ITA_VGEX_BMP_Anlage3_mitAend.pdf
 			let sXML = "<MP xmlns=\"http://ws.gematik.de/fa/amtss/AMTS_Document/v1.6\" v=\"025\" U=\"" + [...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('') + "\" l=\"de-DE\">\n";
 			if (oPatient && oPatient.name && oPatient.name.length > 0 && oPatient.name[0].given) {
 				sXML += "  <P g=\"" + oPatient.name[0].given[0] + "\" f=\"" + oPatient.name[0].family + "\" b=\"" + (oPatient.birthDate ? oPatient.birthDate.replaceAll("-", "") : "") + "\" />\n";
 			}
-			sXML += "  <A n=\"med.united " + this.getView().getModel("JWT").getProperty("/name") + "\" s=\"\" z=\"\" c=\"\" p=\"\" e=\"" + this.getView().getModel("JWT").getProperty("/email") + "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
+			sXML += "  <A n=\"med.united " + this.getNameFromLoggedPerson() + "\" s=\"" + this.getStreetFromLoggedPerson() + "\" z=\"" + this.getPostalCodeFromLoggedPerson() + "\" c=\"" + this.getCityFromLoggedPerson() + "\" p=\"" + this.getPhoneNumberFromLoggedPerson() + "\" e=\"" + this.getEmailFromLoggedPerson() + "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
 			sXML += "  <S>\n";
 			for (let oMedicationStatement of aMedicationStatementForPatient) {
 				try {
@@ -83,6 +73,31 @@ sap.ui.define([
 			sXML += "</MP>";
 			return sXML;
 		},
+
+		getPhoneNumberFromLoggedPerson() {
+			return this.getView().getModel("JWT").getProperty("/phone")
+		},
+
+		getNameFromLoggedPerson() {
+			return this.getView().getModel("JWT").getProperty("/name")
+		},
+
+		getEmailFromLoggedPerson() {
+			return this.getView().getModel("JWT").getProperty("/email")
+		},
+
+		getStreetFromLoggedPerson() {
+			return this.getView().getModel("JWT").getProperty("/street")
+		},
+
+		getPostalCodeFromLoggedPerson() {
+			return this.getView().getModel("JWT").getProperty("/postalCode")
+		},
+
+		getCityFromLoggedPerson() {
+			return this.getView().getModel("JWT").getProperty("/city")
+		},
+
 		onCreateMedicationPlan: function () {
 			const sPatientId = this._entity;
 			fetch("https://medicationplan.med-united.health/medicationPlanPdf", {
