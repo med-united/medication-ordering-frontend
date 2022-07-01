@@ -64,7 +64,7 @@ $headers.Add("Authorization", "Basic " + [System.Convert]::ToBase64String([Syste
 $headers.Add("Content-Type", "application/json")
 
 $body = "{
-`n    `"searchString`": `"A Hosseini, Dena`"
+`n    `"searchString`": `"$patientSurname, $patientName`"
 `n}"
 
 $URI = "https://" + $serverAddress + ":16567/aps/rest/praxis/patient/liste/pagefilter"
@@ -112,7 +112,7 @@ $headers.Add("Content-Type", "application/json;charset=UTF-8")
 $body = "{
     `n    `"amdbSearchQueries`": [
     `n        {
-    `n            `"searchtext`": `"1686206`"
+    `n            `"searchtext`": `"$PZN`"
     `n        }
     `n    ],
     `n    `"arzneimittelverordnungenAnzeigen`": true,
@@ -147,7 +147,7 @@ $body = "{
     `n        }
     `n    },
     `n    `"reimportArzneimittelAusblenden`": false,
-    `n    `"searchTerm`": `"1686206`",
+    `n    `"searchTerm`": `"$PZN`",
     `n    `"selectedFilters`": [],
     `n    `"start`": 0,
     `n    `"vorgangstyp`": null,
@@ -266,11 +266,11 @@ $body = "{
 `n                `"benutzeSekundaerenRezeptinformationstyp`": false,
 `n                `"btmKennzeichen`": null,
 `n                `"dosierschema`": {
-`n                    `"abends`": 0,
+`n                    `"$abends`": 0,
 `n                    `"freitext`": null,
-`n                    `"mittags`": 0,
-`n                    `"morgens`": 1,
-`n                    `"nachts`": 0
+`n                    `"$mittags`": 0,
+`n                    `"$morgens`": 1,
+`n                    `"$nachts`": 0
 `n                },
 `n                `"dosierungAufRezept`": true,
 `n                `"erezeptZusatzdaten`": {
@@ -323,7 +323,7 @@ $body = "{
 `n                    `"otcStatus`": false,
 `n                    `"otxStatus`": false,
 `n                    `"packungsgroesse`": `"N1`",
-`n                    `"pzn`": `"1686206`",
+`n                    `"pzn`": `"$PZN`",
 `n                    `"reimport`": false,
 `n                    `"removed`": false,
 `n                    `"rezeptStatus`": 2,
