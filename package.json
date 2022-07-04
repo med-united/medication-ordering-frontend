@@ -12,6 +12,8 @@
         "@ui5/cli": "^2.14.8"
     },
     "dependencies": {
-        "openui5-fhir": "^2.2.8"
+        "@stomp/stompjs": "^6.1.2",
+        "openui5-fhir": "^2.2.8",
+        "websocket": "^1.0.34"
     }
 }

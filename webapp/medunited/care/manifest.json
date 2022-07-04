@@ -128,10 +128,13 @@
 		"resources": {
 			"js": [
 				{
-				"uri": "./lib/zxing-0.19.1.min.js"
+					"uri": "./lib/zxing-0.19.1.min.js"
 				},
 				{
-				"uri": "./lib/datamatrix.min.js"
+					"uri": "./lib/datamatrix.min.js"
+				},
+				{
+					"uri": "./lib/stomp.min.js"
 				}
 			],
 			"css": [
