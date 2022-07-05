@@ -3,7 +3,7 @@ StompJs = require('@stomp/stompjs');
 
 
 const client = new StompJs.Client({
-    brokerURL: 'tcp://broker.med-united.health:61613/stomp', // this connection is not working yet
+    brokerURL: 'wss://broker.med-united.health/stomp',
     connectHeaders: {
       login: 'admin',
       passcode: 'admin',
@@ -29,6 +29,5 @@ client.onStompError = function (frame) {
     console.log('Broker reported error: ' + frame.headers['message']);
     console.log('Additional details: ' + frame.body);
 };
-
 
 client.activate();
