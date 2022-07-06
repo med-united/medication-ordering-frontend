@@ -3,7 +3,7 @@ StompJs = require('@stomp/stompjs');
 
 
 const client = new StompJs.Client({
-    brokerURL: 'wss://broker.med-united.health/stomp',
+    brokerURL: 'tcp://localhost:61616',
     connectHeaders: {
       login: 'admin',
       passcode: 'admin',
@@ -33,37 +33,10 @@ client.onConnect = function (frame) {
 
     console.log("\nframe: ", frame, "\n");
 
-    const headers = { id: "beatriz" };
-    const subscription = client.subscribe('Prescriptions', callback, headers);
-
     client.publish({
         destination: 'Prescriptions',
         body: JSON.stringify({name: 'Beatriz'}),
-        headers: { priority: '1', address: "Prescriptions", practiceManagementTranslation: 't2med', receiverPublicKeyFingerprint: 'SHA256:n3nqOvCrZkvW5Q4IFOd7NyhL2yL6l9sh7O2Iw4Clu1A' },
-    });
-
-    client.publish({
-        destination: 'Prescriptions',
-        body: 'Hello world 2',
-        headers: { priority: '2', persistent:true }
-    });
-
-    client.publish({
-        destination: 'Prescriptions',
-        body: 'Hello world 3',
-        headers: { priority: '3', address: "Prescriptions", persistent:true  }
-    });
-
-    client.publish({
-        destination: 'Prescriptions',
-        body: 'The quick brown fox jumps over the lazy dog!',
-        headers: { priority: '4', address: "Prescriptions"  },
-    });
-
-    client.publish({
-        destination: 'Prescriptions',
-        body: 'One two three four!',
-        headers: { priority: '5', address: "Prescriptions"  },
+        headers: { 'destination-type': 'ANYCAST', priority: '1', address: "Prescriptions", practiceManagementTranslation: 't2med', receiverPublicKeyFingerprint: 'SHA256:n3nqOvCrZkvW5Q4IFOd7NyhL2yL6l9sh7O2Iw4Clu1A' },
     });
 
 };
