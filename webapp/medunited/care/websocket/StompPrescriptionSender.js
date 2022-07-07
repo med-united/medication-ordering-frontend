@@ -3,7 +3,7 @@ const StompJs = require('@stomp/stompjs');
 
 
 const client = new StompJs.Client({
-    brokerURL: 'tcp://localhost:61616',
+    brokerURL: 'wss://broker.med-united.health/stomp',
     connectHeaders: {
       login: 'admin',
       passcode: 'admin',
