@@ -44,16 +44,16 @@
 					<Column width="35%" importance="High" autoPopinWidth="10">
 						<Text text="{i18n>medicationName}" />
 					</Column>
-					<Column width="20%" importance="High">
+					<Column width="15%" importance="High">
 						<Text text="{i18n>medicationPZN}" />
 					</Column>
-					<Column width="5%" importance="High">
+					<Column width="10%" importance="High">
 						<Text text="{i18n>medicationSize}" />
 					</Column>
-					<Column width="5%" importance="Medium">
+					<Column width="10%" importance="Medium">
 						<Text text="{i18n>medicationDosage}" />
 					</Column>
-					<Column width="35%" importance="High">
+					<Column width="30%" importance="High">
 						<Text text="{i18n>GeneralPractitioner}" />
 					</Column>
 				</columns>
