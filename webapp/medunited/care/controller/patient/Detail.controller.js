@@ -27,12 +27,15 @@ sap.ui.define([
 			return this.getMedicationPlanXml(oPatient, aMedicationStatementForPatient);
 		},
 		getMedicationPlanXml: function (oPatient, aMedicationStatementForPatient) {
+
+			const userAttributes = this.validateUserCustomAttributes();
+
 			//https://update.kbv.de/ita-update/Verordnungen/Arzneimittel/BMP/EXT_ITA_VGEX_BMP_Anlage3_mitAend.pdf
 			let sXML = "<MP xmlns=\"http://ws.gematik.de/fa/amtss/AMTS_Document/v1.6\" v=\"025\" U=\"" + [...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('') + "\" l=\"de-DE\">\n";
 			if (oPatient && oPatient.name && oPatient.name.length > 0 && oPatient.name[0].given) {
 				sXML += "  <P g=\"" + oPatient.name[0].given[0] + "\" f=\"" + oPatient.name[0].family + "\" b=\"" + (oPatient.birthDate ? oPatient.birthDate.replaceAll("-", "") : "") + "\" />\n";
 			}
-			sXML += "  <A n=\"med.united " + this.getNameFromLoggedPerson() + "\" s=\"" + this.getStreetFromLoggedPerson() + "\" z=\"" + this.getPostalCodeFromLoggedPerson() + "\" c=\"" + this.getCityFromLoggedPerson() + "\" p=\"" + this.getPhoneNumberFromLoggedPerson() + "\" e=\"" + this.getEmailFromLoggedPerson() + "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
+			sXML += "  <A n=\"med.united " + userAttributes.name + "\" s=\"" + userAttributes.street + "\" z=\"" + userAttributes.postalCode + "\" c=\"" + userAttributes.city + "\" p=\"" + userAttributes.phone + "\" e=\"" + userAttributes.email + "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
 			sXML += "  <S>\n";
 			for (let oMedicationStatement of aMedicationStatementForPatient) {
 				try {
@@ -74,28 +77,23 @@ sap.ui.define([
 			return sXML;
 		},
 
-		getPhoneNumberFromLoggedPerson() {
-			return this.getView().getModel("JWT").getProperty("/phone")
-		},
-
-		getNameFromLoggedPerson() {
-			return this.getView().getModel("JWT").getProperty("/name")
-		},
-
-		getEmailFromLoggedPerson() {
-			return this.getView().getModel("JWT").getProperty("/email")
-		},
-
-		getStreetFromLoggedPerson() {
-			return this.getView().getModel("JWT").getProperty("/street")
-		},
-
-		getPostalCodeFromLoggedPerson() {
-			return this.getView().getModel("JWT").getProperty("/postalCode")
-		},
-
-		getCityFromLoggedPerson() {
-			return this.getView().getModel("JWT").getProperty("/city")
+		validateUserCustomAttributes() {
+			const name = this.getView().getModel("JWT").getProperty("/name")
+			const phone = this.getView().getModel("JWT").getProperty("/phone")
+			const city = this.getView().getModel("JWT").getProperty("/city")
+			const street = this.getView().getModel("JWT").getProperty("/street")
+			const postalCode = this.getView().getModel("JWT").getProperty("/postalCode")
+			if (!phone || !city || !street || !postalCode) {
+				location.href = 'https://id.med-united.health/realms/med-united/account/';
+			} else {
+				return {
+					"name": name,
+					"phone": phone,
+					"city": city,
+					"street": street,
+					"postalCode": postalCode
+				}
+			}
 		},
 
 		onCreateMedicationPlan: function () {
