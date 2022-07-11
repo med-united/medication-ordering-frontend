@@ -26,7 +26,7 @@ sap.ui.define([
 
 			const me = this;
 
-			keycloak.init({ "onLoad": "login-required" }).then(function (authenticated) {
+			keycloak.init({ "onLoad": "login-required", "checkLoginIframe": false }).then(function (authenticated) {
 				console.log(authenticated ? 'authenticated' : 'not authenticated');
 				if (authenticated) {
 					// Add JWT token to all jQuery ajax requests
@@ -67,12 +67,12 @@ sap.ui.define([
 
 		fixPagingOfFhirModel: function () {
 
-			FHIRModel.prototype._createRequestInfo = function(sMethod, sUrl) {
+			FHIRModel.prototype._createRequestInfo = function (sMethod, sUrl) {
 				const oRequestInfo = {
-					method : sMethod,
-					url : sUrl
+					method: sMethod,
+					url: sUrl
 				};
-				if(sMethod === "DELETE") {
+				if (sMethod === "DELETE") {
 					oRequestInfo.url += "?_cascade=delete";
 				}
 				return oRequestInfo;
