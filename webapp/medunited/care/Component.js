@@ -39,10 +39,6 @@ sap.ui.define([
 					oRouter.initialize();
 					me.jwtToken = keycloak.token;
 					me.keycloak = keycloak;
-					me.phoneNumber = keycloack.tokenParse.phone;
-					me.street = keycloack.tokenParse.street;
-					me.postalCode = keycloack.tokenParse.postalCode;
-					me.city = keycloack.tokenParse.city;
 				}
 			}).catch(function (e) {
 				console.log('failed to initialize');
