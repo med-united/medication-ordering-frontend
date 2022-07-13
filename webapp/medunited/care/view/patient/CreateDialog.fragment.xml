@@ -10,11 +10,29 @@
 			singleContainerFullSize="true">
 			<form:content>
 				<Label text="{i18n>GivenName}" />
-				<Input type="text" value="{name/[use=official]/given/0}" />
+				<Input id="givenName" valueStateText="Name must not be empty and should only contain letters." change= ".onNameChange"
+					value="{
+						path : 'name/[use=official]/given/0',
+						type : '.customNameType'
+					}"/>
+
 				<Label text="{i18n>FamilyName}" />
-				<Input type="text" value="{name/[use=official]/family}" />
+				<Input id="familyName" valueStateText="Name must not be empty and should only contain letters." change= ".onNameChange"
+					value="{
+						path: 'name/[use=official]/family',
+						type: '.customNameType'
+					}" />
+
 				<Label text="{i18n>BirthDate}" />
-				<DatePicker valueFormat="YYYY-MM-dd" value="{birthDate}" />
+				<DatePicker id="birthDate" placeholder="YYYY-MM-dd" displayFormat="YYYY-MM-dd" valueFormat="YYYY-MM-dd" valueStateText="Format is YYYY-MM-dd." change= ".onNameChange"
+					value="{
+						path: 'birthDate',
+						type: '.customDateType',
+						formatOptions: {
+    						pattern: 'YYYY-MM-dd'
+						}
+					}" />
+
 				<Label text="{i18n>Street}" />
 				<Input type="text" value="{address/[use=home]/line/0}" />
 				<Label text="{i18n>PostalCode}" />
