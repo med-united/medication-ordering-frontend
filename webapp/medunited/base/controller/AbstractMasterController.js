@@ -6,8 +6,9 @@ sap.ui.define([
 	'sap/ui/model/Sorter',
 	'sap/m/MessageBox',
 	'sap/m/MessageToast',
-	"sap/ui/core/Fragment"
-], function (AbstractController, Filter, FilterType, FilterOperator, Sorter, MessageBox, MessageToast, Fragment) {
+	"sap/ui/core/Fragment",
+	"medunited/care/utils/DemoAccount"
+], function (AbstractController, Filter, FilterType, FilterOperator, Sorter, MessageBox, MessageToast, Fragment, DemoAccount) {
 	"use strict";
 
 	return AbstractController.extend("medunited.base.controller.AbstractMasterController", {
@@ -122,6 +123,9 @@ sap.ui.define([
             var oRequest = this.getView().getModel().submitChanges(this.getEntityName().toLowerCase()+"Details", fnSuccess, fnError);
 		},
 		onSave: function (oEvent) {
+			if(DemoAccount._isDemoAccount(this.getView())){
+				return
+			}
 			this.save();
 			this.byId("createDialog").close();
 			this.oRouter = this.getOwnerComponent().getRouter();
@@ -149,6 +153,9 @@ sap.ui.define([
 			return "Name";
 		},
 		onDeleteSelected: function() {
+			if(DemoAccount._isDemoAccount(this.getView())){
+				return
+			}
 			const aResources = this.byId(this.getEntityName().toLowerCase()+"Table").getSelectedItems().map(oItem => oItem.getBindingContext().getPath());
 			const iCount = aResources.length;
 			const oModel = this.getView().getModel();

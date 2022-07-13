@@ -3,8 +3,9 @@ sap.ui.define([
 	"./AbstractController",
 	'sap/m/MessageBox',
 	'sap/m/MessageToast',
-	"sap/ui/core/Fragment"
-], function (JSONModel, AbstractController, MessageBox, MessageToast, Fragment) {
+	"sap/ui/core/Fragment",
+	"medunited/care/utils/DemoAccount"
+], function (JSONModel, AbstractController, MessageBox, MessageToast, Fragment, DemoAccount) {
 	"use strict";
 
 	return AbstractController.extend("medunited.base.controller.AbstractDetailController", {
@@ -36,6 +37,9 @@ sap.ui.define([
             this.enableEditMode(true);
         },
 		onSave: function (oEvent) {
+			if(DemoAccount._isDemoAccount(this.getView())){
+				return
+			}
             var fnSuccess = function(oData){
                 this.enableEditMode(false);
                 MessageToast.show(this.translate(this.getEntityName()) + ' ' + this.translate("msgSaveResourceSuccessful"));
@@ -56,13 +60,7 @@ sap.ui.define([
             this.getView().getModel().resetChanges();
 		},
 		onDelete: function (oEvent) {
-			/*this.getOwnerComponent().getModel().remove(this.getView().getBindingContext().getPath(), {
-				"success": function () {
-					MessageToast.show(this.translate("SuccessfullyDeleted_"+this.getEntityName()));
-				}.bind(this)
-			});*/
 			this.getOwnerComponent().getRouter().navTo("master");
-			
 		},
 		_onMatched: function (oEvent) {
 			this._entity = oEvent.getParameter("arguments")[this.getEntityName().toLowerCase()];

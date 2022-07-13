@@ -3,8 +3,9 @@ sap.ui.define([
 	'medunited/care/utils/ScriptDownloader',
 	'medunited/care/utils/BriefSender',
 	'medunited/care/utils/PharmacyNotifier',
-	'sap/ui/model/xml/XMLModel'
-], function (AbstractMasterController, ScriptDownloader, BriefSender, PharmacyNotifier, XMLModel) {
+	'sap/ui/model/xml/XMLModel',
+	'medunited/care/utils/DemoAccount'
+], function (AbstractMasterController, ScriptDownloader, BriefSender, PharmacyNotifier, XMLModel, DemoAccount) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
@@ -44,6 +45,10 @@ sap.ui.define([
 		},
 
 		onRequestEPrescriptions: function () {
+
+			if(DemoAccount._isDemoAccount(this.getView())) {
+				return
+			}
 
 			const medicationTableEntity = this.getEntityName().toLowerCase() + "Table";
 			const selectedPlans = this.byId(medicationTableEntity).getSelectedItems()

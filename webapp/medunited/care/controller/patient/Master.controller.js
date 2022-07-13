@@ -5,11 +5,13 @@ sap.ui.define([
 	'medunited/care/utils/ProcessUpload',
 	'sap/m/MessageBox',
 	'sap/m/MessageToast',
-	"sap/ui/core/Fragment"
-], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment) {
+	"sap/ui/core/Fragment",
+	"medunited/care/utils/DemoAccount"
+], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment, DemoAccount) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.patient.Master", {
+
 		getEntityName: function () {
 			return "Patient";
 		},
@@ -28,7 +30,6 @@ sap.ui.define([
 		},
 		onImportPatientFromCSV: function () {
 			var oView = this.getView();
-			const me = this;
 			// create dialog lazily
 			if (!this.byId("importCSVDialog")) {
 				// load asynchronous XML fragment
@@ -49,6 +50,9 @@ sap.ui.define([
 			this.byId("importCSVDialog").close();
 		},
 		onUploadCSVFile: function () {
+			if(DemoAccount._isDemoAccount(this.getView())){
+				return
+			}
 			let fileUploader = this.getView().byId("idfileUploader");
 			let domRef = fileUploader.getFocusDomRef();
 			let file = domRef.files[0];
@@ -63,6 +67,9 @@ sap.ui.define([
 		},
 
 		onPressCreatePatientFromBMP: function () {
+			if(DemoAccount._isDemoAccount(this.getView())){
+				return
+			}
 			this.byId("extScanner").open();
 		},
 		referencePractitioner: function (sPractitionerPath) {
