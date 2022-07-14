@@ -4,7 +4,7 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/ui/core/Fragment",
 	"sap/base/security/URLListValidator"
-], function (AbstractDetailController, Formatter, MessageBox, Fragment, URLListValidator, MedicationSearchProvider) {
+], function (AbstractDetailController, Formatter, MessageBox, Fragment, URLListValidator) {
 	"use strict";
 
 	return AbstractDetailController.extend("medunited.care.controller.patient.Detail", {

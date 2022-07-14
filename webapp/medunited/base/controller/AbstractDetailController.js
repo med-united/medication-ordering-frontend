@@ -1,11 +1,9 @@
 sap.ui.define([
-	"sap/ui/model/json/JSONModel",
 	"./AbstractController",
 	'sap/m/MessageBox',
 	'sap/m/MessageToast',
-	"sap/ui/core/Fragment",
 	"medunited/care/utils/DemoAccount"
-], function (JSONModel, AbstractController, MessageBox, MessageToast, Fragment, DemoAccount) {
+], function (AbstractController, MessageBox, MessageToast, DemoAccount) {
 	"use strict";
 
 	return AbstractController.extend("medunited.base.controller.AbstractDetailController", {
