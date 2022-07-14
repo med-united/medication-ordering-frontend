@@ -12,9 +12,11 @@ sap.ui.define([
 	"sap/m/library",
 	"sap/m/Text",
 	"sap/ui/core/Core",
-	"sap/ui/model/SimpleType",
-	"sap/ui/model/ValidateException"
-], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment, DemoAccount, Dialog, Button, mobileLibrary, Text, Core, SimpleType, ValidateException) {
+	"sap/ui/model/ValidateException",
+	"medunited/care/utils/validation/customTypeName",
+	"medunited/care/utils/validation/customTypeDate",
+	"medunited/care/utils/validation/customTypePostalCode"
+], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment, DemoAccount, Dialog, Button, mobileLibrary, Text, Core, ValidateException) {
 	"use strict";
 
 	let ButtonType = mobileLibrary.ButtonType;
@@ -40,56 +42,102 @@ sap.ui.define([
 			return "family";
 		},
 		onSave: function (oEvent) {
-			if (this.getEntityName() == "Patient") {
-				oMM.registerObject(this.getView().byId("givenName"), true);
-				oMM.registerObject(this.getView().byId("familyName"), true);
-				oMM.registerObject(this.getView().byId("birthDate"), true);
 
-				var oView = this.getView(),
-					aInputs = [
-								oView.byId("givenName"),
-								oView.byId("familyName"),
-								oView.byId("birthDate")
-					], bValidationError = false;
+			// attach handlers for validation errors
+			oMM.registerObject(this.getView().byId("givenName"), true);
+			oMM.registerObject(this.getView().byId("familyName"), true);
+			oMM.registerObject(this.getView().byId("birthDate"), true);
+			oMM.registerObject(this.getView().byId("street"), true);
+			oMM.registerObject(this.getView().byId("postalCode"), true);
+			oMM.registerObject(this.getView().byId("city"), true);
 
-				aInputs.forEach(function (oInput) {
-					bValidationError = this._validateInput(oInput) || bValidationError;
-				}, this);
-	
-				if (!bValidationError) {
-					this.save();
-					this.byId("createDialog").close();
-					this.oRouter = this.getOwnerComponent().getRouter();
-					this.oRouter.navTo(this.getEntityName().toLowerCase() + "-master");
-				} else {
-					if (!this.oValidationDialog) {
-						this.oValidationDialog = new Dialog({
-							type: DialogType.Message,
-							title: this.translate("inputValidation"),
-							content: new Text({ text: this.translate("validationErrorOccurredPleaseChangeOrCompleteTheIndicatedFields") }),
-							beginButton: new Button({
-								type: ButtonType.Emphasized,
-								text: this.translate("okay"),
-								press: function () {
-									this.oValidationDialog.close();
-								}.bind(this)
-							})
-						});
-					}
-					this.oValidationDialog.open();
+			let oView = this.getView();
+
+			// These are the mandatory fields: they have to be filled + checked
+			let mandatoryFields = [
+					oView.byId("givenName"),
+					oView.byId("familyName"),
+					oView.byId("birthDate")
+				];
+
+			// These fields are not mandatory but still have to be checked
+			let inputValidationFields = [
+					oView.byId("street"),
+					oView.byId("postalCode"),
+					oView.byId("city")
+			];
+
+			let validationErrorDueToEmpty = false;
+			let validationErrorDueToInvalid = false;
+			let isValid = true;
+
+			for (const oInput of inputValidationFields) {
+				if (oInput.getValue() !== '') {
+					validationErrorDueToInvalid = this._validateInput(oInput);
+				}
+				if (validationErrorDueToInvalid) {
+					isValid = false;
 				}
 			}
+
+			for (const oInput of mandatoryFields) {
+				validationErrorDueToEmpty = this._checkIfMandatoryFieldIsEmpty(oInput);
+				if (!validationErrorDueToEmpty) {
+					validationErrorDueToInvalid = this._validateInput(oInput);
+				}
+				if (validationErrorDueToEmpty || validationErrorDueToInvalid) {
+					isValid = false;
+				}
+			}
+
+			if (isValid) {
+				this.save();
+				this.byId("createDialog").close();
+				this.oRouter = this.getOwnerComponent().getRouter();
+				this.oRouter.navTo(this.getEntityName().toLowerCase() + "-master");
+			} else {
+				if (!this.oValidationDialog) {
+					this.oValidationDialog = new Dialog({
+						type: DialogType.Message,
+						title: this.translate("inputValidation"),
+						content: new Text({ text: this.translate("validationErrorOccurredPleaseChangeOrCompleteTheIndicatedFields") }),
+						beginButton: new Button({
+							type: ButtonType.Emphasized,
+							text: this.translate("okay"),
+							press: function () {
+								this.oValidationDialog.close();
+							}.bind(this)
+						})
+					});
+				}
+				this.oValidationDialog.open();
+			}
+		},
+		_checkIfMandatoryFieldIsEmpty: function(oInput) {
+			let sValueState = "None";
+			let bValidationError = false;
+
+			try {
+				if (oInput.getValue() === '') {
+					throw new ValidateException("Field must not be empty.");
+				}
+			} catch (oException) {
+				sValueState = "Error";
+				bValidationError = true;
+			}
+
+			oInput.setValueState(sValueState);
+
+			return bValidationError;
 		},
 		_validateInput: function (oInput) {
 			let sValueState = "None";
 			let bValidationError = false;
 			let oBinding = oInput.getBinding("value");
-			console.log(oBinding);
 
 			try {
 				oBinding.getType().validateValue(oInput.getValue());
 			} catch (oException) {
-				console.log(oException);
 				sValueState = "Error";
 				bValidationError = true;
 			}
@@ -99,49 +147,12 @@ sap.ui.define([
 			return bValidationError;
 		},
 		onChange: function(oEvent) {
-			var oInput = oEvent.getSource();
-			this._validateInput(oInput);
+			let oInput = oEvent.getSource();
+			let isEmpty = this._checkIfMandatoryFieldIsEmpty(oInput);
+			if (!isEmpty) {
+				this._validateInput(oInput);
+			}
 		},
-		/**
-		 * Custom model type for validating a Name
-		 * @class
-		 * @extends sap.ui.model.SimpleType
-		 */
-		customNameType: SimpleType.extend("name", {
-			formatValue: function (oValue) {
-				return oValue;
-			},
-
-			parseValue: function (oValue) {
-				//parsing step takes place before validating step, value could be altered here
-				return oValue;
-			},
-			validateValue: function (oValue) {
-				var nameRegex = /^[a-zA-Z ]*$/;
-				if (!oValue.match(nameRegex) || oValue === '') {
-					console.log("EXCEPTIONNN");
-					throw new ValidateException("'" + oValue + "' is not a valid name");
-				}
-			}
-		}),
-		/**
-		 * Custom model type for validating the Date field
-		 * @class
-		 * @extends sap.ui.model.SimpleType
-		 */
-		 customDateType: SimpleType.extend("date", {
-
-			formatValue: function (oValue) {
-				return oValue;
-			},
-			validateValue: function (oValue) {
-				var dateRegex = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/; // will match yyyy-mm-dd
-				if (!oValue.match(dateRegex) || oValue === '') {
-					console.log("EXCEPTIONNN");
-					throw new ValidateException("'" + oValue + "' is not a valid date");
-				}
-			}
-		}),
 		onImportPatientFromCSV: function () {
 			var oView = this.getView();
 			// create dialog lazily

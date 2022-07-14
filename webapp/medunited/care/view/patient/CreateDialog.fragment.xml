@@ -10,48 +10,63 @@
 			singleContainerFullSize="true">
 			<form:content>
 				<Label text="{i18n>GivenName}" />
-				<Input id="givenName" valueStateText="Name must not be empty and should only contain letters." change= ".onNameChange"
+				<Input id="givenName" valueStateText="Name must not be empty and should only contain letters." change= ".onChange"
 					value="{
 						path : 'name/[use=official]/given/0',
-						type : '.customNameType'
+						type : 'customTypeName'
 					}"/>
 
 				<Label text="{i18n>FamilyName}" />
-				<Input id="familyName" valueStateText="Name must not be empty and should only contain letters." change= ".onNameChange"
+				<Input id="familyName" valueStateText="Name must not be empty and should only contain letters." change= ".onChange"
 					value="{
 						path: 'name/[use=official]/family',
-						type: '.customNameType'
+						type: 'customTypeName'
 					}" />
 
 				<Label text="{i18n>BirthDate}" />
-				<DatePicker id="birthDate" placeholder="YYYY-MM-dd" displayFormat="YYYY-MM-dd" valueFormat="YYYY-MM-dd" valueStateText="Format is YYYY-MM-dd." change= ".onNameChange"
+				<DatePicker id="birthDate" placeholder="YYYY-MM-dd" displayFormat="YYYY-MM-dd" valueFormat="YYYY-MM-dd" valueStateText="Format is YYYY-MM-dd." change= ".onChange"
 					value="{
 						path: 'birthDate',
-						type: '.customDateType',
+						type: 'customTypeDate',
 						formatOptions: {
     						pattern: 'YYYY-MM-dd'
 						}
 					}" />
 
 				<Label text="{i18n>Street}" />
-				<Input type="text" value="{address/[use=home]/line/0}" />
+				<Input id="street" change= ".onChange"
+					value="{
+						path: 'address/[use=home]/line/0',
+						type: 'sap.ui.model.type.String'
+					}" />
+
 				<Label text="{i18n>PostalCode}" />
-				<Input type="text" value="{address/[use=home]/postalCode}" />
+				<Input id="postalCode" valueStateText="The postal code should have 5 digits." change= ".onChange"
+					value="{
+						path: 'address/[use=home]/postalCode',
+						type: 'customTypePostalCode'
+					}" />
+
 				<Label text="{i18n>City}" />
-				<Input type="text" value="{address/[use=home]/city}" />
+				<Input id="city" valueStateText="City name should only contain letters." change= ".onChange"
+					value="{
+						path: 'address/[use=home]/city',
+						type: 'customTypeName'
+					}" />
+
 				<Label text="{i18n>labelPatientGender}" />
-				<ComboBox id="patientGenderSelect" forceSelection="false" selectedKey="{gender}">
+				<Select id="patientGenderSelect" forceSelection="false" selectedKey="{gender}">
                 	<core:Item key="male" text="{i18n>Male}"/>
                 	<core:Item key="female" text="{i18n>Female}"/>
-				</ComboBox>
+				</Select>
 				<Label text="{i18n>GeneralPractitioner}" />
-				<ComboBox id="generalPractitionerSelect" items="{/Practitioner}" selectedKey="{generalPractitioner/0/reference}">
+				<Select id="generalPractitionerSelect" items="{/Practitioner}" forceSelection="false" selectedKey="{generalPractitioner/0/reference}">
                 	<core:Item key="Practitioner/{id}" text="{name/0/given/0} {name/0/family}" />
-            	</ComboBox>
+            	</Select>
 				<Label text="{i18n>ManagingOrganization}" />
-				<ComboBox id="defaultOrganizationSelect" items="{/Organization}" selectedKey="{managingOrganization/reference}">
+				<Select id="defaultOrganizationSelect" items="{/Organization}" forceSelection="false" selectedKey="{managingOrganization/reference}">
                 	<core:Item key="Organization/{id}" text="{name}" />
-            	</ComboBox>
+            	</Select>
 			</form:content>
 		</form:SimpleForm>
 		<beginButton>
