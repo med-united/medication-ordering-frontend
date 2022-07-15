@@ -13,7 +13,7 @@ sap.ui.define([
 			},
 			validateValue: function (oValue) {
                 // will match yyyy-mm-dd
-				var dateRegex = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
+				let dateRegex = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
 				if (!oValue.match(dateRegex)) {
 					throw new ValidateException("'" + oValue + "' is not a valid date");
 				}

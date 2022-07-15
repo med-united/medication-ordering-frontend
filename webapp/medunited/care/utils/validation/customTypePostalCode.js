@@ -12,8 +12,8 @@ sap.ui.define([
 				return oValue;
 			},
 			validateValue: function (oValue) {
-                // will match only letters and spaces
-				var postalCodeRegex = /^[0-9]{5}$/;
+                // will match only five digit numbers
+				let postalCodeRegex = /^[0-9]{5}$/;
 				if (!oValue.match(postalCodeRegex)) {
 					throw new ValidateException("'" + oValue + "' is not a valid postal code");
 				}
