@@ -10,21 +10,21 @@
 			singleContainerFullSize="true">
 			<form:content>
 				<Label text="{i18n>GivenName}" />
-				<Input id="givenName" valueStateText="Name must not be empty and should only contain letters." change= ".onChange"
+				<Input id="givenName" valueStateText="Name must not be empty and should only contain letters." liveChange= ".onChange"
 					value="{
 						path : 'name/[use=official]/given/0',
 						type : 'customTypeName'
 					}"/>
 
 				<Label text="{i18n>FamilyName}" />
-				<Input id="familyName" valueStateText="Name must not be empty and should only contain letters." change= ".onChange"
+				<Input id="familyName" valueStateText="Name must not be empty and should only contain letters." liveChange= ".onChange"
 					value="{
 						path: 'name/[use=official]/family',
 						type: 'customTypeName'
 					}" />
 
 				<Label text="{i18n>BirthDate}" />
-				<DatePicker id="birthDate" placeholder="YYYY-MM-dd" displayFormat="YYYY-MM-dd" valueFormat="YYYY-MM-dd" valueStateText="Format is YYYY-MM-dd." change= ".onChange"
+				<DatePicker id="birthDate" placeholder="YYYY-MM-dd" displayFormat="YYYY-MM-dd" valueFormat="YYYY-MM-dd" valueStateText="Format is YYYY-MM-dd." liveChange= ".onChange"
 					value="{
 						path: 'birthDate',
 						type: 'customTypeDate',
@@ -34,21 +34,21 @@
 					}" />
 
 				<Label text="{i18n>Street}" />
-				<Input id="street" change= ".onChange"
+				<Input id="street" liveChange= ".onChange"
 					value="{
 						path: 'address/[use=home]/line/0',
 						type: 'sap.ui.model.type.String'
 					}" />
 
 				<Label text="{i18n>PostalCode}" />
-				<Input id="postalCode" valueStateText="The postal code should have 5 digits." change= ".onChange"
+				<Input id="postalCode" valueStateText="The postal code should have 5 digits." liveChange= ".onChange"
 					value="{
 						path: 'address/[use=home]/postalCode',
 						type: 'customTypePostalCode'
 					}" />
 
 				<Label text="{i18n>City}" />
-				<Input id="city" valueStateText="City name should only contain letters." change= ".onChange"
+				<Input id="city" valueStateText="City name should only contain letters." liveChange= ".onChange"
 					value="{
 						path: 'address/[use=home]/city',
 						type: 'customTypeName'

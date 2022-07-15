@@ -23,6 +23,11 @@ sap.ui.define([
 	let DialogType = mobileLibrary.DialogType;
 	let oMM = Core.getMessageManager();
 
+	// A field Id can be added or changed here to be mandatory or not
+	let mandatoryFieldsList = ["givenName", "familyName", "birthDate"];
+	let notMandatoryFieldsList = ["street", "postalCode", "city"];
+	let allPatientFieldsList = mandatoryFieldsList.concat(notMandatoryFieldsList);
+
 	return AbstractMasterController.extend("medunited.care.controller.patient.Master", {
 
 		getEntityName: function () {
@@ -43,36 +48,31 @@ sap.ui.define([
 		},
 		onSave: function (oEvent) {
 
-			// attach handlers for validation errors
-			oMM.registerObject(this.getView().byId("givenName"), true);
-			oMM.registerObject(this.getView().byId("familyName"), true);
-			oMM.registerObject(this.getView().byId("birthDate"), true);
-			oMM.registerObject(this.getView().byId("street"), true);
-			oMM.registerObject(this.getView().byId("postalCode"), true);
-			oMM.registerObject(this.getView().byId("city"), true);
+			for (const field of allPatientFieldsList) {
+				// attach handlers for validation errors
+				oMM.registerObject(this.getView().byId(field), true);
+			}
 
 			let oView = this.getView();
 
 			// These are the mandatory fields: they have to be filled + checked
-			let mandatoryFields = [
-					oView.byId("givenName"),
-					oView.byId("familyName"),
-					oView.byId("birthDate")
-				];
+			let mandatoryFields = [];
+			for (const mandatoryField of mandatoryFieldsList) {
+				mandatoryFields.push(oView.byId(mandatoryField));
+			}
 
 			// These fields are not mandatory but still have to be checked
-			let inputValidationFields = [
-					oView.byId("street"),
-					oView.byId("postalCode"),
-					oView.byId("city")
-			];
+			let inputValidationFields = [];
+			for (const notMandatoryField of notMandatoryFieldsList) {
+				inputValidationFields.push(oView.byId(notMandatoryField))
+			}
 
 			let validationErrorDueToEmpty = false;
 			let validationErrorDueToInvalid = false;
 			let isValid = true;
 
 			for (const oInput of inputValidationFields) {
-				if (oInput.getValue() !== '') {
+				if (oInput.getValue() !== '') {  // because a field that is empty does not need to be validated
 					validationErrorDueToInvalid = this._validateInput(oInput);
 				}
 				if (validationErrorDueToInvalid) {
@@ -148,9 +148,20 @@ sap.ui.define([
 		},
 		onChange: function(oEvent) {
 			let oInput = oEvent.getSource();
-			let isEmpty = this._checkIfMandatoryFieldIsEmpty(oInput);
-			if (!isEmpty) {
-				this._validateInput(oInput);
+			let fieldId = oEvent.getSource().getId().substring(oEvent.getSource().getId().indexOf("-") + 2);
+			if (notMandatoryFieldsList.includes(fieldId)) {
+				if (oInput.getValue() !== '') {
+					this._validateInput(oInput);
+				}
+				else {
+					oInput.setValueState("None");
+				}
+			}
+			else if (mandatoryFieldsList.includes(fieldId)) {
+				let isEmpty = this._checkIfMandatoryFieldIsEmpty(oInput);
+				if (!isEmpty) {
+					this._validateInput(oInput);
+				}
 			}
 		},
 		onImportPatientFromCSV: function () {
