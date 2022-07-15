@@ -24,7 +24,7 @@
 					}" />
 
 				<Label text="{i18n>BirthDate}" />
-				<DatePicker id="birthDate" placeholder="YYYY-MM-dd" displayFormat="YYYY-MM-dd" valueFormat="YYYY-MM-dd" valueStateText="Format is YYYY-MM-dd." liveChange= ".onChange"
+				<DatePicker id="birthDate" placeholder="YYYY-MM-dd" displayFormat="YYYY-MM-dd" valueFormat="YYYY-MM-dd" valueStateText="Format is YYYY-MM-dd." change= ".onChange"
 					value="{
 						path: 'birthDate',
 						type: 'customTypeDate',
