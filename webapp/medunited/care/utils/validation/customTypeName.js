@@ -14,7 +14,8 @@ sap.ui.define([
 			validateValue: function (oValue) {
                 // will match any kind of letter from any language, spaces and hyphen
 				let nameRegex = /^[\p{L} -]*$/u;
-				if (!oValue.replace(/\s/g, '').length) {
+				let testSpaces = oValue;
+				if (!testSpaces.replace(/\s/g, '').length && oValue.length > 0) {
 					throw new ValidateException("Only whitespaces detected");
 				}
 				else if (!oValue.match(nameRegex)) {

@@ -13,10 +13,11 @@ sap.ui.define([
 	"sap/m/Text",
 	"sap/ui/core/Core",
 	"sap/ui/model/ValidateException",
+	"sap/ui/core/ValueState",
 	"medunited/care/utils/validation/customTypeName",
 	"medunited/care/utils/validation/customTypeDate",
 	"medunited/care/utils/validation/customTypePostalCode"
-], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment, DemoAccount, Dialog, Button, mobileLibrary, Text, Core, ValidateException) {
+], function (AbstractMasterController, Filter, FilterOperator, ProcessUpload, MessageBox, MessageToast, Fragment, DemoAccount, Dialog, Button, mobileLibrary, Text, Core, ValidateException, ValueState) {
 	"use strict";
 
 	let ButtonType = mobileLibrary.ButtonType;
@@ -48,10 +49,10 @@ sap.ui.define([
 		},
 		onSave: function (oEvent) {
 
-			for (const field of allPatientFieldsList) {
-				// attach handlers for validation errors
-				oMM.registerObject(this.getView().byId(field), true);
-			}
+			// for (const field of allPatientFieldsList) {
+			// 	// attach handlers for validation errors
+			// 	oMM.registerObject(this.getView().byId(field), true);
+			// }
 
 			let oView = this.getView();
 
@@ -72,7 +73,7 @@ sap.ui.define([
 			let isValid = true;
 
 			for (const oInput of inputValidationFields) {
-				if (oInput.getValue() !== '') {  // because a field that is empty does not need to be validated
+				if (oInput.getValue().length > 0) {  // because a field that is empty does not need to be validated
 					validationErrorDueToInvalid = this._validateInput(oInput);
 				}
 				if (validationErrorDueToInvalid) {
@@ -118,7 +119,7 @@ sap.ui.define([
 			let bValidationError = false;
 
 			try {
-				if (oInput.getValue() === '') {
+				if (oInput.getValue().length < 1) {
 					throw new ValidateException("Field must not be empty.");
 				}
 			} catch (oException) {
@@ -131,7 +132,7 @@ sap.ui.define([
 			return bValidationError;
 		},
 		_validateInput: function (oInput) {
-			let sValueState = "None";
+			let sValueState = "Success";
 			let bValidationError = false;
 			let oBinding = oInput.getBinding("value");
 
@@ -150,7 +151,7 @@ sap.ui.define([
 			let oInput = oEvent.getSource();
 			let fieldId = oEvent.getSource().getId().substring(oEvent.getSource().getId().indexOf("-") + 2);
 			if (notMandatoryFieldsList.includes(fieldId)) {
-				if (oInput.getValue() !== '') {
+				if (oInput.getValue().length > 0) {
 					this._validateInput(oInput);
 				}
 				else {
