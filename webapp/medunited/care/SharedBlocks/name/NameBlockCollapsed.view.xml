@@ -15,10 +15,10 @@
 		columnsM="2"
 		visible="{= !${appState>/editMode}}">
 		<form:content>
-			<Label text="Firstname" labelFor="firstnameText"/>
-			<Text id="firstnameText" text="{name/[use=official]/given/0}" />
-			<Label text="{i18n>labelPatientFamilyname}" labelFor="familynameText"/>
-            <Text id="familynameText" text="{name/[use=official]/family}" />
+			<Label text="{i18n>GivenName}" />
+			<Text text="{name/[use=official]/given/0}" />
+			<Label text="{i18n>FamilyName}" />
+            <Text text="{name/[use=official]/family}" />
 		</form:content>
     </form:SimpleForm>
 	<form:SimpleForm id="nameFormEdit"
@@ -37,10 +37,19 @@
 		columnsM="2"
 		visible="{appState>/editMode}">
 		<form:content>
-			<Label text="Firstname" labelFor="firstnameInput"/>
-			<Input id="firstnameInput" value="{name/[use=official]/given/0}" />
-			<Label text="{i18n>labelPatientFamilyname}" labelFor="familynameInput"/>
-            <Input id="familynameInput" value="{name/[use=official]/family}" />
+			<Label text="{i18n>GivenName}" />
+			<Input id="givenName" liveChange=".onChange"
+				value="{
+					path : 'name/[use=official]/given/0',
+					type : 'customTypeName'
+				}" />
+
+			<Label text="{i18n>FamilyName}" />
+            <Input id="familyName"
+				value="{
+					path: 'name/[use=official]/family',
+					type: 'customTypeName'
+				}" />
 		</form:content>
     </form:SimpleForm>
 </mvc:View>
