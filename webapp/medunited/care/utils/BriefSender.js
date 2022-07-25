@@ -5,10 +5,7 @@ sap.ui.define([
     'use strict';
     return {
 
-        sendEarztBrief: function (oView, selectedPlans, earztbriefModel) {
-
-            // structure = { Practitioner : { Patient : [ MedicationStatements ]}}
-            const structure = this._populateStructure(oView, selectedPlans);
+        sendEarztBrief: function (oView, structure, earztbriefModel) {
 
             // generate datamatrices of MedicationStatements in PNG for each Practitioner and their Patients
             for (const practitioner of Object.entries(structure)) {
@@ -17,7 +14,7 @@ sap.ui.define([
                 const patientsOfPractitioner = practitioner[1];
                 const allDatamatricesForPractitioner = [];
                 const allXMLsForPractitioner = [];
-                var oPromises = [];
+                let oPromises = [];
 
                 for (const patientOfPractitioner of Object.entries(patientsOfPractitioner)) {
                     const patient = patientOfPractitioner[0];
@@ -60,7 +57,7 @@ sap.ui.define([
                 });
             }
         },
-
+        
         _base64SvgToBase64Png: function (svg, allDatamatricesForPractitioner) {
             return new Promise(resolve => {
                 this._svgToPng(svg, (imgData) => {
@@ -70,30 +67,6 @@ sap.ui.define([
                     resolve(allDatamatricesForPractitioner.push(base64));
                 })
             });
-        },
-
-        _populateStructure(oView, selectedPlans) {
-            const structure = {};
-
-            for (const plan of selectedPlans) {
-                const patient = oView.getModel().getProperty(plan + '/subject/reference');
-                const practitioner = oView.getModel().getProperty(plan + '/informationSource/reference');
-                if (practitioner in structure) {
-                    if (patient in structure[practitioner]) {
-                        structure[practitioner][patient].push(plan);
-                    }
-                    else {
-                        structure[practitioner][patient] = [];
-                        structure[practitioner][patient].push(plan);
-                    }
-                }
-                else {
-                    structure[practitioner] = {};
-                    structure[practitioner][patient] = [];
-                    structure[practitioner][patient].push(plan);
-                }
-            }
-            return structure;
         },
         _svgToPng: function (svg, callback) {
             const url = this._getSvgUrl(svg);
@@ -133,7 +106,7 @@ sap.ui.define([
             link.remove();
         },
         _getBase64String: function (dataURL) {
-            var idx = dataURL.indexOf('base64,') + 'base64,'.length;
+            let idx = dataURL.indexOf('base64,') + 'base64,'.length;
             return dataURL.substring(idx);
         },
         _getMedicationPlanXml: function (oView, oPatient, oPractitioner, oMedicationStatementsForPatient) {

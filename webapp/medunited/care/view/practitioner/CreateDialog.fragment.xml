@@ -40,6 +40,7 @@
 				<ComboBox id="prescriptionModeSelect" forceSelection="false" selectedKey="{extension/0/valueString}">
                 	<core:Item key="t2med" text="T2Med"/>
                 	<core:Item key="earztbrief" text="Earztbrief"/>
+					<core:Item key="isynet" text="Isynet"/>
 				</ComboBox>
 			</form:content>
 		</form:SimpleForm>

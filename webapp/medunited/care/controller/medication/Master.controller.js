@@ -65,14 +65,24 @@ sap.ui.define([
 		},
 
 		_requestPrescriptionsAccordingTo: function (prescriptionInterface, selectedPlans) {
+
+			// structure = { Practitioner : { Patient : [ MedicationStatements ]}}
+			const structure = this._populateStructure(selectedPlans);
+
 			if (prescriptionInterface === "t2med") {
 				alert("Sending Powershell Script. Functionality may be disabled");
 				ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
-			} else {
-				alert("Sending Brief");
-				BriefSender.sendEarztBrief(this.getView(), selectedPlans, this.eArztbriefModel);
 			}
-			PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
+			else if (prescriptionInterface === "isynet") {
+				console.log("isynet");
+				let listOfBundles = this._createBundles(structure);
+				console.log(listOfBundles);
+			}
+			else {
+				alert("Sending Brief");
+				BriefSender.sendEarztBrief(this.getView(), structure, this.eArztbriefModel);
+			}
+			// PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
 		},
 
 		_buildMedicationRequests: function (selectedPlans) {
@@ -129,6 +139,66 @@ sap.ui.define([
 			const date = today.getFullYear() + '-' + ("0" + (today.getMonth() + 1)).slice(-2) + '-' + ("0" + today.getDate()).slice(-2);
 			const time = ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2) + "." + ("0" + today.getMilliseconds()).slice(-2) + "Z";
 			return date + 'T' + time;
+		},
+
+		_createBundles: function(structure) {
+
+			// one bundle per Practitioner
+			let listOfBundles = [];
+
+			// builds the Bundle
+			for (const practitioner of Object.entries(structure)) {
+				const patientsOfPractitioner = practitioner[1];
+				let newBundle = "";
+				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + practitioner[0])) + "},";
+				for (let j = 0; j < Object.entries(patientsOfPractitioner).length; j++) {
+					const patient = Object.entries(patientsOfPractitioner)[j][0];
+					newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + patient)) + "},";
+					const medicationStatementsOfPatient = Object.entries(patientsOfPractitioner)[j][1];
+
+					for (let i = 0; i < medicationStatementsOfPatient.length; i++) {
+						let medStatement = medicationStatementsOfPatient[i];
+						newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty(medStatement)) + "}";
+						if (i < medicationStatementsOfPatient.length-1) {
+							newBundle+= ",";
+						}
+					}
+					if (j < Object.entries(patientsOfPractitioner).length-1) {
+						newBundle+= ",";
+					}
+				}
+				newBundle = "\"entry\" : [" + newBundle + "]";
+				newBundle = "{\"resourceType\": \"Bundle\",	\"id\": \"\", \"meta\": { \"lastUpdated\": \"\", \"profile\": [	\"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.2\"	]},	\"identifier\": { \"system\": \"https://gematik.de/fhir/NamingSystem/PrescriptionID\", \"value\": \"\"}, \"type\": \"document\",\"timestamp\": \"" + this._makeCurrentDateTime() + "\"," + newBundle + "}";
+				listOfBundles.push(newBundle);
+			}
+
+			return listOfBundles;
+		},
+
+		_populateStructure: function(selectedPlans) {
+
+			// structure = { Practitioner : { Patient : [ MedicationStatements ]}}
+			const structure = {};
+
+            for (const plan of selectedPlans) {
+                const patient = this.getView().getModel().getProperty(plan + '/subject/reference');
+                const practitioner = this.getView().getModel().getProperty(plan + '/informationSource/reference');
+                if (practitioner in structure) {
+                    if (patient in structure[practitioner]) {
+                        structure[practitioner][patient].push(plan);
+                    }
+                    else {
+                        structure[practitioner][patient] = [];
+                        structure[practitioner][patient].push(plan);
+                    }
+                }
+                else {
+                    structure[practitioner] = {};
+                    structure[practitioner][patient] = [];
+                    structure[practitioner][patient].push(plan);
+                }
+            }
+            return structure;
 		}
 
 	});
