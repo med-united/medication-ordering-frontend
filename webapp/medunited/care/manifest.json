@@ -134,7 +134,7 @@
 					"uri": "./lib/datamatrix.min.js"
 				},
 				{
-					"uri": "./lib/stomp.min.js"
+					"uri": "./lib/stomp.umd.min.js"
 				}
 			],
 			"css": [

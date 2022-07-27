@@ -2,10 +2,11 @@ sap.ui.define([
 	'medunited/base/controller/AbstractMasterController',
 	'medunited/care/utils/ScriptDownloader',
 	'medunited/care/utils/BriefSender',
+	'medunited/care/websocket/StompPrescriptionSender',
 	'medunited/care/utils/PharmacyNotifier',
 	'sap/ui/model/xml/XMLModel',
 	'medunited/care/utils/DemoAccount'
-], function (AbstractMasterController, ScriptDownloader, BriefSender, PharmacyNotifier, XMLModel, DemoAccount) {
+], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
@@ -74,9 +75,9 @@ sap.ui.define([
 				ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
 			}
 			else if (prescriptionInterface === "isynet") {
-				console.log("isynet");
 				let listOfBundles = this._createBundles(structure);
-				console.log(listOfBundles);
+				// console.log(listOfBundles);
+				StompPrescriptionSender.sendFHIRBundlesToBroker(listOfBundles);
 			}
 			else {
 				alert("Sending Brief");
