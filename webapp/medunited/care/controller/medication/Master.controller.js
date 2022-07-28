@@ -57,30 +57,45 @@ sap.ui.define([
 					oItem =>
 						oItem.getBindingContext().getPath());
 
-			const practitioner = this.getView().getModel().getProperty(selectedPlans[0]).informationSource.reference
-			const prescriptionInterface = this.getView().getModel().getProperty("/" + practitioner).extension[0].valueString
-
 			this._buildMedicationRequests(selectedPlans);
 
-			this._requestPrescriptionsAccordingTo(prescriptionInterface, selectedPlans);
+			this._requestPrescriptionsAccordingToPrescriptionInterface(selectedPlans);
 		},
 
-		_requestPrescriptionsAccordingTo: function (prescriptionInterface, selectedPlans) {
+		_requestPrescriptionsAccordingToPrescriptionInterface: function (selectedPlans) {
 
-			// structure = { Practitioner : { Patient : [ MedicationStatements ]}}
-			const structure = this._populateStructure(selectedPlans);
+			let prescriptionsRequestedUsing_t2med = [];
+			let prescriptionsRequestedUsing_isynet = [];
+			let prescriptionsRequestedUsing_email = [];
 
-			if (prescriptionInterface === "t2med") {
-				alert("Sending Powershell Script. Functionality may be disabled");
-				ScriptDownloader.makePowershellScript(this.getView(), selectedPlans);
+			for (const plan of selectedPlans) {
+				const practitioner = this.getView().getModel().getProperty(plan).informationSource.reference
+				const prescriptionInterface = this.getView().getModel().getProperty("/" + practitioner).extension[0].valueString
+				switch (prescriptionInterface) {
+					case "t2med":
+						prescriptionsRequestedUsing_t2med.push(plan);
+						break;
+					case "isynet":
+						prescriptionsRequestedUsing_isynet.push(plan);
+						break;
+					case "e-mail":
+						prescriptionsRequestedUsing_email.push(plan);
+				}
 			}
-			else if (prescriptionInterface === "isynet") {
-				let listOfBundles = this._createBundles(structure);
+
+			if (prescriptionsRequestedUsing_t2med.length > 0) {
+				alert("Sending Powershell Script. Functionality may be disabled");
+				ScriptDownloader.makePowershellScript(this.getView(), prescriptionsRequestedUsing_t2med);
+			}
+			if (prescriptionsRequestedUsing_isynet.length > 0) {
+				let listOfBundles = this._createBundles(prescriptionsRequestedUsing_isynet);
 				// console.log(listOfBundles);
 				StompPrescriptionSender.sendFHIRBundlesToBroker(listOfBundles);
 			}
-			else {
+			if (prescriptionsRequestedUsing_email.length > 0) {
 				alert("Sending Brief");
+				// structure = { Practitioner : { Patient : [ MedicationStatements ]}}
+				const structure = this._populateStructure(prescriptionsRequestedUsing_email);
 				BriefSender.sendEarztBrief(this.getView(), structure, this.eArztbriefModel);
 			}
 			// PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
@@ -142,37 +157,21 @@ sap.ui.define([
 			return date + 'T' + time;
 		},
 
-		_createBundles: function(structure) {
-
-			// one bundle per Practitioner
+		_createBundles: function (selectedPlans) {
+			// one bundle per MedicationStatement
 			let listOfBundles = [];
 
-			// builds the Bundle
-			for (const practitioner of Object.entries(structure)) {
-				const patientsOfPractitioner = practitioner[1];
+			for (const medicationStatement of selectedPlans) {
 				let newBundle = "";
-				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + practitioner[0])) + "},";
-				for (let j = 0; j < Object.entries(patientsOfPractitioner).length; j++) {
-					const patient = Object.entries(patientsOfPractitioner)[j][0];
-					newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + patient)) + "},";
-					const medicationStatementsOfPatient = Object.entries(patientsOfPractitioner)[j][1];
-
-					for (let i = 0; i < medicationStatementsOfPatient.length; i++) {
-						let medStatement = medicationStatementsOfPatient[i];
-						newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty(medStatement)) + "}";
-						if (i < medicationStatementsOfPatient.length-1) {
-							newBundle+= ",";
-						}
-					}
-					if (j < Object.entries(patientsOfPractitioner).length-1) {
-						newBundle+= ",";
-					}
-				}
+                const practitioner = this.getView().getModel().getProperty(medicationStatement + '/informationSource/reference');
+				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + practitioner)) + "},";
+				const patient = this.getView().getModel().getProperty(medicationStatement + '/subject/reference');
+				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + patient)) + "},";
+				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty(medicationStatement)) + "}";
 				newBundle = "\"entry\" : [" + newBundle + "]";
 				newBundle = "{\"resourceType\": \"Bundle\",	\"id\": \"\", \"meta\": { \"lastUpdated\": \"\", \"profile\": [	\"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.2\"	]},	\"identifier\": { \"system\": \"https://gematik.de/fhir/NamingSystem/PrescriptionID\", \"value\": \"\"}, \"type\": \"document\",\"timestamp\": \"" + this._makeCurrentDateTime() + "\"," + newBundle + "}";
 				listOfBundles.push(newBundle);
 			}
-
 			return listOfBundles;
 		},
 

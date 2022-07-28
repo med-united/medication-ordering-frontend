@@ -40,6 +40,7 @@
                 <core:Item key="t2med" text="T2Med"/>
                 <core:Item key="earztbrief" text="Earztbrief"/>
                 <core:Item key="isynet" text="Isynet"/>
+                <core:Item key="e-mail" text="E-mail"/>
             </Select>
         </form:content>
     </form:SimpleForm>
