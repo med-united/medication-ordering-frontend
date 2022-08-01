@@ -161,13 +161,16 @@ sap.ui.define([
 			// one bundle per MedicationStatement
 			let listOfBundles = [];
 
+			// Bundle has Practitioner + Patient + MedicationStatement + Organization
 			for (const medicationStatement of selectedPlans) {
 				let newBundle = "";
                 const practitioner = this.getView().getModel().getProperty(medicationStatement + '/informationSource/reference');
 				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + practitioner)) + "},";
 				const patient = this.getView().getModel().getProperty(medicationStatement + '/subject/reference');
 				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + patient)) + "},";
-				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty(medicationStatement)) + "}";
+				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty(medicationStatement)) + "},";
+				const organization = this.getView().getModel().getProperty(medicationStatement + '/derivedFrom/0/reference');
+				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + organization)) + "}";
 				newBundle = "\"entry\" : [" + newBundle + "]";
 				newBundle = "{\"resourceType\": \"Bundle\",	\"id\": \"\", \"meta\": { \"lastUpdated\": \"\", \"profile\": [	\"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.2\"	]},	\"identifier\": { \"system\": \"https://gematik.de/fhir/NamingSystem/PrescriptionID\", \"value\": \"\"}, \"type\": \"document\",\"timestamp\": \"" + this._makeCurrentDateTime() + "\"," + newBundle + "}";
 				listOfBundles.push(newBundle);
