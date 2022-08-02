@@ -41,10 +41,10 @@
 					</OverflowToolbar>
 				</headerToolbar>
 				<columns>
-					<Column width="35%" importance="High" autoPopinWidth="10">
+					<Column width="40%" importance="High" autoPopinWidth="10">
 						<Text text="{i18n>medicationName}" />
 					</Column>
-					<Column width="15%" importance="High">
+					<Column width="10%" importance="High">
 						<Text text="{i18n>medicationPZN}" />
 					</Column>
 					<Column width="10%" importance="High">
@@ -53,8 +53,11 @@
 					<Column width="10%" importance="Medium">
 						<Text text="{i18n>medicationDosage}" />
 					</Column>
-					<Column width="30%" importance="High">
+					<Column width="10%" importance="High">
 						<Text text="{i18n>GeneralPractitioner}" />
+					</Column>
+					<Column width="20%" importance="High">
+						<Text text="{i18n>ManagingOrganization}" />
 					</Column>
 				</columns>
 				<items>
@@ -68,6 +71,7 @@
 							<Text
 								text="{dosage/0/text}" />
 							<Text text="{path: 'informationSource/reference', formatter: '.referencePractitioner'}" />
+							<Text text="{path: 'derivedFrom/0/reference', formatter: '.referenceOrganization'}" />
 						</cells>
 					</ColumnListItem>
 				</items>

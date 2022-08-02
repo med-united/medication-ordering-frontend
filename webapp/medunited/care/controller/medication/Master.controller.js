@@ -45,9 +45,26 @@ sap.ui.define([
 			}
 		},
 
+		referenceOrganization: function (sOrganizationPath) {
+			try {
+				if (sOrganizationPath) {
+					return this.getPharmacyNameForPath("/" + sOrganizationPath);
+				}
+			} catch (e) {
+				console.log(e);
+				return "Apotheke unbekannt";
+			}
+		},
+
+		getPharmacyNameForPath: function (sObjectPath) {
+			const oFhirModel = this.getView().getModel();
+			const oObject = oFhirModel.getProperty(sObjectPath);
+			return oObject.name;
+		},
+
 		onRequestEPrescriptions: function () {
 
-			if(DemoAccount._isDemoAccount(this.getView())) {
+			if (DemoAccount._isDemoAccount(this.getView())) {
 				return
 			}
 
@@ -130,7 +147,10 @@ sap.ui.define([
 						dispenseRequest: {
 							performer: that.getView().getModel().getProperty(plan)
 						},
-						authoredOn: requestedOn
+						authoredOn: requestedOn,
+						extension: [{
+							valueString : that.getView().getModel().getProperty(plan).medicationCodeableConcept.text
+						}],
 					};
 
 					const oFhirModel = that.getView().getModel();
@@ -164,7 +184,7 @@ sap.ui.define([
 			// Bundle has Practitioner + Patient + MedicationStatement + Organization
 			for (const medicationStatement of selectedPlans) {
 				let newBundle = "";
-                const practitioner = this.getView().getModel().getProperty(medicationStatement + '/informationSource/reference');
+				const practitioner = this.getView().getModel().getProperty(medicationStatement + '/informationSource/reference');
 				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + practitioner)) + "},";
 				const patient = this.getView().getModel().getProperty(medicationStatement + '/subject/reference');
 				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + patient)) + "},";
@@ -178,30 +198,30 @@ sap.ui.define([
 			return listOfBundles;
 		},
 
-		_populateStructure: function(selectedPlans) {
+		_populateStructure: function (selectedPlans) {
 
 			// structure = { Practitioner : { Patient : [ MedicationStatements ]}}
 			const structure = {};
 
-            for (const plan of selectedPlans) {
-                const patient = this.getView().getModel().getProperty(plan + '/subject/reference');
-                const practitioner = this.getView().getModel().getProperty(plan + '/informationSource/reference');
-                if (practitioner in structure) {
-                    if (patient in structure[practitioner]) {
-                        structure[practitioner][patient].push(plan);
-                    }
-                    else {
-                        structure[practitioner][patient] = [];
-                        structure[practitioner][patient].push(plan);
-                    }
-                }
-                else {
-                    structure[practitioner] = {};
-                    structure[practitioner][patient] = [];
-                    structure[practitioner][patient].push(plan);
-                }
-            }
-            return structure;
+			for (const plan of selectedPlans) {
+				const patient = this.getView().getModel().getProperty(plan + '/subject/reference');
+				const practitioner = this.getView().getModel().getProperty(plan + '/informationSource/reference');
+				if (practitioner in structure) {
+					if (patient in structure[practitioner]) {
+						structure[practitioner][patient].push(plan);
+					}
+					else {
+						structure[practitioner][patient] = [];
+						structure[practitioner][patient].push(plan);
+					}
+				}
+				else {
+					structure[practitioner] = {};
+					structure[practitioner][patient] = [];
+					structure[practitioner][patient].push(plan);
+				}
+			}
+			return structure;
 		}
 
 	});

@@ -29,8 +29,17 @@
                     <Column width="35%" importance="High" autoPopinWidth="10">
                         <Text text="{i18n>ManagingOrganization}" />
                     </Column>
+                    <Column width="35%" importance="High" autoPopinWidth="10">
+                        <Text text="{i18n>Medication}" />
+                    </Column>
                     <Column width="35%" importance="High">
                         <Text text="{i18n>medicationPZN}" />
+                    </Column>
+                    <Column width="35%" importance="High">
+                        <Text text="{i18n>medicationSize}" />
+                    </Column>
+                    <Column width="35%" importance="High">
+                        <Text text="{i18n>standardSize}" />
                     </Column>
                     <Column width="30%" importance="High">
                         <Text text="{i18n>requestStatus}" />
@@ -45,7 +54,10 @@
                             <Text text="{path: 'subject/reference', formatter: '.referencePatient'}" />
                             <Text text="{path: 'performer/reference', formatter: '.referencePractitioner'}" />
                             <Text text="{path: 'subject/reference', formatter: '.referencePharmacy'}" />
+                            <Text text="{extension/0/valueString}" />
                             <Text text="{medicationCodeableConcept/coding/0/code}" />
+                            <Text text="" />
+                            <Text text="" />
                             <Text text="{status}" />
                             <Text text="{authoredOn}" />
                         </cells>
