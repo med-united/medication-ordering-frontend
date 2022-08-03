@@ -42,7 +42,7 @@
 			"medication": {
 				"uri": "../../resources/local/medication.json",
 				"type": "JSON"
-			}			
+			}
 		}
 	},
 	"sap.ui": {
@@ -123,7 +123,6 @@
 				"dataSource": "medication",
 				"type": "sap.ui.model.json.JSONModel"
 			}
-
 		},
 		"resources": {
 			"js": [

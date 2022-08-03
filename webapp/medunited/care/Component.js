@@ -208,7 +208,7 @@ sap.ui.define([
 		 * @returns {sap.f.FlexibleColumnLayoutSemanticHelper} An instance of the semantic helper
 		 */
 		getHelper: function () {
-			var oFCL = this.getRootControl().byId("fcl"),
+			const oFCL = this.getRootControl().byId("fcl"),
 				oParams = jQuery.sap.getUriParameters(),
 				oSettings = {
 					defaultTwoColumnLayoutType: sap.f.LayoutType.TwoColumnsMidExpanded,

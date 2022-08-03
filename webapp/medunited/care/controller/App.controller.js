@@ -18,15 +18,15 @@ sap.ui.define([
 	return AbstractController.extend("medunited.care.controller.App", {
 		onInit: function () {
 			var oComponent = this.getOwnerComponent();
-			if(oComponent) {				
+			if (oComponent) {
 				this.oRouter = oComponent.getRouter();
 				this.oRouter.attachRouteMatched(this.onRouteMatched, this);
 				ResizeHandler.register(this.getView().byId("fcl"), this._onResize.bind(this));
 			} else {
-				Log.warning("Could not get component for AbstractAppController for entity: "+this.getEntityName());
+				Log.warning("Could not get component for AbstractAppController for entity: " + this.getEntityName());
 			}
 		},
-		changeTab: function(oEvent) {
+		changeTab: function (oEvent) {
 			this.getOwnerComponent().getRouter().navTo(oEvent.getParameter("key"));
 		},
 		onRouteMatched: function (oEvent) {
@@ -34,15 +34,15 @@ sap.ui.define([
 				oArguments = oEvent.getParameter("arguments");
 
 			var oModel = this.getOwnerComponent().getModel("Layout");
-			
+
 			var sLayout = oEvent.getParameters().arguments.layout;
-			
+
 			// If there is no layout parameter, query for the default level 0 layout (normally OneColumn)
 			if (!sLayout) {
 				var oNextUIState = this.getOwnerComponent().getHelper().getNextUIState(0);
 				sLayout = oNextUIState.layout;
 			}
-			
+
 			// Update the layout of the FlexibleColumnLayout
 			if (sLayout) {
 				oModel.setProperty("/layout", sLayout);
@@ -63,7 +63,7 @@ sap.ui.define([
 
 			// Replace the URL with the new layout if a navigation arrow was used
 			if (bIsNavigationArrow) {
-				var oParams = {layout: sLayout};
+				var oParams = { layout: sLayout };
 				oParams[this.entityName] = this.currentEntity;
 				this.oRouter.navTo(this.currentRouteName, oParams, true);
 			}
@@ -75,7 +75,7 @@ sap.ui.define([
 			var oUIState = this.getOwnerComponent().getHelper().getCurrentUIState();
 			oModel.setData(oUIState);
 		},
-		_onResize: function(oEvent) {
+		_onResize: function (oEvent) {
 			var bPhone = (oEvent.size.width < FlexibleColumnLayout.TABLET_BREAKPOINT);
 			this.getOwnerComponent().getModel("Layout").setProperty("/isPhone", bPhone);
 		},
@@ -83,21 +83,21 @@ sap.ui.define([
 		onExit: function () {
 			try {
 				this.oRouter.detachRouteMatched(this.onRouteMatched, this);
-			} catch(e) {
+			} catch (e) {
 				Log.warning(e);
 			}
 		},
-		formatJwtName: function(sGivenName, sFamilyName) {
+		formatJwtName: function (sGivenName, sFamilyName) {
 			try {
-				if(!sGivenName || !sFamilyName) {
+				if (!sGivenName || !sFamilyName) {
 					return "";
 				}
 				return JWTUtil.getSalutation(sGivenName, sFamilyName);
-			} catch(e) {
-				console.error("Exception while formatting name: "+e);
+			} catch (e) {
+				console.error("Exception while formatting name: " + e);
 			}
 		},
-		dialogToLogOut: function() {
+		dialogToLogOut: function () {
 			if (!this.oLogoutDialog) {
 				this.oLogoutDialog = new Dialog({
 					type: DialogType.Message,
@@ -110,12 +110,12 @@ sap.ui.define([
 							MessageToast.show(this.translate("loggingOut"));
 							this.oLogoutDialog.close();
 							let keycloak = this.getView().getParent().keycloak;
-							const logoutOptions = { redirectUri : "https://care.med-united.health" };
-    						keycloak.logout(logoutOptions).then((success) => {
-            					console.log("Log out success ", success );
-    						}).catch((error) => {
-            					console.log("Log out error ", error );
-    						});
+							const logoutOptions = { redirectUri: "https://care.med-united.health" };
+							keycloak.logout(logoutOptions).then((success) => {
+								console.log("Log out success ", success);
+							}).catch((error) => {
+								console.log("Log out error ", error);
+							});
 						}.bind(this)
 					}),
 					endButton: new Button({

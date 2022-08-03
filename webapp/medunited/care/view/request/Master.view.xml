@@ -56,8 +56,8 @@
                             <Text text="{path: 'subject/reference', formatter: '.referencePharmacy'}" />
                             <Text text="{extension/0/valueString}" />
                             <Text text="{medicationCodeableConcept/coding/0/code}" />
-                            <Text text="" />
-                            <Text text="" />
+                            <Text text="{dispenseRequest/quantity/value}" />
+                            <Text text="{dispenseRequest/quantity/code}" />
                             <Text text="{status}" />
                             <Text text="{authoredOn}" />
                         </cells>

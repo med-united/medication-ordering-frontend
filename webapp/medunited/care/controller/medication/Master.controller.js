@@ -145,11 +145,15 @@ sap.ui.define([
 							reference: that.getView().getModel().getProperty(plan).informationSource.reference
 						},
 						dispenseRequest: {
-							performer: that.getView().getModel().getProperty(plan)
+							"quantity": {
+								"value": that.getView().getModel().getProperty(plan).extension[0].valueString,
+								"system": "http://unitsofmeasure.org",
+								"code": that.getView().getModel().getProperty(plan).extension[1].valueString
+							}
 						},
 						authoredOn: requestedOn,
 						extension: [{
-							valueString : that.getView().getModel().getProperty(plan).medicationCodeableConcept.text
+							valueString: that.getView().getModel().getProperty(plan).medicationCodeableConcept.text
 						}],
 					};
 

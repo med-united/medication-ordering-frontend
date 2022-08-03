@@ -3,79 +3,68 @@
         <content>
             <uxap:ObjectPageLayout id="objectPageLayout" showTitleInHeaderContent="true">
                 <uxap:headerTitle>
-                    <uxap:ObjectPageHeader objectImageURI="{path: 'photo/0', formatter: '.formatter.formatPatientPhoto'}" objectImageShape="Circle" objectImageAlt="Profile picture of patient" objectTitle="{name/[use=official]/family}, {name/[use=official]/given/0}" objectSubtitle="{path: 'birthDate', formatter: '.formatter.formatBirthDate'}" isObjectIconAlwaysVisible="false"
-							  isObjectTitleAlwaysVisible="false"
-							  isObjectSubtitleAlwaysVisible="false">
-                    	<uxap:actions>
-					        <uxap:ObjectPageHeaderActionButton text="{i18n>btnEdit}" hideText="false" hideIcon="true" type="Emphasized" visible="{= !${appState>/editMode}}" press="onEdit"/>
-                            <uxap:ObjectPageHeaderActionButton text="{i18n>btnCreateMedicationplan}" hideText="false" hideIcon="true" press="onCreateMedicationPlan"/>
-							<uxap:ObjectPageHeaderActionButton type="Transparent"
-								icon="sap-icon://full-screen" press="handleFullScreen"
-								tooltip="Enter Full Screen Mode"
-								visible="{= ${Layout>/actionButtonsInfo/midColumn/fullScreen} !== null }" />
-							<uxap:ObjectPageHeaderActionButton type="Transparent"
-								icon="sap-icon://exit-full-screen" press="handleExitFullScreen"
-								tooltip="Exit Full Screen Mode"
-								visible="{= ${Layout>/actionButtonsInfo/midColumn/exitFullScreen} !== null }" />
-							<uxap:ObjectPageHeaderActionButton type="Transparent"
-								icon="sap-icon://decline" press="handleClose"
-								tooltip="Close column"
-								visible="{= ${Layout>/actionButtonsInfo/midColumn/closeColumn} !== null }" />
-                    	</uxap:actions>
+                    <uxap:ObjectPageHeader objectImageURI="{path: 'photo/0', formatter: '.formatter.formatPatientPhoto'}" objectImageShape="Circle" objectImageAlt="Profile picture of patient" objectTitle="{name/[use=official]/family}, {name/[use=official]/given/0}" objectSubtitle="{path: 'birthDate', formatter: '.formatter.formatBirthDate'}" isObjectIconAlwaysVisible="false" isObjectTitleAlwaysVisible="false" isObjectSubtitleAlwaysVisible="false">
+                        <uxap:actions>
+                            <uxap:ObjectPageHeaderActionButton text="{i18n>btnEdit}" hideText="false" hideIcon="true" type="Emphasized" visible="{= !${appState>/editMode}}" press="onEdit" />
+                            <uxap:ObjectPageHeaderActionButton text="{i18n>btnCreateMedicationplan}" hideText="false" hideIcon="true" press="onCreateMedicationPlan" />
+                            <uxap:ObjectPageHeaderActionButton type="Transparent" icon="sap-icon://full-screen" press="handleFullScreen" tooltip="Enter Full Screen Mode" visible="{= ${Layout>/actionButtonsInfo/midColumn/fullScreen} !== null }" />
+                            <uxap:ObjectPageHeaderActionButton type="Transparent" icon="sap-icon://exit-full-screen" press="handleExitFullScreen" tooltip="Exit Full Screen Mode" visible="{= ${Layout>/actionButtonsInfo/midColumn/exitFullScreen} !== null }" />
+                            <uxap:ObjectPageHeaderActionButton type="Transparent" icon="sap-icon://decline" press="handleClose" tooltip="Close column" visible="{= ${Layout>/actionButtonsInfo/midColumn/closeColumn} !== null }" />
+                        </uxap:actions>
                     </uxap:ObjectPageHeader>
                 </uxap:headerTitle>
                 <uxap:headerContent>
-                  	<VBox items="{telecom}">
+                    <VBox items="{telecom}">
                         <HBox>
-                            <Label text="{path: 'use', formatter: '.formatter.formatPatientTelecomUse'}" class="sapUiTinyMarginEnd"/>
-                            <Link text="{value}"/>
-                        </HBox>                        
-			        </VBox>
+                            <Label text="{path: 'use', formatter: '.formatter.formatPatientTelecomUse'}" class="sapUiTinyMarginEnd" />
+                            <Link text="{value}" />
+                        </HBox>
+                    </VBox>
                 </uxap:headerContent>
                 <uxap:sections>
                     <uxap:ObjectPageSection id="personalSection" title="{i18n>titleSectionPersonal}">
                         <uxap:subSections>
                             <uxap:ObjectPageSubSection id="nameSubSection" title="{i18n>titleSubSectionName}">
                                 <uxap:blocks>
-                                    <name:NameBlock id="nameBlock" showSubSectionMore="true" columnLayout="1"/>
+                                    <name:NameBlock id="nameBlock" showSubSectionMore="true" columnLayout="1" />
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
-                             <uxap:ObjectPageSubSection id="addressSubSection" title="{i18n>titleSubSectionAddress}">
+                            <uxap:ObjectPageSubSection id="addressSubSection" title="{i18n>titleSubSectionAddress}">
                                 <uxap:blocks>
-                                    <address:AddressBlock id="addressBlock" columnLayout="1"/>
+                                    <address:AddressBlock id="addressBlock" columnLayout="1" />
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
                             <uxap:ObjectPageSubSection id="biologicalSubSection" title="{i18n>titleSubSectionBiologicalInformation}">
                                 <uxap:blocks>
-                                    <biological:BiologicalBlock id="biologicalBlock" columnLayout="1"/>
+                                    <biological:BiologicalBlock id="biologicalBlock" columnLayout="1" />
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
                             <uxap:ObjectPageSubSection id="generalPractitionerSubSection" title="{i18n>titleSubSectionGeneralPractitioner}">
                                 <uxap:blocks>
-                                    <generalPractitioner:GeneralPractitionerBlock id="generalPractitionerBlock" columnLayout="1"/>
+                                    <generalPractitioner:GeneralPractitionerBlock id="generalPractitionerBlock" columnLayout="1" />
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
                             <uxap:ObjectPageSubSection id="defaultOrganizationSubSection" title="{i18n>titleSubSectionDefaultOrganization}">
                                 <uxap:blocks>
-                                    <defaultOrganization:DefaultOrganizationBlock id="defaultOrganizationBlock" columnLayout="1"/>
-                                </uxap:blocks>
-                            </uxap:ObjectPageSubSection>
-				        </uxap:subSections>
-                    </uxap:ObjectPageSection>
-                    <uxap:ObjectPageSection id="insuranceSection" title="{i18n>titleSectionInsurance}">
-                        <uxap:subSections>
-                          <uxap:ObjectPageSubSection id="insuranceSubSection" title="{i18n>titleSectionInsurance}">
-                                <uxap:blocks>
-                                    <insurance:InsuranceBlock id="insuranceBlock"/>
+                                    <defaultOrganization:DefaultOrganizationBlock id="defaultOrganizationBlock" columnLayout="1" />
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
                         </uxap:subSections>
                     </uxap:ObjectPageSection>
-					<uxap:ObjectPageSection id="medicationSection" title="{i18n>titleSectionMedication}">
+                    <uxap:ObjectPageSection id="insuranceSection" title="{i18n>titleSectionInsurance}">
                         <uxap:subSections>
-                          <uxap:ObjectPageSubSection id="medicationSubSection" title="{i18n>titleSectionMedication}">
+                            <uxap:ObjectPageSubSection id="insuranceSubSection" title="{i18n>titleSectionInsurance}">
                                 <uxap:blocks>
-                                    <medication:MedicationBlock id="medicationBlock"/>
+                                    <insurance:InsuranceBlock id="insuranceBlock" />
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+                    <uxap:ObjectPageSection id="medicationSection" title="{i18n>titleSectionMedication}">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection id="medicationSubSection" title="{i18n>titleSectionMedication}">
+                                <uxap:blocks>
+                                    <medication:MedicationBlock id="medicationBlock" />
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
                             <uxap:ObjectPageSubSection id="dataMatrixSubSection" title="{i18n>titleSectionMedicationDataMatrix}">
@@ -88,7 +77,7 @@
         </content>
         <footer>
             <Toolbar>
-                
+
                 <ToolbarSpacer />
                 <Button id="cancelButton" text="{i18n>btnPatientCancel}" visible="{appState>/editMode}" type="Reject" press="onCancel" />
                 <Button id="saveButton" text="{i18n>btnPatientSave}" visible="{appState>/editMode}" type="Accept" press="onSave" />
