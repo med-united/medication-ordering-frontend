@@ -37,7 +37,7 @@
 								<IconTabFilter key="patient-master" text="{i18n>patientsTabFilter}" />
 								<IconTabFilter key="medication-master" text="{i18n>medicationTabFilter}" />
 								<IconTabFilter key="request-master" text="{i18n>medicationRequestTabFilter}" />
-								<IconTabFilter key="practitioner-master" text="{i18n>practitionerTabFilter}" />
+								<IconTabFilter key="practitioner-master" text="{i18n>practitionerTabTitle}" />
 								<IconTabFilter key="organization-master" text="{i18n>pharmacyTabFilter}" />
 							</items>
 						</IconTabHeader>

@@ -1,6 +1,6 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" controllerName="medunited.care.SharedBlocks.insurance.InsuranceBlockController">
     <HBox justifyContent="End" class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
-        <Link text="Add Insurance" press="addInsurance"/>
+        <Link text="Versicherung hinzufügen" press="addInsurance"/>
     </HBox>
     <Table id="insuranceTable" items="{path: '/Coverage', parameters : {request: { _include: 'Coverage:payor'}}}">
         <columns>

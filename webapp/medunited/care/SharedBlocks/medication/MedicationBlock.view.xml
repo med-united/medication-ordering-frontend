@@ -1,6 +1,6 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" controllerName="medunited.care.SharedBlocks.medication.MedicationBlockController">
     <HBox justifyContent="End" class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
-        <Link text="Add Medication" press="addMedication" />
+        <Link text="Medikation hinzufügen" press="addMedication" />
     </HBox>
     <Table id="medicationTable" items="{path: '/MedicationStatement', parameters : {request: { _include: 'MedicationStatement:medication'}}}" mode="{= ${appState>/editMode} ? 'MultiSelect' : 'None'}">
         <columns>
@@ -53,6 +53,6 @@
         </items>
     </Table>
     <HBox justifyContent="End" class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
-        <Link text="Delete Medication" press="deleteMedication" />
+        <Link text="Medikation löschen" press="deleteMedication" />
     </HBox>
 </mvc:View>
