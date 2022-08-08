@@ -504,6 +504,9 @@ sap.ui.define(
   
         _saveScannedValue: function(result, error) {
           if (result) {
+            if(this.lastScannedResult !== null) {
+              return
+            }
             this.lastScannedResult = result;
             var sResultText = result.text;
             this._oScanModel.setProperty('/value', sResultText);
