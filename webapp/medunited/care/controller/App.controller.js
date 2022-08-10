@@ -97,6 +97,9 @@ sap.ui.define([
 				console.error("Exception while formatting name: " + e);
 			}
 		},
+		goToAccountManagement: function() {
+			location.href = "https://id.med-united.health/realms/med-united/account/";
+		},
 		dialogToLogOut: function () {
 			if (!this.oLogoutDialog) {
 				this.oLogoutDialog = new Dialog({
