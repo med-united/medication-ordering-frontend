@@ -19,7 +19,7 @@ sap.ui.define([
                     client.publish({
                         destination: 'Prescriptions',
                         body: bundle,
-                        headers: { transaction: tx.id, 'destination-type': 'ANYCAST', priority: '1', address: "Prescriptions", practiceManagementTranslation: 't2med', receiverPublicKeyFingerprint: 't2med' },
+                        headers: { transaction: tx.id, 'destination-type': 'ANYCAST', priority: '1', address: "Prescriptions", practiceManagementTranslation: 'isynet', receiverPublicKeyFingerprint: '12345' },
                     });
 
                     tx.commit();

@@ -106,14 +106,14 @@ sap.ui.define([
 			}
 			if (prescriptionsRequestedUsing_isynet.length > 0) {
 				let listOfBundles = this._createBundles(prescriptionsRequestedUsing_isynet);
-				// console.log(listOfBundles);
+				console.log(listOfBundles);
 				StompPrescriptionSender.sendFHIRBundlesToBroker(listOfBundles);
 			}
 			if (prescriptionsRequestedUsing_email.length > 0) {
 				alert("Sending Brief");
 				// structure = { Practitioner : { Patient : [ MedicationStatements ]}}
 				const structure = this._populateStructure(prescriptionsRequestedUsing_email);
-				BriefSender.sendEarztBrief(this.getView(), structure, this.eArztbriefModel);
+				// BriefSender.sendEarztBrief(this.getView(), structure, this.eArztbriefModel);
 			}
 			// PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
 		},
