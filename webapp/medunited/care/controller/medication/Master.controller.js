@@ -146,9 +146,11 @@ sap.ui.define([
 						},
 						dispenseRequest: {
 							"quantity": {
-								"value": that.getView().getModel().getProperty(plan).extension[0].valueString,
+								"value": "",
+								// "value": that.getView().getModel().getProperty(plan).extension[0].valueString,
 								"system": "http://unitsofmeasure.org",
-								"code": that.getView().getModel().getProperty(plan).extension[1].valueString
+								"code": ""
+								// "code": that.getView().getModel().getProperty(plan).extension[1].valueString
 							}
 						},
 						authoredOn: requestedOn,
