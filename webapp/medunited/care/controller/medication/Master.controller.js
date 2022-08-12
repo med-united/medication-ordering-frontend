@@ -5,8 +5,9 @@ sap.ui.define([
 	'medunited/care/websocket/StompPrescriptionSender',
 	'medunited/care/utils/PharmacyNotifier',
 	'sap/ui/model/xml/XMLModel',
-	'medunited/care/utils/DemoAccount'
-], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount) {
+	'medunited/care/utils/DemoAccount',
+	'sap/m/MessageBox'
+], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount, MessageBox) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
@@ -67,16 +68,20 @@ sap.ui.define([
 			if (DemoAccount._isDemoAccount(this.getView())) {
 				return
 			}
-
 			const medicationTableEntity = this.getEntityName().toLowerCase() + "Table";
 			const selectedPlans = this.byId(medicationTableEntity).getSelectedItems()
 				.map(
 					oItem =>
 						oItem.getBindingContext().getPath());
 
-			this._buildMedicationRequests(selectedPlans);
+			let practitionerAndPharmacyAreDefinedForAllSelectedPlans = this._practitionerAndPharmacyAreDefinedForAllSelectedPlans(selectedPlans);
 
-			this._requestPrescriptionsAccordingToPrescriptionInterface(selectedPlans);
+			if (practitionerAndPharmacyAreDefinedForAllSelectedPlans) {
+				this._buildMedicationRequests(selectedPlans);
+				this._requestPrescriptionsAccordingToPrescriptionInterface(selectedPlans);
+			} else {
+				return;
+			}
 		},
 
 		_requestPrescriptionsAccordingToPrescriptionInterface: function (selectedPlans) {
@@ -116,6 +121,18 @@ sap.ui.define([
 				// BriefSender.sendEarztBrief(this.getView(), structure, this.eArztbriefModel);
 			}
 			// PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
+		},
+
+		_practitionerAndPharmacyAreDefinedForAllSelectedPlans(selectedPlans) {
+			for (const medicationStatement of selectedPlans) {
+				const practitioner = this.getView().getModel().getProperty(medicationStatement + '/informationSource/reference');
+				const organization = this.getView().getModel().getProperty(medicationStatement + '/derivedFrom/0/reference');
+				if (organization === undefined || practitioner === undefined) {
+					MessageBox.warning(this.translate("msgAtLeastOneOfThePrescriptionsIsNotAssignedToADoctorOrAPharmacy") + "\n\n" + this.translate("msgPleaseSelectTheseInTheDetailsViewOfThePatient"), {title: this.translate("msgBeforeProceeding")});	
+					return false;
+				}
+			}
+			return true;
 		},
 
 		_buildMedicationRequests: function (selectedPlans) {
