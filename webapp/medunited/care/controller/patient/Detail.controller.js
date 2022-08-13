@@ -36,6 +36,9 @@ sap.ui.define([
 			sXML += "  <S>\n";
 			for (let oMedicationStatement of aMedicationStatementForPatient) {
 				try {
+					if(!oMedicationStatement || !oMedicationStatement.identifier || oMedicationStatement.identifier.length == 0) {
+						continue;
+					}
 					const pzn = oMedicationStatement.identifier[0].value
 					sXML += "    <M p=\"" + pzn + "\" ";
 					const medicationName = oMedicationStatement.medicationCodeableConcept.text;
