@@ -6,8 +6,9 @@ sap.ui.define([
 	'medunited/care/utils/PharmacyNotifier',
 	'sap/ui/model/xml/XMLModel',
 	'medunited/care/utils/DemoAccount',
-	'sap/m/MessageBox'
-], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount, MessageBox) {
+	'sap/m/MessageBox',
+	'sap/m/MessageToast'
+], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount, MessageBox, MessageToast) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
@@ -79,6 +80,7 @@ sap.ui.define([
 			if (practitionerAndPharmacyAreDefinedForAllSelectedPlans) {
 				this._buildMedicationRequests(selectedPlans);
 				this._requestPrescriptionsAccordingToPrescriptionInterface(selectedPlans);
+				MessageToast.show(this.translate("msgCountPrescriptionRequested", selectedPlans.length));
 			} else {
 				return;
 			}
