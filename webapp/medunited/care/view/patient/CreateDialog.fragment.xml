@@ -22,10 +22,10 @@
 				<Label text="{i18n>City}" />
 				<Input type="Text" value="{address/[use=home]/city}" />
 				<Label text="{i18n>labelPatientGender}" />
-				<ComboBox id="patientGenderSelect" forceSelection="false" selectedKey="{gender}">
+				<Select id="patientGenderSelect" forceSelection="false" selectedKey="{gender}">
                 	<core:Item key="male" text="{i18n>Male}"/>
                 	<core:Item key="female" text="{i18n>Female}"/>
-				</ComboBox>
+				</Select>
 				<Label text="{i18n>GeneralPractitioner}" />
 				<ComboBox id="generalPractitionerSelect" items="{/Practitioner}" selectedKey="{generalPractitioner/0/reference}">
                 	<core:Item key="Practitioner/{id}" text="{name/0/given/0} {name/0/family}" />
