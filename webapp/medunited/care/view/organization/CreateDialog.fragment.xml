@@ -21,17 +21,17 @@
 					</suggestionItems>
 				</Input>
 				<Label text="{i18n>PharmacyName}" />
-				<Input type="text" id="pharmacyName" value="{name}" />
+				<Input type="Text" id="pharmacyName" value="{name}" />
 				<Label text="{i18n>Address}" />
-				<Input type="text" id="pharmacyAddress" value="{address/0/line/0}" />
+				<Input type="Text" id="pharmacyAddress" value="{address/0/line/0}" />
                 <Label text="{i18n>PostalCode}" />
-				<Input type="text" id="pharmacyPostalCode" value="{address/0/postalCode}" />
+				<Input type="Text" id="pharmacyPostalCode" value="{address/0/postalCode}" />
 				<Label text="{i18n>City}" />
-				<Input type="text" id="pharmacyCity" value="{address/0/city}" />
+				<Input type="Text" id="pharmacyCity" value="{address/0/city}" />
 				<Label text="{i18n>Phone}" />
-				<Input type="text" id="pharmacyPhone" value="{telecom/0/value}" />
+				<Input type="Text" id="pharmacyPhone" value="{telecom/0/value}" />
 				<Label text="{i18n>Email}" />
-				<Input type="text" id="pharmacyEmail" value="{telecom/1/value}" />
+				<Input type="Text" id="pharmacyEmail" value="{telecom/1/value}" />
 			</form:content>
 		</form:SimpleForm>
 		<beginButton>

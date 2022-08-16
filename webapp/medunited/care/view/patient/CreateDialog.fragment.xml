@@ -10,17 +10,17 @@
 			singleContainerFullSize="true">
 			<form:content>
 				<Label text="{i18n>GivenName}" />
-				<Input type="text" value="{name/[use=official]/given/0}" />
+				<Input type="Text" value="{name/[use=official]/given/0}" />
 				<Label text="{i18n>FamilyName}" />
-				<Input type="text" value="{name/[use=official]/family}" />
+				<Input type="Text" value="{name/[use=official]/family}" />
 				<Label text="{i18n>BirthDate}" />
 				<DatePicker valueFormat="YYYY-MM-dd" value="{birthDate}" />
 				<Label text="{i18n>Street}" />
-				<Input type="text" value="{address/[use=home]/line/0}" />
+				<Input type="Text" value="{address/[use=home]/line/0}" />
 				<Label text="{i18n>PostalCode}" />
-				<Input type="text" value="{address/[use=home]/postalCode}" />
+				<Input type="Text" value="{address/[use=home]/postalCode}" />
 				<Label text="{i18n>City}" />
-				<Input type="text" value="{address/[use=home]/city}" />
+				<Input type="Text" value="{address/[use=home]/city}" />
 				<Label text="{i18n>labelPatientGender}" />
 				<ComboBox id="patientGenderSelect" forceSelection="false" selectedKey="{gender}">
                 	<core:Item key="male" text="{i18n>Male}"/>
