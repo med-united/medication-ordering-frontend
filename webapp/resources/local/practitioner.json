@@ -11,10 +11,18 @@
             "valueInteger": 36
         }
     ],
-    "identifier": [
+    "identifier":  [
         {
-            "system": "http://hl7.org/fhir/sid/us-npi",
-            "value": "9999999391"
+            "type": {
+                "coding":  [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                        "code": "LANR"
+                    }
+                ]
+            },
+            "system": "https://fhir.kbv.de/NamingSystem/KBV_NS_Base_ANR",
+            "value": ""
         }
     ],
     "active": true,

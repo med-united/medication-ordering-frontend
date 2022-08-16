@@ -21,21 +21,23 @@
 					</suggestionItems>
 				</Input>
 				<Label text="{i18n>GivenName}" />
-				<Input type="text" id="givenName" value="{name/[use=official]/given/0}" />
+				<Input type="Text" id="givenName" value="{name/[use=official]/given/0}" />
 				<Label text="{i18n>FamilyName}" />
-				<Input type="text" id="familyName" value="{name/[use=official]/family}" />
+				<Input type="Text" id="familyName" value="{name/[use=official]/family}" />
+				<Label text="LANR" />
+				<Input type="Text" id="lanr" value="{identifier/[system=https://fhir.kbv.de/NamingSystem/KBV_NS_Base_ANR]/value}" />
 				<Label text="{i18n>Street}" />
-				<Input type="text" id="street" value="{address/[use=home]/line/0}" />
+				<Input type="Text" id="street" value="{address/[use=home]/line/0}" />
 				<Label text="{i18n>PostalCode}" />
-				<Input type="text" id="postalCode" value="{address/[use=home]/postalCode}" />
+				<Input type="Text" id="postalCode" value="{address/[use=home]/postalCode}" />
 				<Label text="{i18n>City}" />
-				<Input type="text" id="city" value="{address/[use=home]/city}" />
+				<Input type="Text" id="city" value="{address/[use=home]/city}" />
 				<Label text="{i18n>Email}" />
-				<Input type="text" id="email" value="{telecom/0/value}" />
+				<Input type="Text" id="email" value="{telecom/0/value}" />
                 <Label text="{i18n>Phone}" />
-				<Input type="text" id="phone" value="{telecom/1/value}" />
+				<Input type="Text" id="phone" value="{telecom/1/value}" />
 				<Label text="{i18n>Fax}" />
-				<Input type="text" id="fax" value="{telecom/2/value}" />
+				<Input type="Text" id="fax" value="{telecom/2/value}" />
 				<Label text="{i18n>prescriptionMode}" labelFor="prescriptionModeSelect"/>
 				<ComboBox id="prescriptionModeSelect" forceSelection="false" selectedKey="{extension/0/valueString}">
                 	<core:Item key="t2med" text="T2Med"/>
