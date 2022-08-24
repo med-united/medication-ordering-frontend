@@ -37,7 +37,7 @@ sap.ui.define([
 
             let client = new StompJs.Client({
                 // brokerURL: 'tcp://localhost:61616',  // to run locally
-                brokerURL: 'ws://localhost:61616',
+                brokerURL: 'wss://broker.med-united.health/stomp',
                 connectHeaders: {
                     login: 'admin',
                     passcode: 'admin',
