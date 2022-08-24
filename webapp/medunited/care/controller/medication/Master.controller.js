@@ -108,13 +108,14 @@ sap.ui.define([
 			}
 
 			if (prescriptionsRequestedUsing_t2med.length > 0) {
-				alert("Sending Powershell Script. Functionality may be disabled");
-				ScriptDownloader.makePowershellScript(this.getView(), prescriptionsRequestedUsing_t2med);
+				let listOfBundles = this._createBundles(prescriptionsRequestedUsing_t2med)
+				console.log(listOfBundles)
+				StompPrescriptionSender.sendFHIRBundlesToBroker(listOfBundles, "t2med")
 			}
 			if (prescriptionsRequestedUsing_isynet.length > 0) {
 				let listOfBundles = this._createBundles(prescriptionsRequestedUsing_isynet);
 				console.log(listOfBundles);
-				StompPrescriptionSender.sendFHIRBundlesToBroker(listOfBundles);
+				StompPrescriptionSender.sendFHIRBundlesToBroker(listOfBundles, "isynet");
 			}
 			if (prescriptionsRequestedUsing_email.length > 0) {
 				alert("Sending Brief");
@@ -130,7 +131,7 @@ sap.ui.define([
 				const practitioner = this.getView().getModel().getProperty(medicationStatement + '/informationSource/reference');
 				const organization = this.getView().getModel().getProperty(medicationStatement + '/derivedFrom/0/reference');
 				if (organization === undefined || practitioner === undefined) {
-					MessageBox.warning(this.translate("msgAtLeastOneOfThePrescriptionsIsNotAssignedToADoctorOrAPharmacy") + "\n\n" + this.translate("msgPleaseSelectTheseInTheDetailsViewOfThePatient"), {title: this.translate("msgBeforeProceeding")});	
+					MessageBox.warning(this.translate("msgAtLeastOneOfThePrescriptionsIsNotAssignedToADoctorOrAPharmacy") + "\n\n" + this.translate("msgPleaseSelectTheseInTheDetailsViewOfThePatient"), { title: this.translate("msgBeforeProceeding") });
 					return false;
 				}
 			}

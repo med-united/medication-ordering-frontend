@@ -6,7 +6,7 @@ sap.ui.define([
     'use strict';
 
     return {
-        sendFHIRBundlesToBroker: function (listOfBundles) {
+        sendFHIRBundlesToBroker: function (listOfBundles, pvs) {
 
             let client = this._establishConnectionToSTOMPWebSocket();
 
@@ -19,7 +19,7 @@ sap.ui.define([
                     client.publish({
                         destination: 'Prescriptions',
                         body: bundle,
-                        headers: { transaction: tx.id, 'destination-type': 'ANYCAST', priority: '1', address: "Prescriptions", practiceManagementTranslation: 'isynet', receiverPublicKeyFingerprint: '12345' },
+                        headers: { transaction: tx.id, 'destination-type': 'ANYCAST', priority: '1', address: "Prescriptions", practiceManagementTranslation: pvs, receiverPublicKeyFingerprint: '12345' },
                     });
 
                     tx.commit();
@@ -37,7 +37,7 @@ sap.ui.define([
 
             let client = new StompJs.Client({
                 // brokerURL: 'tcp://localhost:61616',  // to run locally
-                brokerURL: 'wss://broker.med-united.health/stomp',
+                brokerURL: 'ws://localhost:61616',
                 connectHeaders: {
                     login: 'admin',
                     passcode: 'admin',
