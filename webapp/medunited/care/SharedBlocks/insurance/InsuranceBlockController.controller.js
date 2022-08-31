@@ -40,13 +40,18 @@ sap.ui.define([
 
         filterInsuranceTableToPatient: function (sPatientId) {
             var aFilters = [];
-            aFilters.push(new FHIRFilter({ path: "patient", operator: FHIRFilterOperator.StartsWith, value1: "Patient/" + sPatientId, valueType: FHIRFilterType.string }));
+            aFilters.push(new FHIRFilter({
+                path: "patient",
+                operator: FHIRFilterOperator.StartsWith,
+                value1: "Patient/" + sPatientId,
+                valueType: FHIRFilterType.string
+            }));
             this.getView().byId("insuranceTable").getBinding("items").filter(aFilters);
         },
 
         addInsurance: function () {
             var sPatientId = this.byId("insuranceTable").getBindingContext().getPath().split("/")[2];
-            var sCoverageId = this.getView().getModel().create("Coverage", { beneficiary: { reference: "Patient/" + sPatientId } }, "patientDetails");
+            var sCoverageId = this.getView().getModel().create("Coverage", {beneficiary: {reference: "Patient/" + sPatientId}}, "patientDetails");
         },
 
         onInsuranceChange: function (oEvent) {
