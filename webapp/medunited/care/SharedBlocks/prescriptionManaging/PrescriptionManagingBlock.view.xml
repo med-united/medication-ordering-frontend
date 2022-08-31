@@ -1,39 +1,44 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core" controllerName="medunited.care.SharedBlocks.prescriptionManaging.PrescriptionManagingBlock">
-	<form:SimpleForm id="prescriptionInterfaceFormRead"
-        editable="false"
-        layout="ResponsiveGridLayout"
-        labelSpanXL="3"
-        labelSpanL="3"
-        labelSpanM="3"
-        labelSpanS="12"
-        emptySpanXL="4"
-        emptySpanL="4"
-        emptySpanM="4"
-        emptySpanS="0"
-        columnsXL="2"
-        columnsL="2"
-        columnsM="2"
-        visible="{= !${appState>/editMode}}">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core"
+          controllerName="medunited.care.SharedBlocks.prescriptionManaging.PrescriptionManagingBlock">
+    <form:SimpleForm id="prescriptionInterfaceFormRead"
+                     editable="false"
+                     layout="ResponsiveGridLayout"
+                     labelSpanXL="3"
+                     labelSpanL="3"
+                     labelSpanM="3"
+                     labelSpanS="12"
+                     emptySpanXL="4"
+                     emptySpanL="4"
+                     emptySpanM="4"
+                     emptySpanS="0"
+                     columnsXL="2"
+                     columnsL="2"
+                     columnsM="2"
+                     visible="{= !${appState>/editMode}}">
         <form:content>
             <Label text="{i18n>prescriptionMode}" labelFor="prescriptionModeText"/>
-            <Text id="prescriptionModeText" text="{extension/0/valueString}" />
+            <Text id="prescriptionModeText" text="{extension/0/valueString}"/>
         </form:content>
+        <Toolbar>
+            <Button id="test" type="Emphasized" press=".onPress" text="Fetch public key"/>
+        </Toolbar>
     </form:SimpleForm>
+
     <form:SimpleForm id="prescriptionInterfacelFormEdit"
-        editable="true"
-        layout="ResponsiveGridLayout"
-        labelSpanXL="3"
-        labelSpanL="3"
-        labelSpanM="3"
-        labelSpanS="12"
-        emptySpanXL="4"
-        emptySpanL="4"
-        emptySpanM="4"
-        emptySpanS="0"
-        columnsXL="2"
-        columnsL="2"
-        columnsM="2"
-        visible="{appState>/editMode}">
+                     editable="true"
+                     layout="ResponsiveGridLayout"
+                     labelSpanXL="3"
+                     labelSpanL="3"
+                     labelSpanM="3"
+                     labelSpanS="12"
+                     emptySpanXL="4"
+                     emptySpanL="4"
+                     emptySpanM="4"
+                     emptySpanS="0"
+                     columnsXL="2"
+                     columnsL="2"
+                     columnsM="2"
+                     visible="{appState>/editMode}">
         <form:content>
             <Label text="{i18n>prescriptionMode}" labelFor="prescriptionModeSelect"/>
             <Select id="prescriptionModeSelect" forceSelection="false" selectedKey="{extension/0/valueString}">
