@@ -5,8 +5,10 @@ sap.ui.define([
     "sap/fhir/model/r4/FHIRFilterType",
     "sap/fhir/model/r4/FHIRFilterOperator",
     "../../search/MedicationSearchProvider",
-    "sap/ui/core/Item"
-], function (AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item) {
+    "sap/ui/core/Item",
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
+], function (AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, MessageToast, MessageBox) {
     "use strict";
 
     return AbstractController.extend("medunited.care.SharedBlocks.medication.MedicationBlockController", {

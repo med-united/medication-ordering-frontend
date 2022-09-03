@@ -48,7 +48,7 @@
                         </items>
                     </ComboBox>
 <!--                    <Input value="{extension/1/valueString}" enabled="{appState>/editMode}" />-->
-                    <Input value="{note}" enabled="{appState>/editMode}" />
+                    <Input value="{note/0/text}" enabled="{appState>/editMode}" />
                     <ComboBox items="{/Practitioner}" selectedKey="{informationSource/reference}" enabled="{appState>/editMode}">
                         <core:Item key="Practitioner/{id}" text="{name/0/given/0} {name/0/family}" />
                     </ComboBox>

@@ -95,40 +95,43 @@ sap.ui.define([
                     const oMedicationStatement = {};
                     oMedicationStatement.resource = {
                         resourceType: "MedicationStatement",
+                        identifier: [],
                         subject: { reference: "" },
                         informationSource: { reference: "" },
                         organization: { reference: "" },
                         medicationCodeableConcept: {
-                            code: {
-                                coding: {
-                                   system: { value: "http://fhir.de/CodeSystem/ifa/pzn" },
-                                   code: { value: oDataRow["MedicationPZN"] }
-                                },
-                                text: { value: oDataRow["MedicationName"] }
-                            },
-                            amount: {
-                                numerator: {
-                                    value: { value: oDataRow["MedicationSize"] },
-                                }
-                            }
+                            text: oDataRow["MedicationName"]
                         },
+                        extension: [
+                            { valueString: oDataRow["MedicationAmount"] ? oDataRow["MedicationAmount"] : "1" },
+                            { valueString: oDataRow["MedicationSize"] }
+                        ],
                         dosage: [
                           { text: oDataRow["MedicationDosage"] }
+                        ],
+                        note: [
+                            {text: oDataRow["MedicationNote"] }
                         ]
                     };
+                    if(oDataRow["MedicationPZN"]) {
+                        oMedicationStatement.resource.identifier.push({"value": oDataRow["MedicationPZN"]})
+                    }
                     oMedicationStatement.getKey = () => {
                         return {
                             subject:           oMedicationStatement.resource.subject.reference,
                             informationSource: oMedicationStatement.resource.informationSource.reference,
-                            medication:        oMedicationStatement.resource.medicationCodeableConcept.code.coding.code.value,
+                            medication:        oMedicationStatement.resource.identifier && oMedicationStatement.resource.identifier.length > 0 && oMedicationStatement.resource.identifier[0].value,
                             patient:           oMedicationStatement.resource.subject.reference,
                         };
                     };
                     oMedicationStatement.isTheSameAs = (resource) => {
                         return oMedicationStatement.resource.subject.reference                                == resource.subject.reference
                             && oMedicationStatement.resource.informationSource.reference                      == resource.informationSource.reference
-                            && oMedicationStatement.resource.medicationCodeableConcept.code.coding.code.value == resource.medicationCodeableConcept.code.coding.code.value
-                            && oMedicationStatement.resource.medicationCodeableConcept.amount.numerator.value == resource.medicationCodeableConcept.amount.numerator.value;
+                            && oMedicationStatement.resource.identifier
+                            && oMedicationStatement.resource.identifier.length > 0
+                            && resource.identifier
+                            && resource.identifier.length > 0
+                            && oMedicationStatement.resource.identifier[0].value == resource.identifier[0].value;
                     };
                     oMedicationStatement.setPatientReference = () => {
                         oMedicationStatement.resource.subject.reference = oPatient.resource.resourceType+"/"+oPatient.id;
@@ -137,7 +140,7 @@ sap.ui.define([
                         oMedicationStatement.resource.informationSource.reference = oPractitioner.resource.resourceType+"/"+oPractitioner.id;
                     };
                     oMedicationStatement.setOrganizationReference = () => {
-                        oMedicationStatement.resource.organization.reference = oOrganization.resource.resourceType+"/"+oOrganization.id;
+                        oMedicationStatement.resource.derivedFrom = [{reference : oOrganization.resource.resourceType+"/"+oOrganization.id}];
                     };
                     return oMedicationStatement;
                 }

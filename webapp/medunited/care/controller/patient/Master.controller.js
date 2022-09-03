@@ -18,7 +18,8 @@ sap.ui.define([
 		getFilter: function (sQuery) {
 			return [new Filter({
 				filters: [
-					new Filter("given", FilterOperator.Contains, sQuery),
+					// OR filter does not work
+					//new Filter("given", FilterOperator.Contains, sQuery),
 					new Filter("family", FilterOperator.Contains, sQuery)
 				],
 				and: false

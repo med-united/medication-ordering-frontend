@@ -7,8 +7,10 @@ sap.ui.define([
 	'sap/ui/model/xml/XMLModel',
 	'medunited/care/utils/DemoAccount',
 	'sap/m/MessageBox',
-	'sap/m/MessageToast'
-], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount, MessageBox, MessageToast) {
+	'sap/m/MessageToast',
+	'sap/ui/model/Filter',
+	'sap/ui/model/FilterOperator'
+], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount, MessageBox, MessageToast, Filter, FilterOperator) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
@@ -16,7 +18,17 @@ sap.ui.define([
 		onInit: function () {
 			this.eArztbriefModel = new XMLModel("./medunited/template/Arztbrief-Minimal.XML");
 		},
-
+		getFilter: function (sQuery) {
+			return [new Filter({
+				filters: [
+					// OR filter does not work
+					//new Filter("given", FilterOperator.Contains, sQuery),
+					new Filter("subject.family", FilterOperator.Contains, sQuery)
+				],
+				and: false
+			}
+			)];
+		},
 		getEntityName: function () {
 			return "Medication";
 		},
