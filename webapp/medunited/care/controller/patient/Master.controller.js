@@ -49,13 +49,14 @@ sap.ui.define([
 		onUploadCSVCancel: function () {
 			this.byId("importCSVDialog").close();
 		},
+		onUploadCSVChange: function(oEvent) {
+			this._fileUploaderFiles = oEvent.getParameter("files");
+		},
 		onUploadCSVFile: function () {
 			if(DemoAccount._isDemoAccount(this.getView())){
 				return
 			}
-			let fileUploader = this.getView().byId("idfileUploader");
-			let domRef = fileUploader.getFocusDomRef();
-			let file = domRef.files[0];
+			let file = this._fileUploaderFiles[0];
 			const me = this;
 			ProcessUpload.processUploadedFile(file, this.getView())
 				.then((aResources) => {

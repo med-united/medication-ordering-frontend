@@ -3,7 +3,7 @@
 		<l:SimpleForm editable="true">
 			<l:content>
 				<Label text="{i18n>dialogCSVFileName}" />
-				<u:FileUploader id="idfileUploader" width="50%" sameFilenameAllowed="false" buttonText="" fileType="CSV" placeholder="{i18n>dialogChooseACSVFile}" style="Emphasized"></u:FileUploader>
+				<u:FileUploader id="idfileUploader" change="onUploadCSVChange" width="50%" sameFilenameAllowed="false" buttonText="" fileType="CSV" placeholder="{i18n>dialogChooseACSVFile}" style="Emphasized"></u:FileUploader>
 			</l:content>
 		</l:SimpleForm>
 		<beginButton>
