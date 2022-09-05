@@ -43,7 +43,7 @@ sap.ui.define([
 					sXML += "    <M p=\"" + pzn + "\" ";
 					const medicationName = oMedicationStatement.medicationCodeableConcept.text;
 					if (medicationName) {
-						sXML += "a=\"" + medicationName + "\" ";
+						sXML += "a=\"" + this.escapeXml(medicationName) + "\" ";
 					}
 					const oDosage = oMedicationStatement.dosage;
 					if (oDosage) {
@@ -58,13 +58,15 @@ sap.ui.define([
 							sXML += mDosage[i] + "=\"" + aDosage[i] + "\" ";
 						}
 					}
-					const sNote = oMedicationStatement.note;
-					if (sNote) {
-						const m = sNote.match("Grund: (.*) Hinweis: (.*)");
-						if (m) {
-							sXML += "r=\"" + m.group(1) + "\" i=\"" + m.group(2) + "\" ";
-						} else {
-							sXML += "i=\"" + sNote + "\" ";
+					const vNote = oMedicationStatement.note;
+					if (typeof vNote === "string") {
+						sXML = this.extractReasonInfo(vNote, sXML);
+					} else if(typeof vNote === "object") {
+						for(let oItem in vNote) {
+							if("text" in vNote[oItem]) {
+								sXML = this.extractReasonInfo(vNote[oItem].text, sXML);
+								break;
+							}
 						}
 					}
 					sXML += "/>\n";
@@ -75,6 +77,31 @@ sap.ui.define([
 			sXML += "   </S>\n";
 			sXML += "</MP>";
 			return sXML;
+		},
+
+		extractReasonInfo: function(sNote, sXML) {
+			const m = sNote.match("Grund: (.*) Hinweis: (.*)");
+			if (m) {
+				sXML += "r=\"" + this.escapeXml(m.group(1)) + "\" i=\"" + this.escapeXml(m.group(2)) + "\" ";
+			} else {
+				sXML += "i=\"" + this.escapeXml(sNote) + "\" ";
+			}
+			return sXML;
+		},
+
+		escapeXml: function(unsafe) {
+			if(!unsafe) {
+				return unsafe;
+			}
+			return unsafe.replace(/[<>&'"]/g, function (c) {
+				switch (c) {
+					case '<': return '&lt;';
+					case '>': return '&gt;';
+					case '&': return '&amp;';
+					case '\'': return '&apos;';
+					case '"': return '&quot;';
+				}
+			});
 		},
 
 		validateUserCustomAttributes() {
