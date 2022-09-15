@@ -68,7 +68,7 @@ sap.ui.define([
 					method: sMethod,
 					url: sUrl
 				};
-				if (sMethod === "DELETE") {
+				if (sMethod === "DELETE" && !sUrl.includes("Practitioner")) {
 					oRequestInfo.url += "?_cascade=delete";
 				}
 				return oRequestInfo;
