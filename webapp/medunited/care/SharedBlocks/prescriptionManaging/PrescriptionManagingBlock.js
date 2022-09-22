@@ -3,7 +3,7 @@ sap.ui.define(['sap/uxap/BlockBase'], function (BlockBase) {
     return BlockBase.extend("medunited.care.SharedBlocks.prescriptionManaging.PrescriptionManagingBlock", {
         onPress: function (oSelect) {
 
-            const sshTunnelUrl = "http://a5159e733bb724d73aeaa7d8e84ef474-446415281.eu-central-1.elb.amazonaws.com:8080"
+            const sshTunnelUrl = "https://ssh-tunnel.med-united.health"
             const publicKeyRetrievalEndpoint = "/publicKey"
             const queryKey = "?user="
 
