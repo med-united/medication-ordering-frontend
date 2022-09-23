@@ -1,0 +1,15 @@
+{
+	"items": [
+		{
+			"src": "sap-icon://account",
+			"title": "My Account",
+			"subTitle": "",
+            "target": "https://id.med-united.health/realms/med-united/account/"
+		},
+		{
+			"src": "sap-icon://log",
+			"title": "Log Out",
+			"subTitle": ""
+		}
+	]
+}

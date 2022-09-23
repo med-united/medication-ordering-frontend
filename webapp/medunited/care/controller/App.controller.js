@@ -8,8 +8,11 @@ sap.ui.define([
 	"sap/m/Button",
 	"sap/m/library",
 	"sap/m/MessageToast",
-	"sap/m/Text"
-], function (ResizeHandler, AbstractController, FlexibleColumnLayout, Log, JWTUtil, Dialog, Button, mobileLibrary, MessageToast, Text) {
+	"sap/m/Text",
+	"sap/ui/core/Fragment",
+	"sap/ui/Device",
+	'sap/ui/model/json/JSONModel'
+], function (ResizeHandler, AbstractController, FlexibleColumnLayout, Log, JWTUtil, Dialog, Button, mobileLibrary, MessageToast, Text, Fragment, Device, JSONModel) {
 	"use strict";
 
 	let ButtonType = mobileLibrary.ButtonType;
@@ -22,9 +25,49 @@ sap.ui.define([
 				this.oRouter = oComponent.getRouter();
 				this.oRouter.attachRouteMatched(this.onRouteMatched, this);
 				ResizeHandler.register(this.getView().byId("fcl"), this._onResize.bind(this));
+
+				var aModel = new JSONModel(sap.ui.require.toUrl("medunited/model/data.json")),
+				oView = this.getView();
+				this.getView().setModel(aModel);
+				if (!this._pPopover) {
+					this._pPopover = Fragment.load({
+						id: this.getView().getId(),
+						name: "medunited.base.control.fragments.productSwitchPopover",
+						controller: this
+					}).then(function(oPopover){
+						this.getView().addDependent(oPopover);
+						if (Device.system.phone) {
+							oPopover.setEndButton(new Button({text: "Close", type: "Emphasized", press: this.fnClose.bind(this)}));
+						}
+						return oPopover;
+					}.bind(this));
+				}
 			} else {
 				Log.warning("Could not get component for AbstractAppController for entity: " + this.getEntityName());
 			}
+		},
+		fnOpen: function (oEvent) {
+			var oButton = oEvent.getParameter("button");
+			this._pPopover.then(function(oPopover){
+				oPopover.openBy(oButton);
+			});
+		},
+		fnChange: function (oEvent) {
+			if (oEvent.getParameter("itemPressed").getTarget() != null) {
+				location.href = oEvent.getParameter("itemPressed").getTarget();
+			} else {
+				MessageToast.show("Change event was fired from " + oEvent.getParameter("itemPressed").getId()
+					+ ". It has targetSrc: "
+					+ oEvent.getParameter("itemPressed").getTargetSrc()
+					+ " and target: "
+					+ oEvent.getParameter("itemPressed").getTarget()
+					+ ".");
+			}
+		},
+		fnClose: function () {
+			this._pPopover.then(function(oPopover){
+				oPopover.close();
+			});
 		},
 		changeTab: function (oEvent) {
 			this.getOwnerComponent().getRouter().navTo(oEvent.getParameter("key"));

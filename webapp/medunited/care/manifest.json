@@ -68,6 +68,14 @@
 				"sap.m": {}
 			}
 		},
+		"config": {
+			"sample": {
+				"stretch": true,
+				"files": [
+					"model/data.json"
+				]
+			}
+		},
 		"contentDensities": {
 			"compact": true,
 			"cozy": true
