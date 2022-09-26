@@ -1,0 +1,17 @@
+{
+	"items": [
+		{
+			"src": "sap-icon://account",
+			"title": "Account Settings",
+			"subTitle": "",
+            "target": "account-settings",
+			"targetSrc": "https://id.med-united.health/realms/med-united/account/"
+		},
+		{
+			"src": "sap-icon://log",
+			"title": "Log Out",
+			"subTitle": "",
+			"target": "log-out"
+		}
+	]
+}

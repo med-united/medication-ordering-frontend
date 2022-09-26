@@ -72,7 +72,7 @@
 			"sample": {
 				"stretch": true,
 				"files": [
-					"model/data.json"
+					"model/menu.json"
 				]
 			}
 		},

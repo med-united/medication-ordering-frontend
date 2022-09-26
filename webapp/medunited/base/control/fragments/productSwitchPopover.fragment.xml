@@ -2,10 +2,10 @@
     <ResponsivePopover placement="Bottom" showHeader="false">
         <f:ProductSwitch change="fnChange"
             items="{
-                path: '/items'
+                path: 'menu>/items'
             }">
             <f:items>
-                <f:ProductSwitchItem src="{src}" title="{title}" subTitle="{subTitle}" targetSrc="{targetSrc}" target="{target}"/>
+                <f:ProductSwitchItem src="{menu>src}" title="{menu>title}" subTitle="{menu>subTitle}" targetSrc="{menu>targetSrc}" target="{menu>target}"/>
             </f:items>
         </f:ProductSwitch>
     </ResponsivePopover>

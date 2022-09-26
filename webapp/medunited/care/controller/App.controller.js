@@ -17,6 +17,7 @@ sap.ui.define([
 
 	let ButtonType = mobileLibrary.ButtonType;
 	let DialogType = mobileLibrary.DialogType;
+	let isProductSwitchOpen = false;
 
 	return AbstractController.extend("medunited.care.controller.App", {
 		onInit: function () {
@@ -26,16 +27,16 @@ sap.ui.define([
 				this.oRouter.attachRouteMatched(this.onRouteMatched, this);
 				ResizeHandler.register(this.getView().byId("fcl"), this._onResize.bind(this));
 
-				var aModel = new JSONModel(sap.ui.require.toUrl("medunited/model/data.json")),
-				oView = this.getView();
-				this.getView().setModel(aModel);
+				let oModel = new JSONModel(sap.ui.require.toUrl("medunited/model/menu.json"));
+				let oView = this.getView();
+				oView.setModel(oModel, 'menu');
 				if (!this._pPopover) {
 					this._pPopover = Fragment.load({
-						id: this.getView().getId(),
+						id: oView.getId(),
 						name: "medunited.base.control.fragments.productSwitchPopover",
 						controller: this
 					}).then(function(oPopover){
-						this.getView().addDependent(oPopover);
+						oView.addDependent(oPopover);
 						if (Device.system.phone) {
 							oPopover.setEndButton(new Button({text: "Close", type: "Emphasized", press: this.fnClose.bind(this)}));
 						}
@@ -47,14 +48,52 @@ sap.ui.define([
 			}
 		},
 		fnOpen: function (oEvent) {
-			var oButton = oEvent.getParameter("button");
-			this._pPopover.then(function(oPopover){
-				oPopover.openBy(oButton);
-			});
+			if (!isProductSwitchOpen) {
+				var oButton = oEvent.getParameter("button");
+				isProductSwitchOpen = true;
+				this._pPopover.then(function(oPopover){
+					oPopover.openBy(oButton);
+				});
+			} else {
+				isProductSwitchOpen = false;
+				this._pPopover.then(function(oPopover){
+					oPopover.close();
+				});
+			}
 		},
 		fnChange: function (oEvent) {
-			if (oEvent.getParameter("itemPressed").getTarget() != null) {
-				location.href = oEvent.getParameter("itemPressed").getTarget();
+			if (oEvent.getParameter("itemPressed").getTarget() == "account-settings") {
+				location.href = oEvent.getParameter("itemPressed").getTargetSrc();
+			} else if (oEvent.getParameter("itemPressed").getTarget() == "log-out") {
+				if (!this.oLogoutDialog) {
+					this.oLogoutDialog = new Dialog({
+						type: DialogType.Message,
+						title: this.translate("logOut"),
+						content: new Text({ text: this.translate("doYouWantToLogOutOfTheSystem") }),
+						beginButton: new Button({
+							type: ButtonType.Emphasized,
+							text: this.translate("yes"),
+							press: function () {
+								MessageToast.show(this.translate("loggingOut"));
+								this.oLogoutDialog.close();
+								let keycloak = this.getView().getParent().keycloak;
+								const logoutOptions = { redirectUri: "https://care.med-united.health" };
+								keycloak.logout(logoutOptions).then((success) => {
+									console.log("Log out success ", success);
+								}).catch((error) => {
+									console.log("Log out error ", error);
+								});
+							}.bind(this)
+						}),
+						endButton: new Button({
+							text: this.translate("cancel"),
+							press: function () {
+								this.oLogoutDialog.close();
+							}.bind(this)
+						})
+					});
+				}
+				this.oLogoutDialog.open();
 			} else {
 				MessageToast.show("Change event was fired from " + oEvent.getParameter("itemPressed").getId()
 					+ ". It has targetSrc: "
@@ -142,37 +181,6 @@ sap.ui.define([
 		},
 		goToAccountManagement: function() {
 			location.href = "https://id.med-united.health/realms/med-united/account/";
-		},
-		dialogToLogOut: function () {
-			if (!this.oLogoutDialog) {
-				this.oLogoutDialog = new Dialog({
-					type: DialogType.Message,
-					title: this.translate("logOut"),
-					content: new Text({ text: this.translate("doYouWantToLogOutOfTheSystem") }),
-					beginButton: new Button({
-						type: ButtonType.Emphasized,
-						text: this.translate("yes"),
-						press: function () {
-							MessageToast.show(this.translate("loggingOut"));
-							this.oLogoutDialog.close();
-							let keycloak = this.getView().getParent().keycloak;
-							const logoutOptions = { redirectUri: "https://care.med-united.health" };
-							keycloak.logout(logoutOptions).then((success) => {
-								console.log("Log out success ", success);
-							}).catch((error) => {
-								console.log("Log out error ", error);
-							});
-						}.bind(this)
-					}),
-					endButton: new Button({
-						text: this.translate("cancel"),
-						press: function () {
-							this.oLogoutDialog.close();
-						}.bind(this)
-					})
-				});
-			}
-			this.oLogoutDialog.open();
 		}
 	});
 }, true);

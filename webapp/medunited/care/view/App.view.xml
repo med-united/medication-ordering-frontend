@@ -24,7 +24,7 @@
 								{path: 'JWT>/family_name'}
 							],
 							formatter: '.formatJwtName'
-						}" press="dialogToLogOut" />
+						}" />
 					</f:profile>
 				</f:ShellBar>
 			</customHeader>
