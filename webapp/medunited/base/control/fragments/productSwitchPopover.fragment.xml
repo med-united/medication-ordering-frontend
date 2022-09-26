@@ -1,5 +1,14 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:f="sap.f" xmlns:core="sap.ui.core">
-    <ResponsivePopover placement="Bottom" showHeader="false">
+    <ResponsivePopover 
+        placement="Bottom"
+        showHeader="true" 
+        title="{
+            parts: [
+                {path: 'JWT>/given_name'},
+                {path: 'JWT>/family_name'}
+            ],
+            formatter: '.formatShellBarMenuTitle'
+        }">
         <f:ProductSwitch change="fnChange"
             items="{
                 path: 'menu>/items'

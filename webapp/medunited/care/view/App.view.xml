@@ -18,13 +18,22 @@
 			<customHeader>
 				<f:ShellBar title="{i18n>medicationsTitle}" secondTitle="Medikamentbeschaffung" homeIcon="./images/logo_med-united_white.png" showProductSwitcher="true" productSwitcherPressed="fnOpen" >
 					<f:profile>
-						<Avatar initials="{JWT>/sub}" tooltip="{
-							parts: [
-                				{path: 'JWT>/given_name'},
-								{path: 'JWT>/family_name'}
-							],
-							formatter: '.formatJwtName'
-						}" />
+						<Avatar 
+							initials="{
+								parts: [
+                					{path: 'JWT>/given_name'},
+									{path: 'JWT>/family_name'}
+								],
+								formatter: '.formatInitials'
+							}"
+							tooltip="{
+								parts: [
+                					{path: 'JWT>/given_name'},
+									{path: 'JWT>/family_name'}
+								],
+								formatter: '.formatJwtName'
+							}"
+						/>
 					</f:profile>
 				</f:ShellBar>
 			</customHeader>

@@ -21,7 +21,7 @@ sap.ui.define([
 
 	return AbstractController.extend("medunited.care.controller.App", {
 		onInit: function () {
-			var oComponent = this.getOwnerComponent();
+			let oComponent = this.getOwnerComponent();
 			if (oComponent) {
 				this.oRouter = oComponent.getRouter();
 				this.oRouter.attachRouteMatched(this.onRouteMatched, this);
@@ -49,7 +49,7 @@ sap.ui.define([
 		},
 		fnOpen: function (oEvent) {
 			if (!isProductSwitchOpen) {
-				var oButton = oEvent.getParameter("button");
+				let oButton = oEvent.getParameter("button");
 				isProductSwitchOpen = true;
 				this._pPopover.then(function(oPopover){
 					oPopover.openBy(oButton);
@@ -175,6 +175,27 @@ sap.ui.define([
 					return "";
 				}
 				return JWTUtil.getSalutation(sGivenName, sFamilyName);
+			} catch (e) {
+				console.error("Exception while formatting name: " + e);
+			}
+		},
+		formatInitials: function (sGivenName, sFamilyName) {
+			try {
+				if (!sGivenName || !sFamilyName) {
+					return "";
+				} else {
+					return sGivenName.charAt(0) + sFamilyName.charAt(0);
+				}
+			} catch (e) {
+				console.error("Exception while formatting name: " + e);
+			}
+		},
+		formatShellBarMenuTitle: function (sGivenName, sFamilyName) {
+			try {
+				if (!sGivenName || !sFamilyName) {
+					return "";
+				}
+				return "You are signed in as " + sGivenName + " " + sFamilyName + ".";
 			} catch (e) {
 				console.error("Exception while formatting name: " + e);
 			}
