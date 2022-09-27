@@ -9,13 +9,9 @@
             ],
             formatter: '.formatShellBarMenuTitle'
         }">
-        <f:ProductSwitch change="fnChange"
-            items="{
-                path: 'menu>/items'
-            }">
-            <f:items>
-                <f:ProductSwitchItem src="{menu>src}" title="{menu>title}" subTitle="{menu>subTitle}" targetSrc="{menu>targetSrc}" target="{menu>target}"/>
-            </f:items>
-        </f:ProductSwitch>
+        <List>
+            <StandardListItem title="One" />
+            <StandardListItem title="Two" />
+        </List>
     </ResponsivePopover>
 </core:FragmentDefinition>
