@@ -14,6 +14,15 @@
 			.sapMITBTextOnly .sapMITBFilter {
 				padding: 0 2rem;
 			}
+			body .sapFShellBar .sapFShellBarProfile:hover::before {
+				background-color: transparent;
+			}
+			body .sapFShellBar .sapFShellBarProfile:hover {
+				cursor: default;
+			}
+			body .sapFShellBar .sapFShellBarProfile:focus {
+				outline-color: transparent;
+			}
 			</html:style>
 			<customHeader>
 				<f:ShellBar title="{i18n>medicationsTitle}" secondTitle="Medikamentbeschaffung" homeIcon="./images/logo_med-united_white.png" showProductSwitcher="true" productSwitcherPressed="fnOpen" >
