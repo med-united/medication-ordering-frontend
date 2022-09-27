@@ -223,7 +223,7 @@ sap.ui.define([
 			for (const medicationStatement of selectedPlans) {
 				let newBundle = "";
 				const practitioner = this.getView().getModel().getProperty(medicationStatement + '/informationSource/reference');
-				// const practitionerPublicKey = this.getView().getModel().getProperty("/Practitioner/1322").extension[1].valueString
+				const practitionerPublicKey = this.getView().getModel().getProperty("/"+practitioner+"/extension/1/valueString");
 				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + practitioner)) + "},";
 				const patient = this.getView().getModel().getProperty(medicationStatement + '/subject/reference');
 				newBundle += "{\"fullUrl\": \"\",\"resource\": " + JSON.stringify(this.getView().getModel().getProperty('/' + patient)) + "},";
@@ -233,8 +233,8 @@ sap.ui.define([
 				newBundle = "\"entry\" : [" + newBundle + "]";
 				newBundle = "{\"resourceType\": \"Bundle\",	\"id\": \"\", \"meta\": { \"lastUpdated\": \"\", \"profile\": [	\"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.2\"	]},	\"identifier\": { \"system\": \"https://gematik.de/fhir/NamingSystem/PrescriptionID\", \"value\": \"\"}, \"type\": \"document\",\"timestamp\": \"" + this._makeCurrentDateTime() + "\"," + newBundle + "}";
 				const bundleAndPublicKey = {
-					"bundle": newBundle//,
-					// "publicKey": practitionerPublicKey
+					"bundle": newBundle,
+					"publicKey": practitionerPublicKey
 				}
 				listOfBundles.push(bundleAndPublicKey);
 			}

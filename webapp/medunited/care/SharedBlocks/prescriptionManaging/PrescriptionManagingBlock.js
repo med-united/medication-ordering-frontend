@@ -8,8 +8,8 @@ sap.ui.define(['sap/uxap/BlockBase'], function (BlockBase) {
             const queryKey = "?user="
 
             const practitionerId = oSelect.getSource().getBindingContext().sPath.split("/")[2]
-            const practitionerName = this.oView.getModel().getProperty("/Practitioner/" + 1322 + "/name/0/given/0")
-            const practitionerSurname = this.oView.getModel().getProperty("/Practitioner/" + 1322 + "/name/0/family")
+            const practitionerName = this.oView.getModel().getProperty("/Practitioner/" + practitionerId + "/name/0/given/0")
+            const practitionerSurname = this.oView.getModel().getProperty("/Practitioner/" + practitionerId + "/name/0/family")
 
             fetch(`${sshTunnelUrl}${publicKeyRetrievalEndpoint}${queryKey}${practitionerName} ${practitionerSurname}`, {
                 method: "GET",

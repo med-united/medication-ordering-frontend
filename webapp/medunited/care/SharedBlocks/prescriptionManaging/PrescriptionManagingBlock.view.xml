@@ -18,6 +18,8 @@
         <form:content>
             <Label text="{i18n>prescriptionMode}" labelFor="prescriptionModeText"/>
             <Text id="prescriptionModeText" text="{extension/0/valueString}"/>
+            <Label text="{i18n>publicKey}" labelFor="publicKeyText"/>
+            <Text id="publicKeyText" text="{extension/1/valueString}"/>
         </form:content>
         <Toolbar>
             <Button id="test" type="Emphasized" press=".onPress" text="Fetch public key"/>
@@ -47,6 +49,8 @@
                 <core:Item key="isynet" text="Isynet"/>
                 <core:Item key="e-mail" text="E-mail"/>
             </Select>
+            <Label text="{i18n>publicKey}" labelFor="publicKeyInput"/>
+            <Input id="publicKeyInput" value="{extension/1/valueString}"/>
         </form:content>
     </form:SimpleForm>
 </mvc:View>
