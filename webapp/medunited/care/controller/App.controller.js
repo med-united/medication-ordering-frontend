@@ -46,6 +46,7 @@ sap.ui.define([
 			} else {
 				Log.warning("Could not get component for AbstractAppController for entity: " + this.getEntityName());
 			}
+			this.byId("shellBar")._oProductSwitcher.setTooltip("Einstellungen");
 		},
 		fnOpen: function (oEvent) {
 			if (!isProductSwitchOpen) {
