@@ -4,25 +4,25 @@
     </HBox>
     <Table id="medicationTable" items="{path: '/MedicationStatement', parameters : {request: { _include: 'MedicationStatement:medication'}}}" mode="{= ${appState>/editMode} ? 'MultiSelect' : 'None'}">
         <columns>
-            <Column hAlign="Left" width="20%">
+            <Column hAlign="Left" width="18%">
                 <Text text="{i18n>columnLabelMedicationName}" />
             </Column>
-            <Column hAlign="Left" width="12%">
+            <Column hAlign="Left" width="11%">
                 <Text text="{i18n>columnLabelMedicationEffectiveDate}" />
             </Column>
-            <Column hAlign="Left" width="9%">
+            <Column hAlign="Left" width="10%">
                 <Text text="{i18n>columnLabelMedicationPZN}" />
             </Column>
-            <Column hAlign="Left" width="8%">
+            <Column hAlign="Left" width="10%">
                 <Text text="{i18n>columnLabelMedicationDosage}" />
             </Column>
-            <Column hAlign="Left" width="6%">
+            <Column hAlign="Left" width="8%">
                 <Text text="{i18n>medicationSize}" />
             </Column>
-            <Column hAlign="Left" width="8%">
+            <Column hAlign="Left" width="11%">
                 <Text text="{i18n>standardSize}" />
             </Column>
-            <Column hAlign="Left" width="13%">
+            <Column hAlign="Left" width="8%">
                 <Text text="{i18n>columnLabelMedicationNote}" />
             </Column>
             <Column hAlign="Left" width="12%">
