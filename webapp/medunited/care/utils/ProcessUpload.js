@@ -3,7 +3,7 @@ sap.ui.define([
 ], function () {
     "use strict";
     return {
-        processUploadedFile: function (oFile, oView) {
+        processUploadedFile: function (oFile, oView, encodingSelected) {
             return new Promise(function (resolve, reject) {
                 const oModel = oView.getModel();
     
@@ -241,7 +241,12 @@ sap.ui.define([
                         });
                     });
                 };
-                oReader.readAsBinaryString(oFile);
+                if (encodingSelected == "utf-8") {
+                    oReader.readAsText(oFile);
+                }
+                else if (encodingSelected == "iso-8859-1") {
+                    oReader.readAsText(oFile, 'ISO-8859-1');
+                }
             });
 
         }

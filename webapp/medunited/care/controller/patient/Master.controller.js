@@ -47,6 +47,22 @@ sap.ui.define([
 				this.byId("importCSVDialog").open();
 			}
 		},
+		onEncodingUTF8Selected: function (oEvent) {
+			if (this.byId("iso88591").getSelected()) {
+				this.byId("iso88591").setSelected(false);
+			}
+			else if (!this.byId("utf8").getSelected()) {
+				this.byId("utf8").setSelected(true);
+			}
+		},
+		onEncodingISO88591Selected: function (oEvent) {
+			if (this.byId("utf8").getSelected()) {
+				this.byId("utf8").setSelected(false);
+			}
+			else if (!this.byId("iso88591").getSelected()) {
+				this.byId("iso88591").setSelected(true);
+			}
+		},
 		onUploadCSVCancel: function () {
 			this.byId("importCSVDialog").close();
 		},
@@ -58,8 +74,15 @@ sap.ui.define([
 				return
 			}
 			let file = this._fileUploaderFiles[0];
+			let encodingSelected;
+			if (this.byId("utf8").getSelected()) {
+				encodingSelected = "utf-8";
+			}
+			else if (this.byId("iso88591").getSelected()) {
+				encodingSelected = "iso-8859-1";
+			}
 			const me = this;
-			ProcessUpload.processUploadedFile(file, this.getView())
+			ProcessUpload.processUploadedFile(file, this.getView(), encodingSelected)
 				.then((aResources) => {
 					MessageToast.show(me.translate("msgCountCreated", aResources.length));
 					me.byId("importCSVDialog").close();
