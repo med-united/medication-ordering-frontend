@@ -5,8 +5,8 @@
 				<Label text="{i18n>dialogCSVFileName}" />
 				<u:FileUploader id="idfileUploader" change="onUploadCSVChange" width="86%" sameFilenameAllowed="false" buttonText="" fileType="CSV" placeholder="{i18n>dialogChooseACSVFile}" style="Emphasized"></u:FileUploader>
 				<Label text="{i18n>encoding}" />
-				<CheckBox id="utf8" text="UTF-8" selected="true" select="onEncodingUTF8Selected" />
-				<CheckBox id="iso88591" text="ISO-8859-1" select="onEncodingISO88591Selected" />
+				<RadioButton id="utf8" text="UTF-8" selected="true" select="onEncodingUTF8Selected" />
+				<RadioButton id="iso88591" text="ISO-8859-1" select="onEncodingISO88591Selected" />
 			</l:content>
 		</l:SimpleForm>
 		<beginButton>
