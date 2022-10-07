@@ -174,6 +174,7 @@ sap.ui.define([
 				const oPractitionerNode = oEMP.querySelector("A");
 				let sPractitionerId = undefined;
 				let alreadyExistingPractitionerId = undefined;
+				let alreadyExistingPatientId = undefined;
 				if (oPractitionerNode) {
 					const sName = oPractitionerNode.getAttribute("n");
 					const oPractitioner = {};
@@ -227,8 +228,14 @@ sap.ui.define([
 						"reference": "Practitioner/" + alreadyExistingPractitionerId
 					}
 				}
-
-				const sPatientId = oModel.create(this.getEntityName(), oPatient, "patientDetails");
+				//check if patient already exists
+				let sPatientId = undefined;
+				const existingPatient = Object.values(oModel.getProperty("/Patient")).filter(a => a.name[0].family === oPatient.name[0].family && a.name[0].given[0] === oPatient.name[0].given[0])
+				if (existingPatient.length == 0) {
+					sPatientId = oModel.create("Patient", oPatient, "patientDetails");
+				} else {
+					alreadyExistingPatientId = existingPatient[0].id;
+				}
 
 				const aMedication = Array.from(oEMP.querySelectorAll("M"));
 				// https://www.vesta-gematik.de/standard/formhandler/324/gemSpec_Info_AMTS_V1_5_0.pdf
@@ -258,15 +265,30 @@ sap.ui.define([
 
 					const medicationName = mPZN2Name[sPZN];
 
-					const oMedicationStatement = {
-						identifier: [{ "value": sPZN }],
-						medicationCodeableConcept: { "text": medicationName },
-						dosage: [
-							{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
-						],
-						subject: { reference: "urn:uuid:" + sPatientId },
-						note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
-					};
+					let oMedicationStatement = undefined;
+
+					if (sPatientId) {
+						oMedicationStatement = {
+							identifier: [{ "value": sPZN }],
+							medicationCodeableConcept: { "text": medicationName },
+							dosage: [
+								{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+							],
+							subject: { "reference": "urn:uuid:" + sPatientId },
+							note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
+						};
+					} else if (alreadyExistingPatientId) {
+						oMedicationStatement = {
+							identifier: [{ "value": sPZN }],
+							medicationCodeableConcept: { "text": medicationName },
+							dosage: [
+								{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+							],
+							subject: { "reference": "Patient/" + alreadyExistingPatientId },
+							note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
+						};
+					}
+
 					if (sPractitionerId) {
 						oMedicationStatement.informationSource = {
 							reference: "urn:uuid:" + sPractitionerId
