@@ -66,11 +66,11 @@ sap.ui.define([
 		onUploadCSVCancel: function () {
 			this.byId("importCSVDialog").close();
 		},
-		onUploadCSVChange: function(oEvent) {
+		onUploadCSVChange: function (oEvent) {
 			this._fileUploaderFiles = oEvent.getParameter("files");
 		},
 		onUploadCSVFile: function () {
-			if(DemoAccount._isDemoAccount(this.getView())){
+			if (DemoAccount._isDemoAccount(this.getView())) {
 				return
 			}
 			let file = this._fileUploaderFiles[0];
@@ -92,7 +92,7 @@ sap.ui.define([
 		},
 
 		onPressCreatePatientFromBMP: function () {
-			if(DemoAccount._isDemoAccount(this.getView())){
+			if (DemoAccount._isDemoAccount(this.getView())) {
 				return
 			}
 			this.byId("extScanner").open();
@@ -132,6 +132,7 @@ sap.ui.define([
 
 			const mPZN2Name = {};
 			const sEMP = oEvent.getParameter("value")
+			console.log(sEMP);
 			const parser = new DOMParser();
 			const oEMP = parser.parseFromString(sEMP, "application/xml");
 
@@ -172,6 +173,7 @@ sap.ui.define([
 				// <A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/>
 				const oPractitionerNode = oEMP.querySelector("A");
 				let sPractitionerId = undefined;
+				let alreadyExistingPractitionerId = undefined;
 				if (oPractitionerNode) {
 					const sName = oPractitionerNode.getAttribute("n");
 					const oPractitioner = {};
@@ -207,12 +209,22 @@ sap.ui.define([
 							});
 						}
 					}
-					sPractitionerId = oModel.create("Practitioner", oPractitioner, "patientDetails");
+					//Check if practitioner already exists
+					const existingDoctor = Object.values(oModel.getProperty("/Practitioner")).filter(a => a.name[0].family === oPractitioner.name[0].family && a.name[0].given[0] === oPractitioner.name[0].given[0])
+					if (existingDoctor.length == 0) {
+						sPractitionerId = oModel.create("Practitioner", oPractitioner, "patientDetails");
+					} else {
+						alreadyExistingPractitionerId = existingDoctor[0].id;
+					}
 				}
 
 				if (sPractitionerId) {
 					oPatient.generalPractitioner = {
 						"reference": "urn:uuid:" + sPractitionerId
+					}
+				} else if (alreadyExistingPractitionerId) {
+					oPatient.generalPractitioner = {
+						"reference": "Practitioner/" + alreadyExistingPractitionerId
 					}
 				}
 
@@ -258,6 +270,10 @@ sap.ui.define([
 					if (sPractitionerId) {
 						oMedicationStatement.informationSource = {
 							reference: "urn:uuid:" + sPractitionerId
+						};
+					} else if (alreadyExistingPractitionerId) {
+						oMedicationStatement.informationSource = {
+							reference: "Practitioner/" + alreadyExistingPractitionerId
 						};
 					}
 					oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
