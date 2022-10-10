@@ -182,6 +182,15 @@ sap.ui.define([
 		},
 		onCloseMedicationPlan: function () {
 			this.byId("medicationPlanDialog").close();
+		},
+		copyXMLOfDataMatrixCodeToClipboard: async function (oEvent) {
+			let XMLOfDataMatrixCode = this.byId("__xmlview2--medicationPlanDataMatrixCode").getMsg();
+			let text;
+			while(text != XMLOfDataMatrixCode) {
+				navigator.clipboard.writeText(XMLOfDataMatrixCode);
+				text = await navigator.clipboard.readText();
+			}
+			alert("Das folgende XML wurde in die Zwischenablage kopiert:\n\n" + XMLOfDataMatrixCode)
 		}
 	});
 }, true);

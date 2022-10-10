@@ -13,14 +13,14 @@
                         </uxap:actions>
                     </uxap:ObjectPageHeader>
                 </uxap:headerTitle>
-                <uxap:headerContent>
+                <!-- <uxap:headerContent>
                     <VBox items="{telecom}">
                         <HBox>
                             <Label text="{path: 'use', formatter: '.formatter.formatPatientTelecomUse'}" class="sapUiTinyMarginEnd" />
                             <Link text="{value}" />
                         </HBox>
                     </VBox>
-                </uxap:headerContent>
+                </uxap:headerContent> -->
                 <uxap:sections>
                     <uxap:ObjectPageSection id="personalSection" title="{i18n>titleSectionPersonal}">
                         <uxap:subSections>
@@ -69,6 +69,7 @@
                             </uxap:ObjectPageSubSection>
                             <uxap:ObjectPageSubSection id="dataMatrixSubSection" title="{i18n>titleSectionMedicationDataMatrix}">
                                 <medunited:DataMatrixCode id="medicationPlanDataMatrixCode" msg="{path: 'id', formatter: '.formatPatientDataMatrix'}" backgroundColor="#f7f7f7" />
+                                <Button id="copyXMLOfDataMatrixCode" text="{i18n>btnCopyXMLOfDataMatrixCode}" press="copyXMLOfDataMatrixCodeToClipboard"></Button>
                             </uxap:ObjectPageSubSection>
                         </uxap:subSections>
                     </uxap:ObjectPageSection>
