@@ -184,7 +184,7 @@ sap.ui.define([
 			this.byId("medicationPlanDialog").close();
 		},
 		copyXMLOfDataMatrixCodeToClipboard: async function (oEvent) {
-			let XMLOfDataMatrixCode = this.byId("__xmlview2--medicationPlanDataMatrixCode").getMsg();
+			let XMLOfDataMatrixCode = this.byId("medicationPlanDataMatrixCode").getMsg();
 			let text;
 			while(text != XMLOfDataMatrixCode) {
 				navigator.clipboard.writeText(XMLOfDataMatrixCode);
