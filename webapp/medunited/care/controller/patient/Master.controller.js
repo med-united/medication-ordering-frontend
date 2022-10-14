@@ -47,19 +47,42 @@ sap.ui.define([
 				this.byId("importCSVDialog").open();
 			}
 		},
+		onEncodingUTF8Selected: function (oEvent) {
+			if (this.byId("iso88591").getSelected()) {
+				this.byId("iso88591").setSelected(false);
+			}
+			else if (!this.byId("utf8").getSelected()) {
+				this.byId("utf8").setSelected(true);
+			}
+		},
+		onEncodingISO88591Selected: function (oEvent) {
+			if (this.byId("utf8").getSelected()) {
+				this.byId("utf8").setSelected(false);
+			}
+			else if (!this.byId("iso88591").getSelected()) {
+				this.byId("iso88591").setSelected(true);
+			}
+		},
 		onUploadCSVCancel: function () {
 			this.byId("importCSVDialog").close();
 		},
-		onUploadCSVChange: function(oEvent) {
+		onUploadCSVChange: function (oEvent) {
 			this._fileUploaderFiles = oEvent.getParameter("files");
 		},
 		onUploadCSVFile: function () {
-			if(DemoAccount._isDemoAccount(this.getView())){
+			if (DemoAccount._isDemoAccount(this.getView())) {
 				return
 			}
 			let file = this._fileUploaderFiles[0];
+			let encodingSelected;
+			if (this.byId("utf8").getSelected()) {
+				encodingSelected = "utf-8";
+			}
+			else if (this.byId("iso88591").getSelected()) {
+				encodingSelected = "iso-8859-1";
+			}
 			const me = this;
-			ProcessUpload.processUploadedFile(file, this.getView())
+			ProcessUpload.processUploadedFile(file, this.getView(), encodingSelected)
 				.then((aResources) => {
 					MessageToast.show(me.translate("msgCountCreated", aResources.length));
 					me.byId("importCSVDialog").close();
@@ -69,7 +92,7 @@ sap.ui.define([
 		},
 
 		onPressCreatePatientFromBMP: function () {
-			if(DemoAccount._isDemoAccount(this.getView())){
+			if (DemoAccount._isDemoAccount(this.getView())) {
 				return
 			}
 			this.byId("extScanner").open();
@@ -109,6 +132,7 @@ sap.ui.define([
 
 			const mPZN2Name = {};
 			const sEMP = oEvent.getParameter("value")
+			console.log(sEMP);
 			const parser = new DOMParser();
 			const oEMP = parser.parseFromString(sEMP, "application/xml");
 
@@ -149,6 +173,8 @@ sap.ui.define([
 				// <A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/>
 				const oPractitionerNode = oEMP.querySelector("A");
 				let sPractitionerId = undefined;
+				let alreadyExistingPractitionerId = undefined;
+				let alreadyExistingPatientId = undefined;
 				if (oPractitionerNode) {
 					const sName = oPractitionerNode.getAttribute("n");
 					const oPractitioner = {};
@@ -184,16 +210,32 @@ sap.ui.define([
 							});
 						}
 					}
-					sPractitionerId = oModel.create("Practitioner", oPractitioner, "patientDetails");
+					//Check if practitioner already exists
+					const existingDoctor = Object.values(oModel.getProperty("/Practitioner")).filter(a => a.name[0].family === oPractitioner.name[0].family && a.name[0].given[0] === oPractitioner.name[0].given[0])
+					if (existingDoctor.length == 0) {
+						sPractitionerId = oModel.create("Practitioner", oPractitioner, "patientDetails");
+					} else {
+						alreadyExistingPractitionerId = existingDoctor[0].id;
+					}
 				}
 
 				if (sPractitionerId) {
 					oPatient.generalPractitioner = {
 						"reference": "urn:uuid:" + sPractitionerId
 					}
+				} else if (alreadyExistingPractitionerId) {
+					oPatient.generalPractitioner = {
+						"reference": "Practitioner/" + alreadyExistingPractitionerId
+					}
 				}
-
-				const sPatientId = oModel.create(this.getEntityName(), oPatient, "patientDetails");
+				//check if patient already exists
+				let sPatientId = undefined;
+				const existingPatient = Object.values(oModel.getProperty("/Patient")).filter(a => a.name[0].family === oPatient.name[0].family && a.name[0].given[0] === oPatient.name[0].given[0])
+				if (existingPatient.length == 0) {
+					sPatientId = oModel.create("Patient", oPatient, "patientDetails");
+				} else {
+					alreadyExistingPatientId = existingPatient[0].id;
+				}
 
 				const aMedication = Array.from(oEMP.querySelectorAll("M"));
 				// https://www.vesta-gematik.de/standard/formhandler/324/gemSpec_Info_AMTS_V1_5_0.pdf
@@ -223,18 +265,37 @@ sap.ui.define([
 
 					const medicationName = mPZN2Name[sPZN];
 
-					const oMedicationStatement = {
-						identifier: [{ "value": sPZN }],
-						medicationCodeableConcept: { "text": medicationName },
-						dosage: [
-							{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
-						],
-						subject: { reference: "urn:uuid:" + sPatientId },
-						note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
-					};
+					let oMedicationStatement = undefined;
+
+					if (sPatientId) {
+						oMedicationStatement = {
+							identifier: [{ "value": sPZN }],
+							medicationCodeableConcept: { "text": medicationName },
+							dosage: [
+								{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+							],
+							subject: { "reference": "urn:uuid:" + sPatientId },
+							note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
+						};
+					} else if (alreadyExistingPatientId) {
+						oMedicationStatement = {
+							identifier: [{ "value": sPZN }],
+							medicationCodeableConcept: { "text": medicationName },
+							dosage: [
+								{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+							],
+							subject: { "reference": "Patient/" + alreadyExistingPatientId },
+							note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
+						};
+					}
+
 					if (sPractitionerId) {
 						oMedicationStatement.informationSource = {
 							reference: "urn:uuid:" + sPractitionerId
+						};
+					} else if (alreadyExistingPractitionerId) {
+						oMedicationStatement.informationSource = {
+							reference: "Practitioner/" + alreadyExistingPractitionerId
 						};
 					}
 					oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");

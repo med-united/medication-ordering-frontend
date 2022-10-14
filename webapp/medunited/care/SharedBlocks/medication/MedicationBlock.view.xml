@@ -4,31 +4,31 @@
     </HBox>
     <Table id="medicationTable" items="{path: '/MedicationStatement', parameters : {request: { _include: 'MedicationStatement:medication'}}}" mode="{= ${appState>/editMode} ? 'MultiSelect' : 'None'}">
         <columns>
-            <Column hAlign="Left">
+            <Column hAlign="Left" width="18%">
                 <Text text="{i18n>columnLabelMedicationName}" />
             </Column>
-            <Column hAlign="Left">
+            <Column hAlign="Left" width="11%">
                 <Text text="{i18n>columnLabelMedicationEffectiveDate}" />
             </Column>
-            <Column hAlign="Left">
+            <Column hAlign="Left" width="10%">
                 <Text text="{i18n>columnLabelMedicationPZN}" />
             </Column>
-            <Column hAlign="Left">
+            <Column hAlign="Left" width="10%">
                 <Text text="{i18n>columnLabelMedicationDosage}" />
             </Column>
-            <Column hAlign="Left">
+            <Column hAlign="Left" width="8%">
                 <Text text="{i18n>medicationSize}" />
             </Column>
-            <Column hAlign="Left">
+            <Column hAlign="Left" width="11%">
                 <Text text="{i18n>standardSize}" />
             </Column>
-            <Column hAlign="Left">
+            <Column hAlign="Left" width="8%">
                 <Text text="{i18n>columnLabelMedicationNote}" />
             </Column>
-            <Column hAlign="Left">
+            <Column hAlign="Left" width="12%">
                 <Text text="{i18n>columnLabelPractitioner}" />
             </Column>
-            <Column hAlign="Left">
+            <Column hAlign="Left" width="12%">
                 <Text text="{i18n>columnLabelPharmacy}" />
             </Column>
         </columns>

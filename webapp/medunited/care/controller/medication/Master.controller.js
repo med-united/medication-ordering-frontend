@@ -46,7 +46,18 @@ sap.ui.define([
 		getNameForPath: function (sObjectPath) {
 			const oFhirModel = this.getView().getModel();
 			const oObject = oFhirModel.getProperty(sObjectPath);
-			return oObject.name[0]?.given[0] + " " + oObject.name[0]?.family;
+			if (oObject.name[0].hasOwnProperty("family") && oObject.name[0].hasOwnProperty("given")) {
+				return oObject.name[0].given[0] + " " + oObject.name[0].family;
+			}
+			else if (oObject.name[0].hasOwnProperty("family") && !oObject.name[0].hasOwnProperty("given")) {
+				return oObject.name[0].family;
+			}
+			else if (!oObject.name[0].hasOwnProperty("family") && oObject.name[0].hasOwnProperty("given")) {
+				return oObject.name[0].given[0];
+			}
+			else {
+				return "";
+			}
 		},
 
 		referencePractitioner: function (sPractitionerPath) {

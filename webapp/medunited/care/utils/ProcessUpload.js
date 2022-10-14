@@ -3,7 +3,7 @@ sap.ui.define([
 ], function () {
     "use strict";
     return {
-        processUploadedFile: function (oFile, oView) {
+        processUploadedFile: function (oFile, oView, encodingSelected) {
             return new Promise(function (resolve, reject) {
                 const oModel = oView.getModel();
     
@@ -12,26 +12,40 @@ sap.ui.define([
                     oPractitioner.resource = {
                         resourceType: "Practitioner",
                         name: 
-                            [{ given: [oDataRow["PractitionerGivenName"]],
+                            [{ use: "official",
+                               given: [oDataRow["PractitionerGivenName"]],
                                family: oDataRow["PractitionerFamilyName"] }],
                         address:
-                            [{ line: [oDataRow["PractitionerAddress"]],
-                              postalCode: oDataRow["PractitionerPostalCode"],
-                              city: oDataRow["PractitionerCity"],
-                              country: "DE" }],
+                            [{ use: "home",
+                               line: [oDataRow["PractitionerAddress"]],
+                               postalCode: oDataRow["PractitionerPostalCode"],
+                               city: oDataRow["PractitionerCity"],
+                               country: "DE" }],
                         telecom:
-                            [{ system: "phone", value: oDataRow["PractitionerPhone"], use: "work" },
-                             { system: "email", value: oDataRow["PractitionerEMail"], use: "work" }]
-                    }
+                            [{ system: "email", value: oDataRow["PractitionerEmail"], use: "work" },
+                             { system: "phone", value: oDataRow["PractitionerPhone"], use: "work" }],
+                        identifier:
+                            [{  type: {
+                                    coding:
+                                        [{ system: "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                           code: "LANR" }]
+                                },
+                                system: "https://fhir.kbv.de/NamingSystem/KBV_NS_Base_ANR",
+                                value: oDataRow["PractitionerLANR"]
+                            }]
+                    };
                     oPractitioner.getKey = () => {
                         return {
-                            family: oPractitioner.resource.name[0].family,
-                            given:  oPractitioner.resource.name[0].given[0],
+                            family:     oPractitioner.resource.name[0].family,
+                            given:      oPractitioner.resource.name[0].given[0],
+                            identifier: oPractitioner.resource.identifier[0].value
                         };
                     };
+                    // A new Practitioner will only be created if one of the following fields is different:
                     oPractitioner.isTheSameAs = (resource) => {
-                        return oPractitioner.resource.name[0].family   == resource.name[0].family
-                            && oPractitioner.resource.name[0].given[0] == resource.name[0].given[0];
+                        return oPractitioner.resource.name[0].family      == resource.name[0].family
+                            && oPractitioner.resource.name[0].given[0]    == resource.name[0].given[0]
+                            && oPractitioner.resource.identifier[0].value == resource.identifier[0].value;
                     };
 
                     return oPractitioner;
@@ -43,23 +57,25 @@ sap.ui.define([
                         resourceType: "Organization",
                         name: oDataRow["PharmacyName"],
                         address: 
-                            [{ line:      [oDataRow["PharmacyAddress"]],
+                            [{ line: [oDataRow["PharmacyAddress"]],
                                postalCode: oDataRow["PharmacyPostalCode"],
-                               city:       oDataRow["PharmacyCity"],
-                               country:    "DE" }],
+                               city: oDataRow["PharmacyCity"],
+                               country: "DE" }],
                         telecom: 
                             [{ system: "phone", value: oDataRow["PharmacyPhone"], use: "work" },
-                             { system: "email", value: oDataRow["PharmacyEMail"], use: "work" }]
-                    }
+                             { system: "email", value: oDataRow["PharmacyEmail"], use: "work" }]
+                    };
                     oOrganization.getKey = () => {
                         return {
                             name:    oOrganization.resource.name,
-                            address: oOrganization.resource.address[0].line
+                            address: oOrganization.resource.address[0].line && oOrganization.resource.address[0].postalCode
                         };
                     };
+                    // A new Organization will only be created if one of the following fields is different:
                     oOrganization.isTheSameAs = (resource) => {
-                        return oOrganization.resource.name               == resource.name
-                            && oOrganization.resource.address[0].line[0] == resource.address[0].line[0];
+                        return oOrganization.resource.name                  == resource.name
+                            && oOrganization.resource.address[0].line[0]    == resource.address[0].line[0]
+                            && oOrganization.resource.address[0].postalCode == resource.address[0].postalCode;
                     };
 
                     return oOrganization;
@@ -70,7 +86,7 @@ sap.ui.define([
                     oPatient.resource = {
                         resourceType: "Patient",
                         name: 
-                            [{ use:   "official",
+                            [{ use: "official",
                                given: [oDataRow["PatientGivenName"]],
                                family: oDataRow["PatientFamilyName"] }],
                         birthDate: oDataRow["PatientBirthdate"],
@@ -82,6 +98,7 @@ sap.ui.define([
                             birthdate: oPatient.resource.birthDate,
                         };
                     };
+                    // A new Patient will only be created if one of the following fields is different:
                     oPatient.isTheSameAs = (resource) => {
                         return oPatient.resource.name[0].family   == resource.name[0].family
                             && oPatient.resource.name[0].given[0] == resource.name[0].given[0]
@@ -107,10 +124,10 @@ sap.ui.define([
                             { valueString: oDataRow["MedicationSize"] }
                         ],
                         dosage: [
-                          { text: oDataRow["MedicationDosage"] }
+                            { text: oDataRow["MedicationDosage"] }
                         ],
                         note: [
-                            {text: oDataRow["MedicationNote"] }
+                            { text: oDataRow["MedicationNote"] }
                         ]
                     };
                     if(oDataRow["MedicationPZN"]) {
@@ -120,18 +137,26 @@ sap.ui.define([
                         return {
                             subject:           oMedicationStatement.resource.subject.reference,
                             informationSource: oMedicationStatement.resource.informationSource.reference,
-                            medication:        oMedicationStatement.resource.identifier && oMedicationStatement.resource.identifier.length > 0 && oMedicationStatement.resource.identifier[0].value,
-                            patient:           oMedicationStatement.resource.subject.reference,
+                            medication:        oMedicationStatement.resource.identifier 
+                                            && oMedicationStatement.resource.identifier.length > 0
+                                            && oMedicationStatement.resource.identifier[0].value
+                                            && oMedicationStatement.resource.medicationCodeableConcept.text
+                                            && oMedicationStatement.resource.dosage[0].text
+                                            && oMedicationStatement.resource.note[0].text,
+                            patient:           oMedicationStatement.resource.subject.reference
                         };
                     };
+                    // A new MedicationStatement will only be created if one of the following fields is different:
                     oMedicationStatement.isTheSameAs = (resource) => {
-                        return oMedicationStatement.resource.subject.reference                                == resource.subject.reference
-                            && oMedicationStatement.resource.informationSource.reference                      == resource.informationSource.reference
-                            && oMedicationStatement.resource.identifier
-                            && oMedicationStatement.resource.identifier.length > 0
-                            && resource.identifier
-                            && resource.identifier.length > 0
-                            && oMedicationStatement.resource.identifier[0].value == resource.identifier[0].value;
+                        return oMedicationStatement.resource.subject.reference              == resource.subject.reference
+                            && oMedicationStatement.resource.informationSource.reference    == resource.informationSource.reference
+                            && oMedicationStatement.resource.medicationCodeableConcept.text == resource.medicationCodeableConcept.text
+                            && oMedicationStatement.resource.identifier                     == resource.identifier
+                            && oMedicationStatement.resource.identifier.length              == resource.identifier.length
+                            && oMedicationStatement.resource.identifier[0].value            == resource.identifier[0].value
+                            && oMedicationStatement.resource.dosage.length                  == resource.dosage.length
+                            && oMedicationStatement.resource.dosage[0].text                 == resource.dosage[0].text
+                            && oMedicationStatement.resource.note[0].text                   == resource.note[0].text;
                     };
                     oMedicationStatement.setPatientReference = () => {
                         oMedicationStatement.resource.subject.reference = oPatient.resource.resourceType+"/"+oPatient.id;
@@ -241,7 +266,12 @@ sap.ui.define([
                         });
                     });
                 };
-                oReader.readAsBinaryString(oFile);
+                if (encodingSelected == "utf-8") {
+                    oReader.readAsText(oFile);
+                }
+                else if (encodingSelected == "iso-8859-1") {
+                    oReader.readAsText(oFile, 'ISO-8859-1');
+                }
             });
 
         }
