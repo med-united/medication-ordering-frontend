@@ -1,20 +1,23 @@
 <mvc:View displayBlock="true" controllerName="medunited.care.controller.medication.Master" height="100%" xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
-	<f:DynamicPage id="medicationPageId" toggleHeaderOnTitleClick="false">
-		<!-- DynamicPage Title -->
-		<f:title>
-			<f:DynamicPageTitle>
-				<f:heading>
-					<Title text="{i18n>medications}" />
-				</f:heading>
-				<f:actions>
-					<Button type="Emphasized" text="{i18n>RequestEPrescriptions}" press="onRequestEPrescriptions" />
-				</f:actions>
-			</f:DynamicPageTitle>
-		</f:title>
+    <f:DynamicPage id="medicationPageId" toggleHeaderOnTitleClick="false">
+        <!-- DynamicPage Title -->
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="{i18n>medications}" />
+                </f:heading>
+                <f:actions>
+                    <Button type="Emphasized" text="{i18n>RequestEPrescriptions}" press="onRequestEPrescriptions" />
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
 
-		<!-- DynamicPage Content -->
-		<f:content>
-			<Table id="medicationTable" inset="false" items="{path: '/MedicationStatement',
+        <!-- DynamicPage Content -->
+        <f:content>
+            <Table
+                id="medicationTable"
+                inset="false"
+                items="{path: '/MedicationStatement',
 					parameters: {
 						request: {
 							_include: ['MedicationStatement:subject',
@@ -26,53 +29,61 @@
 						descending: false, 
 						group: '.groupOnSubject'
 					}]		
-				}" class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
-				<headerToolbar>
-					<OverflowToolbar>
-						<ToolbarSpacer />
-						<SearchField search="onSearch" width="17.5rem" />
-						<OverflowToolbarButton icon="sap-icon://sort" type="Transparent" press="onSort" />
-					</OverflowToolbar>
-				</headerToolbar>
-				<columns>
-					<Column width="40%" importance="High" autoPopinWidth="10">
-						<Text text="{i18n>medicationName}" />
-					</Column>
-					<Column width="10%" importance="High">
-						<Text text="{i18n>medicationPZN}" />
-					</Column>
-					<Column width="10%" importance="High">
-						<Text text="{i18n>medicationSize}" />
-					</Column>
-					<Column width="10%" importance="Medium">
-						<Text text="{i18n>medicationDosage}" />
-					</Column>
-					<Column width="10%" importance="High">
-						<Text text="{i18n>GeneralPractitioner}" />
-					</Column>
-					<Column width="20%" importance="High">
-						<Text text="{i18n>ManagingOrganization}" />
-					</Column>
-				</columns>
-				<items>
-					<ColumnListItem>
-						<cells>
-							<Text text="{medicationCodeableConcept/text}" />
-							<Text text="{identifier/0/value}" />
-							<Text text="{extension/0/valueString}" />
-							<Text text="{dosage/0/text}" />
-							<Text text="{path: 'informationSource/reference', formatter: '.referencePractitioner'}" />
-							<Text text="{path: 'derivedFrom/0/reference', formatter: '.referenceOrganization'}" />
-						</cells>
-					</ColumnListItem>
-				</items>
-			</Table>
-		</f:content>
-		<f:footer>
-			<OverflowToolbar>
-				<ToolbarSpacer />
-				<Button type="Reject" text="{i18n>DeleteSelected}" press="onDeleteSelected" />
-			</OverflowToolbar>
-		</f:footer>
-	</f:DynamicPage>
+				}"
+                class="sapFDynamicPageAlignContent"
+                width="auto"
+                growing="true"
+                autoPopinMode="true"
+                mode="MultiSelect"
+                selectionChange="onSelectionChange"
+                hiddenInPopin="Low"
+            >
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <ToolbarSpacer />
+                        <SearchField search="onSearch" width="17.5rem" />
+                        <OverflowToolbarButton icon="sap-icon://sort" type="Transparent" press="onSort" />
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column width="40%" importance="High" autoPopinWidth="10">
+                        <Text text="{i18n>medicationName}" />
+                    </Column>
+                    <Column width="10%" importance="Low">
+                        <Text text="{i18n>medicationPZN}" />
+                    </Column>
+                    <Column width="10%" importance="Low">
+                        <Text text="{i18n>medicationSize}" />
+                    </Column>
+                    <Column width="10%" importance="Low">
+                        <Text text="{i18n>medicationDosage}" />
+                    </Column>
+                    <Column width="10%" importance="Low">
+                        <Text text="{i18n>GeneralPractitioner}" />
+                    </Column>
+                    <Column width="20%" importance="Low">
+                        <Text text="{i18n>ManagingOrganization}" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{medicationCodeableConcept/text}" />
+                            <Text text="{identifier/0/value}" />
+                            <Text text="{extension/0/valueString}" />
+                            <Text text="{dosage/0/text}" />
+                            <Text text="{path: 'informationSource/reference', formatter: '.referencePractitioner'}" />
+                            <Text text="{path: 'derivedFrom/0/reference', formatter: '.referenceOrganization'}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+        <f:footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button type="Reject" text="{i18n>DeleteSelected}" press="onDeleteSelected" />
+            </OverflowToolbar>
+        </f:footer>
+    </f:DynamicPage>
 </mvc:View>
