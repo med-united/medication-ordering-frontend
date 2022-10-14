@@ -18,6 +18,8 @@ sap.ui.define([
 			this.fixPagingOfFhirModel();
 			UIComponent.prototype.init.apply(this, arguments);
 
+			this.getModel().setSizeLimit(25);
+
 			var oRouter = this.getRouter();
 			const keycloak = new Keycloak();
 
