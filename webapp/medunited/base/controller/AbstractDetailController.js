@@ -40,20 +40,37 @@ sap.ui.define([
 			if(DemoAccount._isDemoAccount(this.getView())){
 				return
 			}
-            var fnSuccess = function(oData){
+			let medicationStatementsOfPatient = this.getMedicationStatementsOfPatient(this._entity);
+			let oModel = this.getView().getModel();
+            for (let i of medicationStatementsOfPatient) {
+				let pznValue = oModel.getProperty("/MedicationStatement/" + i + "/identifier/0/value");
+				oModel.setProperty("/MedicationStatement/" + i + "/identifier/0/value", parseInt(pznValue, 10));
+			}
+			let fnSuccess = function(oData){
                 this.enableEditMode(false);
                 MessageToast.show(this.translate(this.getEntityName()) + ' ' + this.translate("msgSaveResourceSuccessful"));
             }.bind(this);
 
-            var fnError = function(oError){
+            let fnError = function(oError){
                 this.enableEditMode(false);
                 MessageBox.show(this.translate(this.getEntityName()) + ' ' + this.translate("msgSaveResouceFailed", [oError.statusCode, oError.statusText]));
             }.bind(this);
 
-            var oRequest = this.getView().getModel().submitChanges(this.getEntityName().toLowerCase()+"Details", fnSuccess, fnError);
+            let oRequest = oModel.submitChanges(this.getEntityName().toLowerCase()+"Details", fnSuccess, fnError);
             if(!oRequest){
                 this.enableEditMode(false);
             }
+		},
+		getMedicationStatementsOfPatient: function (patientId) {
+			let oModel = this.getView().getModel();
+			let medicationStatements = oModel.getProperty("/MedicationStatement");
+			let medicationStatementsOfPatient = [];
+			for (let medStat in medicationStatements) {
+				if (oModel.getProperty("/MedicationStatement/" + medStat + "/subject/reference") == "Patient/" + patientId) {
+					medicationStatementsOfPatient.push(medStat);
+				}
+			}
+			return medicationStatementsOfPatient;
 		},
 		onCancel: function(oEvent) {
 			this.enableEditMode(false);

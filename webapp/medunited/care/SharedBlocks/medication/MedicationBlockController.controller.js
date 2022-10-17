@@ -105,15 +105,21 @@ sap.ui.define([
             source.getModel().setProperty(source.getBindingContext().getPath("identifier/0/value"), medicationPZN);
         },
         onSuggestPZN: function (oEvent) {
-            var sTerm = oEvent.getParameter("suggestValue");
-            var oController = this.getView().getController();
-
+            let sTerm = oEvent.getParameter("suggestValue");
+            let leadingZeros;
+            if (sTerm.match(/^0+/) != null) {
+                leadingZeros = sTerm.match(/^0+/)[0];
+            }
+            else {
+                leadingZeros = "";
+            }
+            let oController = this.getView().getController();
             this._oMedicationSearchProvider.suggest(sTerm, function (sValue, aSuggestions) {
                 this.destroySuggestionItems();
 
-                for (var i = 0; i < aSuggestions.length; i++) {
+                for (let i = 0; i < aSuggestions.length; i++) {
                     this.addSuggestionItem(new Item({
-                        text: aSuggestions[i].pzn + " (" + oController.cleanMedicationNameResults(aSuggestions[i].name) + ")"
+                        text: leadingZeros + aSuggestions[i].pzn + " (" + oController.cleanMedicationNameResults(aSuggestions[i].name) + ")"
                     }));
                 }
             }.bind(oEvent.getSource()));
