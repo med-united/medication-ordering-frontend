@@ -139,12 +139,16 @@ sap.ui.define([
         },
         onSort: function (oEvent) {
             this._bDescendingSort = !this._bDescendingSort;
+            this.sort();
+        },
+        sort: function () {
             var oView = this.getView(),
                 oTable = oView.byId(this.getEntityName().toLowerCase() + "Table"),
                 oBinding = oTable.getBinding("items"),
                 oSorter = new Sorter(this.getSortField(), this._bDescendingSort);
 
             oBinding.sort(oSorter);
+            oBinding.refresh();
         },
         getSearchField: function () {
             return this.getSortField();

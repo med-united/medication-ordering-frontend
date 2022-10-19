@@ -25,6 +25,7 @@
 		<!-- DynamicPage Content -->
 		<f:content>
 			<Table id="patientTable" inset="false" items="{path: '/Patient',
+					sorter: { path: 'family', descending: false},
 					parameters: {
 						request: {
 							_include: ['Patient:general-practitioner',
@@ -44,10 +45,10 @@
 						<Text text="{i18n>GivenName}" />
 					</Column>
 					<Column width="20%" importance="High">
-						<Text text="{i18n>FamilyName}" />
+						<Link text="{i18n>FamilyName}" press="onSortFamilyName" />
 					</Column>
 					<Column width="20%" importance="High">
-						<Text text="{i18n>BirthDate}" />
+						<Link text="{i18n>BirthDate}" press="onSortBirthDate" />
 					</Column>
 					<Column width="20%" importance="Medium">
 						<Text text="{i18n>GeneralPractitioner}" />

@@ -12,6 +12,10 @@ sap.ui.define([
 
 	return AbstractMasterController.extend("medunited.care.controller.patient.Master", {
 
+		onInit: function() {
+			this._sSortField ="family"
+		},
+
 		getEntityName: function () {
 			return "Patient";
 		},
@@ -26,8 +30,16 @@ sap.ui.define([
 			}
 			)];
 		},
+		onSortFamilyName: function() {
+			this._sSortField = "family";
+			this.sort();
+		},
+		onSortBirthDate: function() {
+			this._sSortField = "birthdate";
+			this.sort();
+		},
 		getSortField: function () {
-			return "family";
+			return this._sSortField;
 		},
 		onImportPatientFromCSV: function () {
 			var oView = this.getView();
