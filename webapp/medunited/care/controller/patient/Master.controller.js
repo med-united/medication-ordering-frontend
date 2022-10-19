@@ -13,6 +13,7 @@ sap.ui.define([
 	return AbstractMasterController.extend("medunited.care.controller.patient.Master", {
 
 		onInit: function() {
+			AbstractMasterController.prototype.onInit.apply(this, arguments);
 			this._sSortField ="family"
 		},
 
