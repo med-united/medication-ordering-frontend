@@ -7,6 +7,7 @@
                     <Title text="{i18n>medications}" />
                 </f:heading>
                 <f:actions>
+                    <Button text="{i18n>setAllMedicationToBiggestSize}" press="onSetAllMedicationToBiggestSize" />
                     <Button type="Emphasized" text="{i18n>RequestEPrescriptions}" press="onRequestEPrescriptions" />
                 </f:actions>
             </f:DynamicPageTitle>

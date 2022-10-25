@@ -20,6 +20,7 @@ sap.ui.define([
 
 			this.getModel().setSizeLimit(25);
 
+
 			var oRouter = this.getRouter();
 			const keycloak = new Keycloak();
 
@@ -41,6 +42,7 @@ sap.ui.define([
 					oRouter.initialize();
 					me.jwtToken = keycloak.token;
 					me.keycloak = keycloak;
+					me.afterAuthenticated();
 				}
 			}).catch(function (e) {
 				console.log('failed to initialize');
@@ -61,6 +63,16 @@ sap.ui.define([
 					console.error('Failed to refresh token ' + new Date());
 				});
 			}
+		},
+
+		afterAuthenticated: function() {
+			// TypeError: Cannot read properties of undefined (reading 'name')
+    		// at p.getPharmacyNameForPath (Master.controller.js:88:19)
+			this.getModel().sendGetRequest("/Organization");
+			//TypeError: Cannot read properties of undefined (reading 'name')
+    		// at p.getNameForPath (Master.controller.js:45:19)
+    		// at p.referencePractitioner (Master.controller.js:25:18)
+			this.getModel().sendGetRequest("/Practitioner");
 		},
 
 		fixPagingOfFhirModel: function () {

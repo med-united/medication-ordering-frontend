@@ -9,8 +9,9 @@ sap.ui.define([
 	'sap/m/MessageBox',
 	'sap/m/MessageToast',
 	'sap/ui/model/Filter',
-	'sap/ui/model/FilterOperator'
-], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount, MessageBox, MessageToast, Filter, FilterOperator) {
+	'sap/ui/model/FilterOperator',
+	'sap/ui/core/mvc/XMLView'
+], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount, MessageBox, MessageToast, Filter, FilterOperator, XMLView) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
@@ -106,6 +107,23 @@ sap.ui.define([
 				MessageToast.show(this.translate("msgCountPrescriptionRequested", selectedPlans.length));
 			} else {
 				return;
+			}
+		},
+
+		onSetAllMedicationToBiggestSize: function () {
+			if(!this._setAllMedicationToBiggestSizeDialog) {
+				this.getOwnerComponent().runAsOwner(() => {
+					XMLView.create({
+						viewName: 'medunited.care.view.medication.SetAllMedicationToBiggestSizeDialog'
+					}).then((oView) => {
+						this.getView().addDependent(oView);
+						oView.set
+						this._setAllMedicationToBiggestSizeDialog = oView.getContent()[0];
+						this._setAllMedicationToBiggestSizeDialog.open();
+					})
+				});
+			} else {
+				this._setAllMedicationToBiggestSizeDialog.open();
 			}
 		},
 

@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@stomp/stompjs": "^6.1.2",
-        "openui5-fhir": "^2.2.8",
+        "openui5-fhir": "^2.3.3",
         "websocket": "^1.0.34"
     }
 }

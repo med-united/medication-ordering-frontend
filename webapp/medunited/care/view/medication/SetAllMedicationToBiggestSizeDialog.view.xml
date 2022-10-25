@@ -1,0 +1,64 @@
+<mvc:View displayBlock="true" controllerName="medunited.care.controller.medication.SetAllMedicationToBiggestSizeDialog" height="100%" xmlns="sap.m" xmlns:f="sap.f" xmlns:mvc="sap.ui.core.mvc">
+	<Dialog id="setAllMedicationToBiggestSizeDialog" title="{i18n>dialogTitleSetAllMedicationToBiggestSizeDialog}" contentWidth="40rem" resizable="true" draggable="true">
+        <Table
+            id="medicationTable"
+            inset="false"
+            items="{path: '/MedicationStatement',
+                parameters: {
+                    request: {
+                        _include: ['MedicationStatement:subject',
+                        'MedicationStatement:source']
+                    }
+                },
+                events: {
+                    dataReceived: '.onDataReceived'
+                },
+                sorter: [{
+                    path: 'subject', 
+                    descending: false, 
+                    group: '.groupOnSubject'
+                }]		
+            }"
+            class="sapFDynamicPageAlignContent"
+            width="auto"
+            growing="true"
+            autoPopinMode="true"
+            hiddenInPopin="Low"
+        >
+            <columns>
+                <Column width="40%" importance="High" autoPopinWidth="10">
+                    <Text text="{i18n>medicationName}" />
+                </Column>
+                <Column width="10%" importance="Low">
+                    <Text text="{i18n>medicationPZN}" />
+                </Column>
+                <Column width="40%" importance="Low" autoPopinWidth="10">
+                    <Text text="{i18n>oldMedicationSize}" />
+                </Column>
+                <Column width="40%" importance="High" autoPopinWidth="10">
+                    <Text text="{i18n>newMedicationSize}" />
+                </Column>
+                <Column width="40%" importance="High" autoPopinWidth="10">
+                    <Text text="{i18n>newPZN}" />
+                </Column>
+            </columns>
+            <items>
+                <ColumnListItem>
+                    <cells>
+                        <Text text="{medicationCodeableConcept/text}" />
+                        <Text text="{identifier/0/value}" />
+                        <Text text="{extension/1/valueString}" />
+                        <Text text="{path: 'NewSize>/newMedicationSize}" />
+                        <Text text="{path: 'NewSize>/0/newPZN}" />
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+        <beginButton>
+			<Button type="Reject" text="{i18n>buttonCancel}" press="onCancel" />
+		</beginButton>
+		<endButton>
+			<Button type="Accept" text="{i18n>updateShownMedication}" press="onUpdateShownMedication" />
+		</endButton>
+    </Dialog>
+</Dialog>
