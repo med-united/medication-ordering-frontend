@@ -8,7 +8,8 @@
                     request: {
                         _include: ['MedicationStatement:subject',
                         'MedicationStatement:source']
-                    }
+                    },
+                    groupId: 'medicationStatementDetails'
                 },
                 events: {
                     dataReceived: '.onDataReceived'
@@ -48,8 +49,8 @@
                         <Text text="{medicationCodeableConcept/text}" />
                         <Text text="{identifier/0/value}" />
                         <Text text="{extension/1/valueString}" />
-                        <Text text="{path: 'NewSize>/newMedicationSize}" />
-                        <Text text="{path: 'NewSize>/0/newPZN}" />
+                        <Text text="{path: 'identifier/0/value', formatter: '.newSize'}" />
+                        <Text text="{path: 'identifier/0/value', formatter: '.newPZN'}" />
                     </cells>
                 </ColumnListItem>
             </items>

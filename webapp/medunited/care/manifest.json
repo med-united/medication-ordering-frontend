@@ -86,6 +86,9 @@
 						},
 						"organizationDetails": {
 							"submit": "Transaction"
+						},
+						"medicationStatementDetails": {
+							"submit" : "Transaction"
 						}
 					},
 					"defaultQueryParameters": {

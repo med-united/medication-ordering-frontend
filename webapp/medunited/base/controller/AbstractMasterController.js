@@ -103,7 +103,7 @@ sap.ui.define([
                 sEntityName = sEntityName[0].toUpperCase() + sEntityName.slice(1);
             }
 
-            var sContextPath = this._createContextPathFromModel(sEntityName);
+            const sContextPath = this._createContextPathFromModel(sEntityName);
             oDialog.bindElement(sContextPath);
         },
         _createContextPathFromModel: function (sEntityName) {
@@ -112,15 +112,15 @@ sap.ui.define([
             return "/" + sEntityName + "/" + sEntityId;
         },
         save: function () {
-            var fnSuccess = function (oData) {
+            const fnSuccess = (oData) => {
                 MessageToast.show(this.translate(this.getEntityName()) + ' ' + this.translate("msgSaveResourceSuccessful"));
-            }.bind(this);
+            };
 
-            var fnError = function (oError) {
+            const fnError = (oError) => {
                 MessageBox.show(this.translate(this.getEntityName()) + ' ' + this.translate("msgSaveResouceFailed", [oError.statusCode, oError.statusText]));
-            }.bind(this);
+            };
 
-            var oRequest = this.getView().getModel().submitChanges(this.getEntityName().toLowerCase() + "Details", fnSuccess, fnError);
+            this.getView().getModel().submitChanges(this.getEntityName().toLowerCase() + "Details", fnSuccess, fnError);
         },
         onSave: function (oEvent) {
             if (DemoAccount._isDemoAccount(this.getView())) {
