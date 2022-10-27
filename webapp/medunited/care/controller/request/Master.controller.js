@@ -12,7 +12,7 @@ sap.ui.define([
 		referencePatient: function (sPatientPath) {
 			try {
 				if (sPatientPath) {
-					return this.getNameForPath("/" + sPatientPath);
+					return this.getNameForPath("/" + sPatientPath, true);
 				}
 			} catch (e) {
 				console.log(e);
@@ -39,10 +39,10 @@ sap.ui.define([
 			}
 		},
 
-		getNameForPath: function (sObjectPath) {
+		getNameForPath: function (sObjectPath, bBirthday) {
 			const oFhirModel = this.getView().getModel();
 			const oObject = oFhirModel.getProperty(sObjectPath);
-			return oObject.name[0]?.given[0] + " " + oObject.name[0]?.family;
+			return oObject.name[0]?.given[0] + " " + oObject.name[0]?.family +(bBirthday ? " "+oObject.birthDate : "");
 		},
 
 		getEmailForPath: function (sObjectPath) {
