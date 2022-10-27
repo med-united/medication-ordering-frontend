@@ -71,7 +71,7 @@ sap.ui.define(
             tryHarder: this.getTryHarder(),
             settings: this.getSettings(),
           });
-          this.set
+
           // i18n from owner or library if possible
           this.setModel(sap.ui.core.Component.getOwnerComponentFor(this).getModel('i18n'), 'i18n');
           this.setModel(this._oScanModel, 'scanModel');
@@ -334,6 +334,15 @@ sap.ui.define(
             value: this._oScanModel.getProperty('/value'),
           });
           this._oScanModel.setProperty('/value', '');
+        },
+
+        onChangeMedicationPlanXml: function (oEvent) {
+          var oDialog = oEvent.getSource().getParent();
+          oDialog.close();
+          this.fireValueScanned({
+            value: oEvent.getParameter("value"),
+          });
+          oEvent.getSource().setValue("");
         },
   
         _getOpenButton: function() {

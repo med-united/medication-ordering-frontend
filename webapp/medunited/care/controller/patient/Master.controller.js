@@ -170,8 +170,11 @@ sap.ui.define([
 			try {
 				// <MP v="025" U="02BD2867FB024401A590D59D94E1FFAE" l="de-DE"><P g="Jürgen" f="Wernersen" b="19400324"/><A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/><S><M p="230272" m="1" du="1" r="Herz/Blutdruck"/><M p="2223945" m="1" du="1" r="Blutdruck"/><M p="558736" m="20" v="20" du="p" i="Wechseln der Injektionsstellen, unmittelbar vor einer Mahlzeit spritzen" r="Diabetes"/><M p="9900751" v="1" du="1" r="Blutfette"/></S><S t="zu besonderen Zeiten anzuwendende Medikamente"><M p="2239828" t="alle drei Tage 1" du="1" i="auf wechselnde Stellen aufkleben" r="Schmerzen"/></S><S c="418"><M p="2455874" m="1" du="1" r="Stimmung"/></S></MP>
 				const oModel = this.getView().getModel();
+
+				// <A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/>
+				const oPractitionerNode = oEMP.querySelector("A");
 				const sBirthdate = oEMP.querySelector("P").getAttribute("b");
-				// TODO: prevent duplicates
+
 				const oPatient = {
 					"name": [
 						{
@@ -182,15 +185,9 @@ sap.ui.define([
 					],
 					"birthDate": sBirthdate.substring(0, 4) + "-" + sBirthdate.substring(4, 6) + "-" + sBirthdate.substring(6, 8)
 				};
-
-				// <A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/>
-				const oPractitionerNode = oEMP.querySelector("A");
-				let sPractitionerId = undefined;
-				let alreadyExistingPractitionerId = undefined;
-				let alreadyExistingPatientId = undefined;
+				const oPractitioner = {};
 				if (oPractitionerNode) {
 					const sName = oPractitionerNode.getAttribute("n");
-					const oPractitioner = {};
 					if (sName && sName.split(/ /).length > 1) {
 						const aNameParts = sName.split(/ /);
 						oPractitioner.name = [
@@ -223,99 +220,148 @@ sap.ui.define([
 							});
 						}
 					}
-					//Check if practitioner already exists
-					const existingDoctor = Object.values(oModel.getProperty("/Practitioner")).filter(a => a.name[0].family === oPractitioner.name[0].family && a.name[0].given[0] === oPractitioner.name[0].given[0])
-					if (existingDoctor.length == 0) {
-						sPractitionerId = oModel.create("Practitioner", oPractitioner, "patientDetails");
-					} else {
-						alreadyExistingPractitionerId = existingDoctor[0].id;
+
+					oModel.sendGetRequest("/Practitioner", {
+						"urlParameters": {
+							"family" : oPractitioner.name[0].family,
+							"given" : oPractitioner.name[0].given[0]
+						},
+						"success" : () => {
+							this.searchPatientResourcesFromMedicationPlan(oEMP, oModel, oPractitioner, oPatient, mPZN2Name);
+						},
+						"error" : (e) => {
+							MessageBox.show(this.translate("msgSavedFailed", [e.code, e.message]));
+							console.log(e.stack);
+						}
+					});
+				} else {
+					this.searchPatientResourcesFromMedicationPlan(oEMP, oModel, oPractitioner, oPatient, mPZN2Name);
+				}
+			} catch (e) {
+				MessageBox.show(this.translate("msgSavedFailed", [e.code, e.message]));
+				console.log(e.stack);
+			}
+		},
+		searchPatientResourcesFromMedicationPlan : function (oEMP, oModel, oPractitioner, oPatient, mPZN2Name) {
+
+			if(oPatient && oPatient.name && oPatient.name.length > 0 && oPatient.name[0].given) {
+				oModel.sendGetRequest("/Patient", {
+					"urlParameters": {
+						"family" : oPatient.name[0].family,
+						"given" : oPatient.name[0].given[0]
+					},
+					"success" : () => {
+						this.createResourcesFromMedicationPlan(oEMP, oModel, oPractitioner, oPatient, mPZN2Name);
+					},
+					"error" : (e) => {
+						MessageBox.show(this.translate("msgSavedFailed", [e.code, e.message]));
+						console.log(e.stack);
 					}
+				});
+			} else {
+				this.createResourcesFromMedicationPlan(oEMP, oModel, oPractitioner, oPatient, mPZN2Name);
+			}
+		},
+		createResourcesFromMedicationPlan: function (oEMP, oModel, oPractitioner, oPatient, mPZN2Name) {
+
+			let sPractitionerId = undefined;
+			let alreadyExistingPractitionerId = undefined;
+			let alreadyExistingPatientId = undefined;
+
+			//Check if practitioner already exists
+			const aPractitioner = oModel.getProperty("/Practitioner") || [];
+			if(Object.keys(oPractitioner).length > 0) {
+				const existingDoctor = Object.values(aPractitioner).filter(a => a.name[0].family === oPractitioner.name[0].family && a.name[0].given[0] === oPractitioner.name[0].given[0])
+				if (existingDoctor.length == 0) {
+					sPractitionerId = oModel.create("Practitioner", oPractitioner, "patientDetails");
+				} else {
+					alreadyExistingPractitionerId = existingDoctor[0].id;
+				}
+			}
+
+			if (sPractitionerId) {
+				oPatient.generalPractitioner = {
+					"reference": "urn:uuid:" + sPractitionerId
+				}
+			} else if (alreadyExistingPractitionerId) {
+				oPatient.generalPractitioner = {
+					"reference": "Practitioner/" + alreadyExistingPractitionerId
+				}
+			}
+			//check if patient already exists
+			let sPatientId = undefined;
+			const existingPatient = Object.values(oModel.getProperty("/Patient")).filter(a => a.name[0].family === oPatient.name[0].family && a.name[0].given[0] === oPatient.name[0].given[0])
+			if (existingPatient.length == 0) {
+				sPatientId = oModel.create("Patient", oPatient, "patientDetails");
+			} else {
+				alreadyExistingPatientId = existingPatient[0].id;
+			}
+			this.createMedicationFromMedicationPlan(oEMP, oModel, sPractitionerId, alreadyExistingPractitionerId, sPatientId, alreadyExistingPatientId, mPZN2Name);
+			this.save();
+		},
+		createMedicationFromMedicationPlan : function (oEMP, oModel, sPractitionerId, alreadyExistingPractitionerId, sPatientId, alreadyExistingPatientId, mPZN2Name) {
+			const aMedication = Array.from(oEMP.querySelectorAll("M"));
+			// https://www.vesta-gematik.de/standard/formhandler/324/gemSpec_Info_AMTS_V1_5_0.pdf
+			for (let oMedication of aMedication) {
+				let sPZN = oMedication.getAttribute("p");
+				let sDosierschemaMorgens = oMedication.getAttribute("m");
+				if (!sDosierschemaMorgens) {
+					sDosierschemaMorgens = "0";
+				}
+				let sDosierschemaMittags = oMedication.getAttribute("d");
+				if (!sDosierschemaMittags) {
+					sDosierschemaMittags = "0";
+				}
+				let sDosierschemaAbends = oMedication.getAttribute("v");
+				if (!sDosierschemaAbends) {
+					sDosierschemaAbends = "0";
+				}
+				let sDosierschemaNachts = oMedication.getAttribute("h");
+				if (!sDosierschemaNachts) {
+					sDosierschemaNachts = "0";
+				}
+				// Dosiereinheit strukturiert
+				let sDosage = oMedication.getAttribute("du");
+				// reason
+				let sReason = oMedication.getAttribute("r");
+				let sAdditionalInformation = oMedication.getAttribute("i");
+
+				const medicationName = mPZN2Name[sPZN];
+
+				let oMedicationStatement = undefined;
+
+				if (sPatientId) {
+					oMedicationStatement = {
+						identifier: [{ "value": sPZN }],
+						medicationCodeableConcept: { "text": medicationName },
+						dosage: [
+							{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+						],
+						subject: { "reference": "urn:uuid:" + sPatientId },
+						note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
+					};
+				} else if (alreadyExistingPatientId) {
+					oMedicationStatement = {
+						identifier: [{ "value": sPZN }],
+						medicationCodeableConcept: { "text": medicationName },
+						dosage: [
+							{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+						],
+						subject: { "reference": "Patient/" + alreadyExistingPatientId },
+						note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
+					};
 				}
 
 				if (sPractitionerId) {
-					oPatient.generalPractitioner = {
-						"reference": "urn:uuid:" + sPractitionerId
-					}
+					oMedicationStatement.informationSource = {
+						reference: "urn:uuid:" + sPractitionerId
+					};
 				} else if (alreadyExistingPractitionerId) {
-					oPatient.generalPractitioner = {
-						"reference": "Practitioner/" + alreadyExistingPractitionerId
-					}
+					oMedicationStatement.informationSource = {
+						reference: "Practitioner/" + alreadyExistingPractitionerId
+					};
 				}
-				//check if patient already exists
-				let sPatientId = undefined;
-				const existingPatient = Object.values(oModel.getProperty("/Patient")).filter(a => a.name[0].family === oPatient.name[0].family && a.name[0].given[0] === oPatient.name[0].given[0])
-				if (existingPatient.length == 0) {
-					sPatientId = oModel.create("Patient", oPatient, "patientDetails");
-				} else {
-					alreadyExistingPatientId = existingPatient[0].id;
-				}
-
-				const aMedication = Array.from(oEMP.querySelectorAll("M"));
-				// https://www.vesta-gematik.de/standard/formhandler/324/gemSpec_Info_AMTS_V1_5_0.pdf
-				for (let oMedication of aMedication) {
-					let sPZN = oMedication.getAttribute("p");
-					let sDosierschemaMorgens = oMedication.getAttribute("m");
-					if (!sDosierschemaMorgens) {
-						sDosierschemaMorgens = "0";
-					}
-					let sDosierschemaMittags = oMedication.getAttribute("d");
-					if (!sDosierschemaMittags) {
-						sDosierschemaMittags = "0";
-					}
-					let sDosierschemaAbends = oMedication.getAttribute("v");
-					if (!sDosierschemaAbends) {
-						sDosierschemaAbends = "0";
-					}
-					let sDosierschemaNachts = oMedication.getAttribute("h");
-					if (!sDosierschemaNachts) {
-						sDosierschemaNachts = "0";
-					}
-					// Dosiereinheit strukturiert
-					let sDosage = oMedication.getAttribute("du");
-					// reason
-					let sReason = oMedication.getAttribute("r");
-					let sAdditionalInformation = oMedication.getAttribute("i");
-
-					const medicationName = mPZN2Name[sPZN];
-
-					let oMedicationStatement = undefined;
-
-					if (sPatientId) {
-						oMedicationStatement = {
-							identifier: [{ "value": sPZN }],
-							medicationCodeableConcept: { "text": medicationName },
-							dosage: [
-								{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
-							],
-							subject: { "reference": "urn:uuid:" + sPatientId },
-							note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
-						};
-					} else if (alreadyExistingPatientId) {
-						oMedicationStatement = {
-							identifier: [{ "value": sPZN }],
-							medicationCodeableConcept: { "text": medicationName },
-							dosage: [
-								{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
-							],
-							subject: { "reference": "Patient/" + alreadyExistingPatientId },
-							note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
-						};
-					}
-
-					if (sPractitionerId) {
-						oMedicationStatement.informationSource = {
-							reference: "urn:uuid:" + sPractitionerId
-						};
-					} else if (alreadyExistingPractitionerId) {
-						oMedicationStatement.informationSource = {
-							reference: "Practitioner/" + alreadyExistingPractitionerId
-						};
-					}
-					oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
-				}
-				this.save();
-			} catch (e) {
-				console.log(e);
+				oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
 			}
 		}
 	});

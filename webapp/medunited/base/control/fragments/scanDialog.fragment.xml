@@ -31,6 +31,7 @@
           />
         </html:div>
       </VBox>
+      <Input placeholder="{i18n>pasteMedicationPlanInfoHere}" change="onChangeMedicationPlanXml" />
     </content>
     <buttons>
       <Button
