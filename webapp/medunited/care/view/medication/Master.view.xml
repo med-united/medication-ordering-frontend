@@ -25,6 +25,9 @@
 							'MedicationStatement:source']
 						}
 					},
+                    events: {
+                        dataReceived: '.onDataReceivedReceiveMissingPharmacies'
+                    },
 					sorter: [{
 						path: 'subject', 
 						descending: false, 

@@ -10,8 +10,9 @@ sap.ui.define([
 	'sap/m/MessageToast',
 	'sap/ui/model/Filter',
 	'sap/ui/model/FilterOperator',
-	'sap/ui/core/mvc/XMLView'
-], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount, MessageBox, MessageToast, Filter, FilterOperator, XMLView) {
+	'sap/ui/core/mvc/XMLView',
+    "sap/ui/model/ChangeReason"
+], function (AbstractMasterController, ScriptDownloader, BriefSender, StompPrescriptionSender, PharmacyNotifier, XMLModel, DemoAccount, MessageBox, MessageToast, Filter, FilterOperator, XMLView, ChangeReason) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.medication.Master", {
@@ -85,7 +86,7 @@ sap.ui.define([
 		getPharmacyNameForPath: function (sObjectPath) {
 			const oFhirModel = this.getView().getModel();
 			const oObject = oFhirModel.getProperty(sObjectPath);
-			return oObject.name;
+			return oObject ? oObject.name : "Apotheke unbekannt";
 		},
 
 		onRequestEPrescriptions: function () {
@@ -175,6 +176,11 @@ sap.ui.define([
 					MessageBox.warning(this.translate("msgAtLeastOneOfThePrescriptionsIsNotAssignedToADoctorOrAPharmacy") + "\n\n" + this.translate("msgPleaseSelectTheseInTheDetailsViewOfThePatient"), { title: this.translate("msgBeforeProceeding") });
 					return false;
 				}
+				const pzn = this.getView().getModel().getProperty(medicationStatement + '/identifier/0/value');
+				if(pzn === undefined) {
+					MessageBox.warning(this.translate("msgAtLeastOneOfThePrescriptionsDoesNotHaveAPZN") + "\n\n" + this.translate("msgPleaseSelectTheseInTheDetailsViewOfThePatient"), { title: this.translate("msgBeforeProceeding") });
+					return false;
+				}
 			}
 			return true;
 		},
@@ -217,6 +223,8 @@ sap.ui.define([
 						authoredOn: requestedOn,
 						extension: [{
 							valueString: that.getView().getModel().getProperty(plan).medicationCodeableConcept.text
+						}, {
+							valueString: that.getView().getModel().getProperty(plan).derivedFrom[0].reference
 						}],
 					};
 
@@ -294,6 +302,35 @@ sap.ui.define([
 				}
 			}
 			return structure;
+		},
+		onDataReceivedReceiveMissingPharmacies: function (oEvent) {
+			const oData = oEvent.getParameter("data");
+			const oModel = this.getView().getModel();
+			const mMissingOrganizations = {};
+			if(!oData.entry || oData.entry.length == 0) {
+				return;
+			}
+			for(let oMedicationStatement of oData.entry) {
+				if(!oMedicationStatement.resource.derivedFrom) {
+					continue;
+				}
+				let oOrganizationReference = oMedicationStatement.resource.derivedFrom[0].reference;
+				if(!oModel.getProperty("/"+oOrganizationReference)) {
+					mMissingOrganizations[oOrganizationReference] = true;
+				}
+			}
+			if(Object.keys(mMissingOrganizations).length > 0) {
+				oModel.sendGetRequest("/Organization", {
+					"urlParameters": {
+						"_id" : Object.keys(mMissingOrganizations).map((s) => s.split("/")[1]).join(",")
+					},
+					"success": () => {
+						this.getView().byId("medicationTable").getBinding("items")._fireChange({
+							reason: ChangeReason.Change
+						});
+					}
+				});
+			}
 		}
 
 	});

@@ -42,7 +42,45 @@ sap.ui.define([
             this.oRouter = sap.ui.core.UIComponent.getRouterFor(this);
             this.oRouter.getRoute("patient-detail").attachPatternMatched(this.onPatientRouteMatched, this);
         },
-
+        onDataReceivedAsureStructure: function(oEvent) {
+            const oData = oEvent.getParameter("data");
+			if(!oData.entry || oData.entry.length == 0) {
+				return;
+			}
+			for(let oMedicationStatement of oData.entry) {
+				if(!oMedicationStatement.resource.identifier) {
+                    oMedicationStatement.resource.identifier = [
+                        {"value":undefined}
+                    ];
+                }
+                if(!oMedicationStatement.resource.dosage) {
+                    oMedicationStatement.resource.dosage = [
+                        {"text":undefined}
+                    ];
+                }
+                if(!oMedicationStatement.resource.extension) {
+                    oMedicationStatement.resource.extension = [
+                        {"valueString":undefined},
+                        {"valueString":undefined}
+                    ];
+                } else if(oMedicationStatement.resource.extension.length == 1) {
+                    oMedicationStatement.resource.extension.push({"valueString":undefined});
+                }
+                if(!oMedicationStatement.resource.note) {
+                    oMedicationStatement.resource.note = [
+                        {"text":undefined}
+                    ];
+                }
+                if(!oMedicationStatement.resource.informationSource) {
+                    oMedicationStatement.resource.informationSource = {"reference":undefined};
+                }
+                if(!oMedicationStatement.resource.derivedFrom) {
+                    oMedicationStatement.resource.derivedFrom = [
+                        {"reference":undefined}
+                    ];
+                }
+            }
+        },
         onPatientRouteMatched: function (oEvent) {
             var sPatientId = oEvent.getParameter("arguments").patient;
             this.filterMedicationTableToPatient(sPatientId);

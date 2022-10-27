@@ -2,33 +2,41 @@
     <HBox justifyContent="End" class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
         <Link text="Medikation hinzufügen" press="addMedication" />
     </HBox>
-    <Table id="medicationTable" items="{path: '/MedicationStatement', parameters : {request: { _include: 'MedicationStatement:medication'}}}" mode="{= ${appState>/editMode} ? 'MultiSelect' : 'None'}">
+    <Table id="medicationTable" items="{
+            path: '/MedicationStatement',
+            events: {
+                dataReceived: '.onDataReceivedAsureStructure'
+            },
+            parameters : {
+                request: { _include: 'MedicationStatement:medication'}
+            }
+        }" mode="{= ${appState>/editMode} ? 'MultiSelect' : 'None'}" autoPopinMode="true">
         <columns>
-            <Column hAlign="Left" width="18%">
+            <Column hAlign="Left" width="18%" importance="High">
                 <Text text="{i18n>columnLabelMedicationName}" />
             </Column>
-            <Column hAlign="Left" width="11%">
+            <Column hAlign="Left" width="11%" importance="Low">
                 <Text text="{i18n>columnLabelMedicationEffectiveDate}" />
             </Column>
-            <Column hAlign="Left" width="10%">
+            <Column hAlign="Left" width="10%" importance="High">
                 <Text text="{i18n>columnLabelMedicationPZN}" />
             </Column>
-            <Column hAlign="Left" width="10%">
+            <Column hAlign="Left" width="10%" importance="High">
                 <Text text="{i18n>columnLabelMedicationDosage}" />
             </Column>
-            <Column hAlign="Left" width="8%">
+            <Column hAlign="Left" width="8%" importance="Medium">
                 <Text text="{i18n>medicationSize}" />
             </Column>
-            <Column hAlign="Left" width="11%">
+            <Column hAlign="Left" width="11%" importance="Medium">
                 <Text text="{i18n>standardSize}" />
             </Column>
-            <Column hAlign="Left" width="8%">
+            <Column hAlign="Left" width="8%" importance="Medium">
                 <Text text="{i18n>columnLabelMedicationNote}" />
             </Column>
-            <Column hAlign="Left" width="12%">
+            <Column hAlign="Left" width="12%" importance="Medium">
                 <Text text="{i18n>columnLabelPractitioner}" />
             </Column>
-            <Column hAlign="Left" width="12%">
+            <Column hAlign="Left" width="12%" importance="Medium">
                 <Text text="{i18n>columnLabelPharmacy}" />
             </Column>
         </columns>

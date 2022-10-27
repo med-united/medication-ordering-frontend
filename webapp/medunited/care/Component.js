@@ -66,13 +66,6 @@ sap.ui.define([
 		},
 
 		afterAuthenticated: function() {
-			// TypeError: Cannot read properties of undefined (reading 'name')
-    		// at p.getPharmacyNameForPath (Master.controller.js:88:19)
-			this.getModel().sendGetRequest("/Organization");
-			//TypeError: Cannot read properties of undefined (reading 'name')
-    		// at p.getNameForPath (Master.controller.js:45:19)
-    		// at p.referencePractitioner (Master.controller.js:25:18)
-			this.getModel().sendGetRequest("/Practitioner");
 		},
 
 		fixPagingOfFhirModel: function () {

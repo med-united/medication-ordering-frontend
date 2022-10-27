@@ -1,6 +1,7 @@
 sap.ui.define([
-	"medunited/base/controller/AbstractMasterController"
-], function (AbstractMasterController) {
+	"medunited/base/controller/AbstractMasterController",
+    "sap/ui/model/ChangeReason"
+], function (AbstractMasterController, ChangeReason) {
 	"use strict";
 
 	return AbstractMasterController.extend("medunited.care.controller.request.Master", {
@@ -47,13 +48,39 @@ sap.ui.define([
 
 		getEmailForPath: function (sObjectPath) {
 			const oFhirModel = this.getView().getModel();
-			const oObject = oFhirModel.getProperty(sObjectPath);
-			const pharmacyReference = oObject.managingOrganization.reference;
-			const pharmacy = oFhirModel.getProperty("/" + pharmacyReference);
-			return pharmacy.telecom[1].value;
+			const pharmacy = oFhirModel.getProperty(sObjectPath);
+			return pharmacy && pharmacy.telecom.length > 0 && pharmacy.telecom[1].value ? pharmacy.telecom[1].value : "";
 		},
 
-		
+		onDataReceivedReceiveMissingPharmacies: function(oEvent) {
+			const oData = oEvent.getParameter("data");
+			const oModel = this.getView().getModel();
+			const mMissingOrganizations = {};
+			if(!oData.entry || oData.entry.length == 0) {
+				return;
+			}
+			for(let oMedicationRequest of oData.entry) {
+				if(!oMedicationRequest.resource.extension || oMedicationRequest.resource.extension.length < 2) {
+					continue;
+				}
+				let oOrganizationReference = oMedicationRequest.resource.extension[1].valueString;
+				if(!oModel.getProperty("/"+oOrganizationReference)) {
+					mMissingOrganizations[oOrganizationReference] = true;
+				}
+			}
+			if(Object.keys(mMissingOrganizations).length > 0) {
+				oModel.sendGetRequest("/Organization", {
+					"urlParameters": {
+						"_id" : Object.keys(mMissingOrganizations).map((s) => s.split("/")[1]).join(",")
+					},
+					"success": () => {
+						this.getView().byId("requestTable").getBinding("items")._fireChange({
+							reason: ChangeReason.Change
+						});
+					}
+				});
+			}
+		}		
 
 	});
 }, true);

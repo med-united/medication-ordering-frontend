@@ -41,12 +41,18 @@ sap.ui.define([
 					}
 					const pzn = (oMedicationStatement.identifier && oMedicationStatement.identifier.length > 0) ? oMedicationStatement.identifier[0].value : "";
 					sXML += "    <M p=\"" + pzn + "\" ";
-					const medicationName = oMedicationStatement.medicationCodeableConcept.text;
-					if (medicationName) {
-						sXML += "a=\"" + this.escapeXml(medicationName) + "\" ";
+					if(oMedicationStatement && oMedicationStatement.medicationCodeableConcept) {
+						const medicationName = oMedicationStatement.medicationCodeableConcept.text;
+						if (medicationName) {
+							sXML += "a=\"" + this.escapeXml(medicationName) + "\" ";
+						} else {
+							sXML += "a=\"\" ";
+						}
+					} else {
+						sXML += "a=\"\" ";
 					}
 					const oDosage = oMedicationStatement.dosage;
-					if (oDosage) {
+					if (oDosage && oDosage.length > 0 && oDosage[0].text) {
 						const aDosage = oDosage[0].text.split(/-/);
 						const mDosage = {
 							0: "m",
@@ -80,6 +86,9 @@ sap.ui.define([
 		},
 
 		extractReasonInfo: function(sNote, sXML) {
+			if(!sNote) {
+				return "";
+			}
 			const m = sNote.match("Grund: (.*) Hinweis: (.*)");
 			if (m) {
 				sXML += "r=\"" + this.escapeXml(m.group(1)) + "\" i=\"" + this.escapeXml(m.group(2)) + "\" ";

@@ -11,7 +11,17 @@
 
         <!-- DynamicPage Content -->
         <f:content>
-            <Table id="requestTable" inset="false" items="{path: '/MedicationRequest'}" class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
+            <Table id="requestTable" inset="false" items="{path: '/MedicationRequest',
+					parameters: {
+						request: {
+							_include: ['MedicationRequest:subject',
+							'MedicationRequest:intended-performer']
+						}
+					},
+                    events: {
+                        dataReceived: '.onDataReceivedReceiveMissingPharmacies'
+                    }
+                }" class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
                 <headerToolbar>
                     <OverflowToolbar>
                         <ToolbarSpacer />
@@ -53,7 +63,7 @@
                         <cells>
                             <Text text="{path: 'subject/reference', formatter: '.referencePatient'}" />
                             <Text text="{path: 'performer/reference', formatter: '.referencePractitioner'}" />
-                            <Text text="{path: 'subject/reference', formatter: '.referencePharmacy'}" />
+                            <Text text="{path: 'extension/1/valueString', formatter: '.referencePharmacy'}" />
                             <Text text="{extension/0/valueString}" />
                             <Text text="{medicationCodeableConcept/coding/0/code}" />
                             <Text text="{dispenseRequest/quantity/value}" />
