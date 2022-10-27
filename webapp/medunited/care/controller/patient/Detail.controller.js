@@ -87,7 +87,7 @@ sap.ui.define([
 
 		extractReasonInfo: function(sNote, sXML) {
 			if(!sNote) {
-				return "";
+				return sXML;
 			}
 			const m = sNote.match("Grund: (.*) Hinweis: (.*)");
 			if (m) {
