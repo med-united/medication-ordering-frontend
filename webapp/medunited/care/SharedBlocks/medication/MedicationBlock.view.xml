@@ -12,31 +12,31 @@
             }
         }" mode="{= ${appState>/editMode} ? 'MultiSelect' : 'None'}" autoPopinMode="true">
         <columns>
-            <Column hAlign="Left" width="18%" importance="High">
+            <Column width="28%" importance="High">
                 <Text text="{i18n>columnLabelMedicationName}" />
             </Column>
-            <Column hAlign="Left" width="11%" importance="Low">
+            <Column width="11%" importance="Low">
                 <Text text="{i18n>columnLabelMedicationEffectiveDate}" />
             </Column>
-            <Column hAlign="Left" width="10%" importance="High">
+            <Column width="10%" importance="High">
                 <Text text="{i18n>columnLabelMedicationPZN}" />
             </Column>
-            <Column hAlign="Left" width="10%" importance="High">
+            <Column width="10%" importance="High">
                 <Text text="{i18n>columnLabelMedicationDosage}" />
             </Column>
-            <Column hAlign="Left" width="8%" importance="Medium">
+            <Column width="3%" importance="Low">
                 <Text text="{i18n>medicationSize}" />
             </Column>
-            <Column hAlign="Left" width="11%" importance="Medium">
+            <Column width="6%" importance="Medium">
                 <Text text="{i18n>standardSize}" />
             </Column>
-            <Column hAlign="Left" width="8%" importance="Medium">
+            <Column width="8%" importance="Medium">
                 <Text text="{i18n>columnLabelMedicationNote}" />
             </Column>
-            <Column hAlign="Left" width="12%" importance="Medium">
+            <Column width="12%" importance="Medium">
                 <Text text="{i18n>columnLabelPractitioner}" />
             </Column>
-            <Column hAlign="Left" width="12%" importance="Medium">
+            <Column width="12%" importance="Low">
                 <Text text="{i18n>columnLabelPharmacy}" />
             </Column>
         </columns>
@@ -62,7 +62,6 @@
                             <core:Item key="N3" text="N3" id="N3"/>
                         </items>
                     </ComboBox>
-<!--                    <Input value="{extension/1/valueString}" enabled="{appState>/editMode}" />-->
                     <Input value="{note/0/text}" enabled="{appState>/editMode}" />
                     <ComboBox items="{/Practitioner}" selectedKey="{informationSource/reference}" enabled="{appState>/editMode}">
                         <core:Item key="Practitioner/{id}" text="{name/0/given/0} {name/0/family}" />

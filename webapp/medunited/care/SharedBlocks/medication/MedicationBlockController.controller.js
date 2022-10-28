@@ -8,8 +8,9 @@ sap.ui.define([
     "sap/ui/core/Item",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
-    "sap/m/ColumnListItem"
-], function (AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, MessageToast, MessageBox, ColumnListItem) {
+    "sap/m/ColumnListItem",
+	"sap/ui/model/ChangeReason"
+], function (AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, MessageToast, MessageBox, ColumnListItem, ChangeReason) {
     "use strict";
 
     return AbstractController.extend("medunited.care.SharedBlocks.medication.MedicationBlockController", {
@@ -88,9 +89,7 @@ sap.ui.define([
                 }
                 dLastDouble = oMedicationStatement.resource.extension[2].valueDecimal+1;
             }
-            oData.entry = oData.entry.sort(function compareFn(a, b) {
-                return a.resource.extension[2].valueDecimal - b.resource.extension[2].valueDecimal;
-            })
+            this.sortMedicationBySecondExtension();
         },
         onPatientRouteMatched: function (oEvent) {
             var sPatientId = oEvent.getParameter("arguments").patient;
@@ -105,8 +104,55 @@ sap.ui.define([
             oBinding.filter(aFilters);
         },
         addMedication: function () {
-            var sPatientId = this.byId("medicationTable").getBindingContext().getPath().split("/")[2];
-            var sMedicationStatementId = this.getView().getModel().create("MedicationStatement", { subject: { reference: "Patient/" + sPatientId } }, "patientDetails");
+            let sPatientId = this.byId("medicationTable").getBindingContext().getPath().split("/")[2];
+
+            let dLastDouble = 1;
+            const oItems = this.byId("medicationTable").getItems();
+            if(oItems.length > 0) {
+                dLastDouble = parseInt(oItems[0].getBindingContext().getProperty("extension/2/valueDecimal"))+1;
+            }
+            const oModel = this.getView().getModel();
+            // If there is a Practitioner with the same name like the JWT token take it
+            oModel.sendGetRequest("/Practitioner", {
+                "urlParameters": {
+                    "family" : this.getView().getModel("JWT").getProperty("/family_name"),
+                    "given" : this.getView().getModel("JWT").getProperty("/given_name")
+                },
+                "success" : (aPractitioner) => {
+                    // If there is only one pharmacy it should be selected
+                    oModel.sendGetRequest("/Organization", {
+						"success" : (aOrganization) => {
+                            const oMedicationStatement = {
+                                extension: [{"valueString":"1"},
+                                {"valueString":undefined},
+                                {"valueDecimal":dLastDouble}],
+                                subject: { reference: "Patient/" + sPatientId }
+                            };
+                            if(aPractitioner.entry.length == 1) {
+                                oMedicationStatement.informationSource = {
+                                    reference: "Practitioner/"+aPractitioner.entry[0].resource.id
+                                };
+                            }
+                            if(aOrganization.entry.length == 1) {
+                                oMedicationStatement.derivedFrom = [{
+                                    reference: "Organization/"+aOrganization.entry[0].resource.id
+                                }];
+                            }
+                            let sMedicationStatementId = oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
+						},
+						"error" : (e) => {
+							MessageBox.show(this.translate("msgSavedFailed", [e.code, e.message]));
+							console.log(e.stack);
+						}
+					});
+                },
+                "error" : (e) => {
+                    MessageBox.show(this.translate("msgSavedFailed", [e.code, e.message]));
+                    console.log(e.stack);
+                }
+            });
+
+            
         },
         deleteMedication: function () {
             const aResources = this.byId("medicationTable").getSelectedItems().map(oItem => oItem.getBindingContext().getPath());
@@ -117,6 +163,7 @@ sap.ui.define([
 
             oModel.submitChanges(function () {
                 MessageToast.show(me.translate("msgCountDeleted", iCount));
+                me.byId("medicationTable").getBinding("items").refresh();
             }.bind(this), function (oError) {
                 MessageBox.show(me.translate("msgDeleteFailed", [oError.statusCode, oError.statusText]));
             });
@@ -207,34 +254,50 @@ sap.ui.define([
                     return iRank / 2;
                 }
             };
-			var iNewRank = oRanking.Default;
-			var oDroppedItem = oEvent.getParameter("droppedControl");
+			let iNewRank = oRanking.Default;
+			const oDroppedItem = oEvent.getParameter("droppedControl");
 
 			if (oDroppedItem instanceof ColumnListItem) {
 				// get the dropped row data
-				var sDropPosition = oEvent.getParameter("dropPosition");
-				var oDroppedItemContext = oDroppedItem.getBindingContext();
-				var iDroppedItemRank = oDroppedItemContext.getProperty("extension/2/valueDecimal");
-				var oDroppedTable = oDroppedItem.getParent();
-				var iDroppedItemIndex = oDroppedTable.indexOfItem(oDroppedItem);
+				const sDropPosition = oEvent.getParameter("dropPosition");
+				const oDroppedItemContext = oDroppedItem.getBindingContext();
+				const iDroppedItemRank = oDroppedItemContext.getProperty("extension/2/valueDecimal");
+				const oDroppedTable = oDroppedItem.getParent();
+				const iDroppedItemIndex = oDroppedTable.indexOfItem(oDroppedItem);
 
 				// find the new index of the dragged row depending on the drop position
-				var iNewItemIndex = iDroppedItemIndex + (sDropPosition === "After" ? 1 : -1);
-				var oNewItem = oDroppedTable.getItems()[iNewItemIndex];
+				const iNewItemIndex = iDroppedItemIndex + (sDropPosition === "After" ? 1 : -1);
+				const oNewItem = oDroppedTable.getItems()[iNewItemIndex];
 				if (!oNewItem) {
 					// dropped before the first row or after the last row
 					iNewRank = oRanking[sDropPosition](iDroppedItemRank);
 				} else {
 					// dropped between first and the last row
-					var oNewItemContext = oNewItem.getBindingContext();
+					const oNewItemContext = oNewItem.getBindingContext();
 					iNewRank = oRanking.Between(iDroppedItemRank, oNewItemContext.getProperty("extension/2/valueDecimal"));
 				}
 			}
 
-			// set the rank property and update the model to refresh the bindings
-			var oSelectedProductsTable = this.byId("medicationTable");
-			var oProductsModel = oSelectedProductsTable.getModel();
-			oProductsModel.setProperty("extension/2/valueDecimal", iNewRank, oDraggedItemContext);
+            const oModel = this.getView().getModel();
+			oModel.setProperty("extension/2/valueDecimal", iNewRank, oDraggedItemContext);
+            
+            this.sortMedicationBySecondExtension();
+            
+        },
+        sortMedicationBySecondExtension : function() {
+            // set the rank property and update the model to refresh the bindings
+            const oMedicationTable = this.byId("medicationTable");
+            const oBinding = oMedicationTable.getBinding("items");
+            const aKeys = oMedicationTable.getItems().sort(function compareFn(a, b) {
+                const aValueDecimal = a.getBindingContext().getProperty("extension/2/valueDecimal");
+                const bValueDecimal = b.getBindingContext().getProperty("extension/2/valueDecimal");
+                return bValueDecimal - aValueDecimal;
+            }).map((oItem) => oItem.getBindingContext().getPath().substr(1));
+    
+            oBinding.aKeys = aKeys;
+            oBinding.aKeysServerState = aKeys;
+            oBinding._fireChange({reason: ChangeReason.Change});
+
         }
     });
 });

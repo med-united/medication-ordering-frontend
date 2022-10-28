@@ -23,7 +23,13 @@ sap.ui.define([
 			if (!oMedicationStatement) {
 				return "";
 			}
-			const aMedicationStatementForPatient = Object.values(oMedicationStatement).filter(aMS => aMS.subject && aMS.subject.reference === "Patient/" + sId);
+			const aMedicationStatementForPatient = Object.values(oMedicationStatement)
+				.filter(aMS => aMS.subject && aMS.subject.reference === "Patient/" + sId)
+				.sort(function compareFn(a, b) {
+					const aValueDecimal = a?.extension[2]?.valueDecimal;
+					const bValueDecimal = b?.extension[2]?.valueDecimal;
+					return bValueDecimal - aValueDecimal;
+				});
 			return this.getMedicationPlanXml(oPatient, aMedicationStatementForPatient);
 		},
 		getMedicationPlanXml: function (oPatient, aMedicationStatementForPatient) {
