@@ -77,8 +77,8 @@ sap.ui.define([
 					if (nachtsDosage == "") {
 						nachtsDosage = "0"
 					}
-					if (/^\d+$/.test(morgensDosage.trim()) && /^\d+$/.test(mittagsDosage.trim()) && /^\d+$/.test(abendsDosage.trim()) && /^\d+$/.test(nachtsDosage.trim())) {
-						let newDosageValue = parseInt(morgensDosage.trim(), 10) + "-" + parseInt(mittagsDosage.trim(), 10) + "-" + parseInt(abendsDosage.trim(), 10) + "-" + parseInt(nachtsDosage.trim(), 10)
+					if (/^\d+(,\d+)?$/.test(morgensDosage.trim()) && /^\d+(,\d+)?$/.test(mittagsDosage.trim()) && /^\d+(,\d+)?$/.test(abendsDosage.trim()) && /^\d+(,\d+)?$/.test(nachtsDosage.trim())) {
+						let newDosageValue = morgensDosage.trim() + "-" + mittagsDosage.trim() + "-" + abendsDosage.trim() + "-" + nachtsDosage.trim();
 						oModel.setProperty("/MedicationStatement/" + i + "/dosage/0/text", newDosageValue)
 					}
 					else {
