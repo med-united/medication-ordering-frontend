@@ -7,8 +7,9 @@ sap.ui.define([
     "../../search/MedicationSearchProvider",
     "sap/ui/core/Item",
     "sap/m/MessageToast",
-    "sap/m/MessageBox"
-], function (AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, MessageToast, MessageBox) {
+    "sap/m/MessageBox",
+    "sap/m/ColumnListItem"
+], function (AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, MessageToast, MessageBox, ColumnListItem) {
     "use strict";
 
     return AbstractController.extend("medunited.care.SharedBlocks.medication.MedicationBlockController", {
@@ -47,6 +48,8 @@ sap.ui.define([
 			if(!oData.entry || oData.entry.length == 0) {
 				return;
 			}
+            let dLastDouble = 0.0;
+
 			for(let oMedicationStatement of oData.entry) {
 				if(!oMedicationStatement.resource.identifier) {
                     oMedicationStatement.resource.identifier = [
@@ -61,10 +64,14 @@ sap.ui.define([
                 if(!oMedicationStatement.resource.extension) {
                     oMedicationStatement.resource.extension = [
                         {"valueString":undefined},
-                        {"valueString":undefined}
+                        {"valueString":undefined},
+                        {"valueDecimal":dLastDouble}
                     ];
                 } else if(oMedicationStatement.resource.extension.length == 1) {
                     oMedicationStatement.resource.extension.push({"valueString":undefined});
+                    oMedicationStatement.resource.extension.push({"valueDecimal":dLastDouble});
+                } else if(oMedicationStatement.resource.extension.length == 2) {
+                    oMedicationStatement.resource.extension.push({"valueDecimal":dLastDouble});
                 }
                 if(!oMedicationStatement.resource.note) {
                     oMedicationStatement.resource.note = [
@@ -79,7 +86,11 @@ sap.ui.define([
                         {"reference":undefined}
                     ];
                 }
+                dLastDouble = oMedicationStatement.resource.extension[2].valueDecimal+1;
             }
+            oData.entry = oData.entry.sort(function compareFn(a, b) {
+                return a.resource.extension[2].valueDecimal - b.resource.extension[2].valueDecimal;
+            })
         },
         onPatientRouteMatched: function (oEvent) {
             var sPatientId = oEvent.getParameter("arguments").patient;
@@ -174,6 +185,56 @@ sap.ui.define([
             var source = oEvent.getSource();
             source.getModel().setProperty(source.getBindingContext().getPath("medicationCodeableConcept/text"), medicationName);
             source.getModel().setProperty(source.getBindingContext().getPath("identifier/0/value"), medicationPZN);
+        },
+        onDropSelectedMedicationTable: function(oEvent) {
+            var oDraggedItem = oEvent.getParameter("draggedControl");
+			var oDraggedItemContext = oDraggedItem.getBindingContext();
+			if (!oDraggedItemContext) {
+				return;
+			}
+
+			var oRanking = {
+                Initial: 0,
+                Default: 1024,
+                Before: function(iRank) {
+                    return iRank + 1024;
+                },
+                Between: function(iRank1, iRank2) {
+                    // limited to 53 rows
+                    return (iRank1 + iRank2) / 2;
+                },
+                After: function(iRank) {
+                    return iRank / 2;
+                }
+            };
+			var iNewRank = oRanking.Default;
+			var oDroppedItem = oEvent.getParameter("droppedControl");
+
+			if (oDroppedItem instanceof ColumnListItem) {
+				// get the dropped row data
+				var sDropPosition = oEvent.getParameter("dropPosition");
+				var oDroppedItemContext = oDroppedItem.getBindingContext();
+				var iDroppedItemRank = oDroppedItemContext.getProperty("extension/2/valueDecimal");
+				var oDroppedTable = oDroppedItem.getParent();
+				var iDroppedItemIndex = oDroppedTable.indexOfItem(oDroppedItem);
+
+				// find the new index of the dragged row depending on the drop position
+				var iNewItemIndex = iDroppedItemIndex + (sDropPosition === "After" ? 1 : -1);
+				var oNewItem = oDroppedTable.getItems()[iNewItemIndex];
+				if (!oNewItem) {
+					// dropped before the first row or after the last row
+					iNewRank = oRanking[sDropPosition](iDroppedItemRank);
+				} else {
+					// dropped between first and the last row
+					var oNewItemContext = oNewItem.getBindingContext();
+					iNewRank = oRanking.Between(iDroppedItemRank, oNewItemContext.getProperty("extension/2/valueDecimal"));
+				}
+			}
+
+			// set the rank property and update the model to refresh the bindings
+			var oSelectedProductsTable = this.byId("medicationTable");
+			var oProductsModel = oSelectedProductsTable.getModel();
+			oProductsModel.setProperty("extension/2/valueDecimal", iNewRank, oDraggedItemContext);
         }
     });
 });
