@@ -161,12 +161,12 @@ sap.ui.define([
             const me = this;
             oModel.remove(aResources);
 
-            oModel.submitChanges(function () {
+            /*oModel.submitChanges(function () {
                 MessageToast.show(me.translate("msgCountDeleted", iCount));
                 me.byId("medicationTable").getBinding("items").refresh();
             }.bind(this), function (oError) {
                 MessageBox.show(me.translate("msgDeleteFailed", [oError.statusCode, oError.statusText]));
-            });
+            });*/
         },
         onSuggestMedicationName: function (oEvent) {
             var sTerm = oEvent.getParameter("suggestValue");
