@@ -46,7 +46,7 @@ sap.ui.define([
 						continue;
 					}
 					const pzn = (oMedicationStatement.identifier && oMedicationStatement.identifier.length > 0) ? oMedicationStatement.identifier[0].value : "";
-					sXML += "    <M p=\"" + (pzn ? pzn : "") + "\" ";
+					sXML += "    <M"+ (pzn ? " p=\""+pzn+"\"" : "") + " ";
 					if(oMedicationStatement && oMedicationStatement.medicationCodeableConcept) {
 						const medicationName = oMedicationStatement.medicationCodeableConcept.text;
 						if (medicationName) {
