@@ -26,8 +26,8 @@ sap.ui.define([
 			const aMedicationStatementForPatient = Object.values(oMedicationStatement)
 				.filter(aMS => aMS.subject && aMS.subject.reference === "Patient/" + sId)
 				.sort(function compareFn(a, b) {
-					const aValueDecimal = a?.extension[2]?.valueDecimal;
-					const bValueDecimal = b?.extension[2]?.valueDecimal;
+					const aValueDecimal = a?.extension ? a?.extension[2]?.valueDecimal : 0;
+					const bValueDecimal = b?.extension ? b?.extension[2]?.valueDecimal : 0;
 					return bValueDecimal - aValueDecimal;
 				});
 			return this.getMedicationPlanXml(oPatient, aMedicationStatementForPatient);
