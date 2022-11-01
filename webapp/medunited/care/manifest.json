@@ -236,7 +236,16 @@
 					"pattern": "request/:layout:",
 					"name": "request-master",
 					"target": [
-						"request-master"
+						"request-master",
+						"request-detail"
+					]
+				},
+				{
+					"pattern": "request/{request}/{layout}",
+					"name": "request-detail",
+					"target": [
+						"request-master",
+						"request-detail"
 					]
 				},
 				{
@@ -301,6 +310,11 @@
 				"request-master": {
 					"viewName": "request/Master",
 					"controlAggregation": "beginColumnPages",
+					"clearControlAggregation": true
+				},
+				"request-detail": {
+					"viewName": "request/Detail",
+					"controlAggregation": "midColumnPages",
 					"clearControlAggregation": true
 				},
 				"organization-master": {

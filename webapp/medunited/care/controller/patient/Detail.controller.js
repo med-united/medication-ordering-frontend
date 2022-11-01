@@ -67,7 +67,9 @@ sap.ui.define([
 							3: "h"
 						};
 						for (let i = 0; i < aDosage.length; i++) {
-							sXML += mDosage[i] + "=\"" + aDosage[i] + "\" ";
+							if(parseFloat(aDosage[i].replaceAll(/,/g, ".")) > 0) {
+								sXML += mDosage[i] + "=\"" + aDosage[i].replaceAll(/,/g, ".") + "\" ";
+							}
 						}
 					}
 					const vNote = oMedicationStatement.note;
@@ -206,6 +208,87 @@ sap.ui.define([
 				text = await navigator.clipboard.readText();
 			}
 			alert("Das folgende XML wurde in die Zwischenablage kopiert:\n\n" + XMLOfDataMatrixCode)
+		},
+		validateResource: function () {
+			const oModel = this.getView().getModel();
+			let medicationStatementsOfPatient = this.getMedicationStatementsOfPatient(this._entity);
+            for (let i of medicationStatementsOfPatient) {
+				// Validate PZNs
+				let pznValue = oModel.getProperty("/MedicationStatement/" + i + "/identifier/0/value");
+				oModel.setProperty("/MedicationStatement/" + i + "/identifier/0/value", parseInt(pznValue, 10));
+				// Validate Dosages
+				let dosageValue = oModel.getProperty("/MedicationStatement/" + i + "/dosage/0/text");
+				if (dosageValue === "" || dosageValue == null || dosageValue.trim().length === 0) {
+					MessageBox.error(this.translate("msgAtLeastOneOfTheDosagesWasNotSpecified"), {
+						title: this.translate("msgErrorTitle"),
+						onClose: null,
+						styleClass: "",
+						actions: sap.m.MessageBox.Action.CLOSE,
+						emphasizedAction: null,
+						initialFocus: null,
+						textDirection: sap.ui.core.TextDirection.Inherit
+					});
+					return false;
+				}
+				else if (dosageValue !== "" && dosageValue.trim().length > 0 && dosageValue.includes("-") && dosageValue.match(/-/g).length == 3) {
+					let morgensDosage = dosageValue.split("-")[0].replace(/\s/g, "");
+					let mittagsDosage = dosageValue.split("-")[1].replace(/\s/g, "");
+					let abendsDosage = dosageValue.split("-")[2].replace(/\s/g, "");
+					let nachtsDosage = dosageValue.split("-")[3].replace(/\s/g, "");
+					if (morgensDosage == "") {
+						morgensDosage = "0";
+					}
+					if (mittagsDosage == "") {
+						mittagsDosage = "0";
+					}
+					if (abendsDosage == "") {
+						abendsDosage = "0";
+					}
+					if (nachtsDosage == "") {
+						nachtsDosage = "0";
+					}
+					if (/^\d+(,\d+)?$/.test(morgensDosage.trim()) && /^\d+(,\d+)?$/.test(mittagsDosage.trim()) && /^\d+(,\d+)?$/.test(abendsDosage.trim()) && /^\d+(,\d+)?$/.test(nachtsDosage.trim())) {
+						let newDosageValue = morgensDosage.trim() + "-" + mittagsDosage.trim() + "-" + abendsDosage.trim() + "-" + nachtsDosage.trim();
+						oModel.setProperty("/MedicationStatement/" + i + "/dosage/0/text", newDosageValue);
+					}
+					else {
+						MessageBox.error(this.translate("msgAtLeastOneOfTheDosagesContainsCharactersThatAreNotDigits"), {
+							title: this.translate("msgErrorTitle"),
+							onClose: null,
+							styleClass: "",
+							actions: sap.m.MessageBox.Action.CLOSE,
+							emphasizedAction: null,
+							initialFocus: null,
+							textDirection: sap.ui.core.TextDirection.Inherit
+						});
+						return false;
+					}
+				}
+				else {
+					MessageBox.error(this.translate("msgAtLeastOneOfTheDosagesDoesNotHaveTheRightFormat"), {
+						title: this.translate("msgErrorTitle"),
+						onClose: null,
+						styleClass: "",
+						actions: sap.m.MessageBox.Action.CLOSE,
+						emphasizedAction: null,
+						initialFocus: null,
+						textDirection: sap.ui.core.TextDirection.Inherit
+					});
+					return false;
+				}
+			}
+			return true;
+		},
+		getMedicationStatementsOfPatient: function (patientId) {
+			let oModel = this.getView().getModel();
+			let medicationStatements = oModel.getProperty("/MedicationStatement");
+			let medicationStatementsOfPatient = [];
+			for (let medStat in medicationStatements) {
+				if (oModel.getProperty("/MedicationStatement/" + medStat + "/subject/reference") == "Patient/" + patientId) {
+					medicationStatementsOfPatient.push(medStat);
+				}
+			}
+			return medicationStatementsOfPatient;
 		}
 	});
 }, true);

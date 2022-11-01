@@ -1,7 +1,4 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:dnd="sap.ui.core.dnd" controllerName="medunited.care.SharedBlocks.medication.MedicationBlockController">
-    <HBox justifyContent="End" class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
-        <Link text="Medikation hinzufügen" press="addMedication" />
-    </HBox>
     <Table id="medicationTable" items="{
             path: '/MedicationStatement',
             events: {
@@ -73,7 +70,11 @@
             </ColumnListItem>
         </items>
     </Table>
-    <HBox justifyContent="End" class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
-        <Link text="Medikation löschen" press="deleteMedication" />
-    </HBox>
+    <VBox class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
+        <OverflowToolbar>
+            <Button icon="sap-icon://delete" tooltip="Selektierte Medikation löschen" press="deleteMedication" />
+            <ToolbarSpacer />
+            <Button icon="sap-icon://add" tooltip="Medikation hinzufügen" press="addMedication" />
+        </OverflowToolbar>
+    </VBox>
 </mvc:View>

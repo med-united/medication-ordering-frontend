@@ -23,6 +23,7 @@
             class="sapFDynamicPageAlignContent"
             width="auto"
             growing="true"
+            growingScrollToLoad="true"
             autoPopinMode="true"
             hiddenInPopin="Low"
         >

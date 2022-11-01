@@ -53,6 +53,11 @@ sap.ui.define([
 			// Save the current route name
 			this.currentRouteName = sRouteName;
 			this.entityName = sRouteName.split("-")[0];
+			if(this.entityName == "home") {
+				this.byId("iconTabHeader").setSelectedKey("patient-master");
+			} else {
+				this.byId("iconTabHeader").setSelectedKey(this.entityName+"-master");
+			}
 			this.currentEntity = oArguments[this.entityName];
 		},
 		onStateChanged: function (oEvent) {

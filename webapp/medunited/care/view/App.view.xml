@@ -32,7 +32,7 @@
 				<customHeader>
 					<tnt:ToolHeader>
 						<ToolbarSpacer width="3rem" />
-						<IconTabHeader mode="Inline" selectedKey="patient-master" select=".changeTab">
+						<IconTabHeader id="iconTabHeader" mode="Inline" select=".changeTab">
 							<items>
 								<IconTabFilter key="patient-master" text="{i18n>patientsTabFilter}" />
 								<IconTabFilter key="medication-master" text="{i18n>medicationTabFilter}" />

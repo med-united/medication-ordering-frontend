@@ -222,8 +222,10 @@ sap.ui.define([
 						},
 						authoredOn: requestedOn,
 						extension: [{
+							url: "https://med-united.health/medication-name",
 							valueString: that.getView().getModel().getProperty(plan).medicationCodeableConcept.text
 						}, {
+							url: "https://med-united.health/pharmacy",
 							valueString: that.getView().getModel().getProperty(plan).derivedFrom[0].reference
 						}],
 					};

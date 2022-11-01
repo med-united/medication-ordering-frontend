@@ -22,7 +22,11 @@ sap.ui.define([
 		},
 		getFilter: function (sQuery) {
 			return [new Filter({
-				filters: [
+				filters: sQuery.match(".* .*") ?[
+					// OR filter does not work
+					new Filter("given", FilterOperator.Contains, sQuery.split(" ")[0]),
+					new Filter("family", FilterOperator.Contains, sQuery.split(" ")[1])
+				] : [
 					// OR filter does not work
 					//new Filter("given", FilterOperator.Contains, sQuery),
 					new Filter("family", FilterOperator.Contains, sQuery)

@@ -18,10 +18,11 @@
 							'MedicationRequest:intended-performer']
 						}
 					},
+                    sorter: {path: 'authoredon', descending: true},
                     events: {
                         dataReceived: '.onDataReceivedReceiveMissingPharmacies'
                     }
-                }" class="sapFDynamicPageAlignContent" width="auto" growing="true" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
+                }" class="sapFDynamicPageAlignContent" width="auto" growingScrollToLoad="true" growingThreshold="25" autoPopinMode="true" mode="MultiSelect" selectionChange="onSelectionChange">
                 <headerToolbar>
                     <OverflowToolbar>
                         <ToolbarSpacer />
@@ -59,7 +60,7 @@
                     </Column>
                 </columns>
                 <items>
-                    <ColumnListItem>
+                    <ColumnListItem type="Navigation" press="onListItemPress">
                         <cells>
                             <Text text="{path: 'subject/reference', formatter: '.referencePatient'}" />
                             <Text text="{path: 'performer/reference', formatter: '.referencePractitioner'}" />
