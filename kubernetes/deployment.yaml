@@ -44,7 +44,7 @@ spec:
   selector:
     app: care
   ports:
-    - port: 8080
+    - port: 80
 
 ---
 
@@ -69,5 +69,5 @@ spec:
             service:
               name: care
               port:
-                number: 8080
+                number: 80
   
