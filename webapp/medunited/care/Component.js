@@ -3,8 +3,13 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/f/FlexibleColumnLayoutSemanticHelper",
 	"sap/fhir/model/r4/FHIRListBinding",
-	"sap/fhir/model/r4/FHIRModel"
-], function (UIComponent, JSONModel, FlexibleColumnLayoutSemanticHelper, FHIRListBinding, FHIRModel) {
+	"sap/fhir/model/r4/FHIRModel",
+	"sap/fhir/model/r4/FHIRUtils",
+	"sap/fhir/model/r4/lib/FHIRRequestor",
+	"sap/fhir/model/r4/SubmitMode",
+	"sap/fhir/model/r4/lib/HTTPMethod",
+	"sap/fhir/model/r4/lib/RequestHandle"
+], function (UIComponent, JSONModel, FlexibleColumnLayoutSemanticHelper, FHIRListBinding, FHIRModel, FHIRUtils, FHIRRequestor, SubmitMode, HTTPMethod, RequestHandle) {
 	"use strict";
 
 	return UIComponent.extend("medunited.care.Component", {
@@ -15,7 +20,7 @@ sap.ui.define([
 		},
 
 		init: function () {
-			this.fixPagingOfFhirModel();
+			this.fixPagingAndAggregateSameQueriesOfFhirModel();
 			UIComponent.prototype.init.apply(this, arguments);
 
 			this.getModel().setSizeLimit(25);
@@ -68,7 +73,7 @@ sap.ui.define([
 		afterAuthenticated: function() {
 		},
 
-		fixPagingOfFhirModel: function () {
+		fixPagingAndAggregateSameQueriesOfFhirModel: function () {
 
 			FHIRModel.prototype._createRequestInfo = function (sMethod, sUrl) {
 				const oRequestInfo = {
@@ -192,6 +197,57 @@ sap.ui.define([
 				this._buildContexts(iLength);
 				return this.aContexts;
 			};
+
+			FHIRRequestor.prototype._request = function(sMethod, sPath, bForceDirectCall, mParameters, sGroupId, mHeaders, oPayload, fnSuccess, fnError, oBinding, bManualSubmit) {
+				if (!FHIRUtils.isRequestable(sPath) && !bForceDirectCall){
+					return undefined;
+				}
+				var oRequestHandle;
+				// it's a bundle (Batch or Transaction)
+				if (!bForceDirectCall && this._getGroupSubmitMode(sGroupId) !== SubmitMode.Direct) {
+					var oFHIRBundle = this._getBundleByGroup(sGroupId);
+					var oUri = this._getGroupUri(sGroupId);
+					
+					var oFHIRBundleEntry = this._createBundleEntry(sMethod, sPath, mParameters, oPayload, fnSuccess, fnError, oBinding, oUri);
+
+					let bFound = false;
+					if(sMethod === "GET") {
+						// try to find if there is already a request for this resource
+						var aBundleEntriesData = [];
+						for (var i = 0; i < oFHIRBundle._aBundleEntries.length; i++) {
+							const oFHIRBundleEntryInQueue = oFHIRBundle._aBundleEntries[i];
+							if(oFHIRBundleEntryInQueue.getRequest()._sMethod === "GET" && oFHIRBundleEntryInQueue.getRequest()._sUrl === oFHIRBundleEntry.getRequest()._sUrl) {
+								bFound = true;
+								const oldSuccess = oFHIRBundleEntryInQueue.getRequest()._fnSuccess;
+								oFHIRBundleEntryInQueue.getRequest()._fnSuccess = function() {
+									oldSuccess.apply(this, arguments);
+									oFHIRBundleEntry.getRequest().executeSuccessCallback.apply(oFHIRBundleEntry.getRequest(), arguments);
+								}
+							}
+						}
+					}
+					if(!bFound) {
+						oFHIRBundle.addBundleEntry(oFHIRBundleEntry);
+					}
+					if (bManualSubmit){
+						this._mBundleQueue[sGroupId] = oFHIRBundle;
+						return oFHIRBundle;
+					} else {
+						oRequestHandle = this._mBundleQueue[sGroupId];
+						if (oRequestHandle && oRequestHandle instanceof RequestHandle){
+							oRequestHandle.getRequest().abort();
+						}
+						oRequestHandle = this._sendBundle(oFHIRBundle);
+						this._mBundleQueue[sGroupId] = oRequestHandle;
+						return oRequestHandle;
+					}
+				}
+		
+				// it's a direct call
+				oRequestHandle = this._sendRequest(sMethod, sPath, mParameters, mHeaders, sMethod === HTTPMethod.PUT || sMethod == HTTPMethod.POST ? oPayload : undefined, fnSuccess, fnError, oBinding);
+				return oRequestHandle;
+			};
+
 		},
 
 		/**
