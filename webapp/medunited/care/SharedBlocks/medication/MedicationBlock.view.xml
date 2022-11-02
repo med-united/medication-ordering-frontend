@@ -1,8 +1,11 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" controllerName="medunited.care.SharedBlocks.medication.MedicationBlockController">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:p13n="sap.m.p13n" xmlns:ce="sap.ui.codeeditor" xmlns:sap.ui.fl="sap.ui.fl" xmlns:sap.ui.dt="sap.ui.dt" xmlns:vm="sap.ui.fl.variants" xmlns="sap.m" controllerName="medunited.care.SharedBlocks.medication.MedicationBlockController">
     <HBox justifyContent="End" class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
         <Link text="Medikation hinzufügen" press="addMedication" />
     </HBox>
-    <Table id="medicationTable" items="{
+
+    <vm:VariantManagement for="medicationTable"/>
+
+    <Table id="medicationTable" sap.ui.fl:flexibility="sap/m/flexibility/EngineFlex" items="{
             path: '/MedicationStatement',
             events: {
                 dataReceived: '.onDataReceivedAsureStructure'
@@ -11,59 +14,65 @@
                 request: { _include: 'MedicationStatement:medication'}
             }
         }" mode="{= ${appState>/editMode} ? 'MultiSelect' : 'None'}" autoPopinMode="true">
+        <headerToolbar>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer/>
+                    <Button icon="sap-icon://action-settings" press="openPersoDialog" />
+                </content>
+            </Toolbar>
+        </headerToolbar>
         <columns>
-            <Column hAlign="Left" width="18%" importance="High">
+            <Column visible="true" id="medicationName" hAlign="Left" width="18%" importance="High">
                 <Text text="{i18n>columnLabelMedicationName}" />
             </Column>
-            <Column hAlign="Left" width="11%" importance="Low">
+            <Column visible="false" id="medicationEffectiveDate" hAlign="Left" width="11%" importance="Low">
                 <Text text="{i18n>columnLabelMedicationEffectiveDate}" />
             </Column>
-            <Column hAlign="Left" width="10%" importance="High">
+            <Column id="medicationPZN" hAlign="Left" width="10%" importance="High">
                 <Text text="{i18n>columnLabelMedicationPZN}" />
             </Column>
-            <Column hAlign="Left" width="10%" importance="High">
+            <Column id="medicationDosage" hAlign="Left" width="10%" importance="High">
                 <Text text="{i18n>columnLabelMedicationDosage}" />
             </Column>
-            <Column hAlign="Left" width="8%" importance="Medium">
+            <Column id="medicationSize" hAlign="Left" width="8%" importance="Medium">
                 <Text text="{i18n>medicationSize}" />
             </Column>
-            <Column hAlign="Left" width="11%" importance="Medium">
+            <Column id="medicationStandardSize" hAlign="Left" width="11%" importance="Medium">
                 <Text text="{i18n>standardSize}" />
             </Column>
-            <Column hAlign="Left" width="8%" importance="Medium">
+            <Column id="medicationNote" hAlign="Left" width="8%" importance="Medium">
                 <Text text="{i18n>columnLabelMedicationNote}" />
             </Column>
-            <Column hAlign="Left" width="12%" importance="Medium">
+            <Column visible="false" id="medicationPractitioner" hAlign="Left" width="12%" importance="Medium">
                 <Text text="{i18n>columnLabelPractitioner}" />
             </Column>
-            <Column hAlign="Left" width="12%" importance="Medium">
+            <Column visible="false" id="medicationPharmacy" hAlign="Left" width="12%" importance="Medium">
                 <Text text="{i18n>columnLabelPharmacy}" />
             </Column>
         </columns>
         <items>
             <ColumnListItem>
-                <cells>
-                    <Input value="{medicationCodeableConcept/text}" showSuggestion="true" suggest=".onSuggestMedicationName" suggestionItemSelected=".onSuggestionMedicationNameSelected" enabled="{appState>/editMode}" />
-                    <DatePicker value="{path: 'effectiveDateTime', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyy-MM-dd'}}}" enabled="{appState>/editMode}" />
-                    <Input value="{identifier/0/value}" showSuggestion="true" suggest=".onSuggestPZN" suggestionItemSelected=".onSuggestionPZNSelected" enabled="{appState>/editMode}" />
-                    <Input value="{dosage/0/text}" enabled="{appState>/editMode}" />
-                    <Input value="{extension/0/valueString}" enabled="{appState>/editMode}" />
-                    <ComboBox selectedKey="{extension/1/valueString}" enabled="{appState>/editMode}">
-                        <items>
-                            <core:Item key="N1" text="N1" id="N1"/>
-                            <core:Item key="N2" text="N2" id="N2"/>
-                            <core:Item key="N3" text="N3" id="N3"/>
-                        </items>
-                    </ComboBox>
+                <Input value="{medicationCodeableConcept/text}" showSuggestion="true" suggest=".onSuggestMedicationName" suggestionItemSelected=".onSuggestionMedicationNameSelected" enabled="{appState>/editMode}" />
+                <DatePicker value="{path: 'effectiveDateTime', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyy-MM-dd'}}}" enabled="{appState>/editMode}" />
+                <Input value="{identifier/0/value}" showSuggestion="true" suggest=".onSuggestPZN" suggestionItemSelected=".onSuggestionPZNSelected" enabled="{appState>/editMode}" />
+                <Input value="{dosage/0/text}" enabled="{appState>/editMode}" />
+                <Input value="{extension/0/valueString}" enabled="{appState>/editMode}" />
+                <ComboBox selectedKey="{extension/1/valueString}" enabled="{appState>/editMode}">
+                    <items>
+                        <core:Item key="N1" text="N1" id="N1"/>
+                        <core:Item key="N2" text="N2" id="N2"/>
+                        <core:Item key="N3" text="N3" id="N3"/>
+                    </items>
+                </ComboBox>
 <!--                    <Input value="{extension/1/valueString}" enabled="{appState>/editMode}" />-->
-                    <Input value="{note/0/text}" enabled="{appState>/editMode}" />
-                    <ComboBox items="{/Practitioner}" selectedKey="{informationSource/reference}" enabled="{appState>/editMode}">
-                        <core:Item key="Practitioner/{id}" text="{name/0/given/0} {name/0/family}" />
-                    </ComboBox>
-                    <ComboBox items="{/Organization}" selectedKey="{derivedFrom/0/reference}" enabled="{appState>/editMode}">
-                        <core:Item key="Organization/{id}" text="{name}" />
-                    </ComboBox>
-                </cells>
+                <Input value="{note/0/text}" enabled="{appState>/editMode}" />
+                <ComboBox items="{/Practitioner}" selectedKey="{informationSource/reference}" enabled="{appState>/editMode}">
+                    <core:Item key="Practitioner/{id}" text="{name/0/given/0} {name/0/family}" />
+                </ComboBox>
+                <ComboBox items="{/Organization}" selectedKey="{derivedFrom/0/reference}" enabled="{appState>/editMode}">
+                    <core:Item key="Organization/{id}" text="{name}" />
+                </ComboBox>
             </ColumnListItem>
         </items>
     </Table>
