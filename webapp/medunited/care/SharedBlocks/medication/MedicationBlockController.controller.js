@@ -128,12 +128,12 @@ sap.ui.define([
                                 {"valueDecimal":dLastDouble}],
                                 subject: { reference: "Patient/" + sPatientId }
                             };
-                            if(aPractitioner.entry.length == 1) {
+                            if(aPractitioner.entry && aPractitioner.entry.length == 1) {
                                 oMedicationStatement.informationSource = {
                                     reference: "Practitioner/"+aPractitioner.entry[0].resource.id
                                 };
                             }
-                            if(aOrganization.entry.length == 1) {
+                            if(aOrganization.entry && aOrganization.entry.length == 1) {
                                 oMedicationStatement.derivedFrom = [{
                                     reference: "Organization/"+aOrganization.entry[0].resource.id
                                 }];
