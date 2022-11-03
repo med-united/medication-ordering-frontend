@@ -26,6 +26,7 @@ sap.ui.define([
 
             // this is a workaround because the block controller gets initialized after the desired route is matched the first time
             var fnInitialFiltering = function (oEvent) {
+                this.byId("searchFieldForDoctor").setValue("");
                 var oMedicationTable = oEvent.getSource();
                 var oBindingContext = oMedicationTable.getBindingContext();
                 if (oBindingContext) {

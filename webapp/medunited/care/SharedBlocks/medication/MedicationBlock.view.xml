@@ -13,7 +13,7 @@
                 <content>
                     <Button icon="sap-icon://doctor" text="{i18n>groupByDoctor}" press="onPressGroupByDoctor" />
                     <ToolbarSpacer/>
-                    <SearchField id="searchField" search="onSearchForDoctor" placeholder="Filter by Doctor" width="17.5rem" />
+                    <SearchField id="searchFieldForDoctor" search="onSearchForDoctor" placeholder="Filter by Doctor" width="17.5rem" />
                 </content>
             </Toolbar>
         </headerToolbar>
