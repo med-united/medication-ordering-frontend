@@ -12,8 +12,9 @@ sap.ui.define([
 	"sap/ui/model/ChangeReason",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterType",
-    "sap/ui/model/FilterOperator"
-], function (AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, MessageToast, MessageBox, ColumnListItem, ChangeReason, Filter, FilterType, FilterOperator) {
+    "sap/ui/model/FilterOperator",
+    "sap/ui/model/Sorter"
+], function (AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, MessageToast, MessageBox, ColumnListItem, ChangeReason, Filter, FilterType, FilterOperator, Sorter) {
     "use strict";
 
     return AbstractController.extend("medunited.care.SharedBlocks.medication.MedicationBlockController", {
@@ -307,11 +308,11 @@ sap.ui.define([
             //const oBindingContext = oMedicationTable.getBindingContext();
             const sQuery = oEvent.getParameter("query");
             if (sQuery && sQuery.length > 0) {
-                this.getView().byId("medicationTable").attachModelContextChange(this.fnFilteringByDoctor(sQuery).bind(this));
+                this.fnFilteringByDoctor(sQuery);
             }
             else {
                 console.log("empty search")
-                this.getView().byId("medicationTable").attachModelContextChange(this.fnInitialFiltering(oMedicationTable).bind(this));
+                this.fnInitialFiltering(oMedicationTable);
             }
         },
         fnInitialFiltering: function(oMedicationTable) {
@@ -343,6 +344,21 @@ sap.ui.define([
             const oTable = this.getView().byId("medicationTable");
             const oBinding = oTable.getBinding("items");
             oBinding.filter(aFilters);
+        },
+        onPressGroupByDoctor: function() {
+            this.byId("medicationTable").getBinding("items").sort(new Sorter("source", false, (oContext) => {
+                const sPath = oContext.getProperty("informationSource/reference");
+                if(sPath && sPath.match(/^Practitioner/)) {
+                    const oPractitioner = this.getView().getModel().getProperty("/"+oContext.getProperty("informationSource/reference"));
+                    if(oPractitioner && oPractitioner.name && oPractitioner.name[0] && oPractitioner.name[0].given) {
+                        return oPractitioner.name[0].given[0]+" "+oPractitioner.name[0].family;
+                    } else {
+                        return "Unbekannt";
+                    }
+                } else {
+                    return;
+                }
+            }), true);
         }
     });
 });

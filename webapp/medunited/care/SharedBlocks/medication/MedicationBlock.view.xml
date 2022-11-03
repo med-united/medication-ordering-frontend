@@ -11,6 +11,7 @@
         <headerToolbar>
             <Toolbar>
                 <content>
+                    <Button icon="sap-icon://doctor" text="{i18n>groupByDoctor}" press="onPressGroupByDoctor" />
                     <ToolbarSpacer/>
                     <SearchField id="searchField" search="onSearchForDoctor" placeholder="Filter by Doctor" width="17.5rem" />
                 </content>
@@ -80,9 +81,9 @@
     </Table>
     <VBox class="sapUiSmallMarginBottom" visible="{appState>/editMode}">
         <OverflowToolbar>
-            <Button icon="sap-icon://delete" tooltip="Selektierte Medikation löschen" press="deleteMedication" />
+            <Button icon="sap-icon://delete" text="{i18n>deleteMedication}" tooltip="{i18n>deleteMedicationTooltip}" press="deleteMedication" />
             <ToolbarSpacer />
-            <Button icon="sap-icon://add" tooltip="Medikation hinzufügen" press="addMedication" />
+            <Button icon="sap-icon://add" text="{i18n>addMedication}" tooltip="{i18n>addMedication}" press="addMedication" />
         </OverflowToolbar>
     </VBox>
 </mvc:View>
