@@ -8,6 +8,14 @@
                 request: { _include: 'MedicationStatement:medication'}
             }
         }" mode="{= ${appState>/editMode} ? 'MultiSelect' : 'None'}" autoPopinMode="true">
+        <headerToolbar>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer/>
+                    <SearchField id="searchField" search="onSearchForDoctor" placeholder="Filter by Doctor" width="17.5rem" />
+                </content>
+            </Toolbar>
+        </headerToolbar>
         <columns>
             <Column width="28%" importance="High">
                 <Text text="{i18n>columnLabelMedicationName}" />

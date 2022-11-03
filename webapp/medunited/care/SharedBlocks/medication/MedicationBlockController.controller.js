@@ -9,8 +9,11 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/m/MessageBox",
     "sap/m/ColumnListItem",
-	"sap/ui/model/ChangeReason"
-], function (AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, MessageToast, MessageBox, ColumnListItem, ChangeReason) {
+	"sap/ui/model/ChangeReason",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterType",
+    "sap/ui/model/FilterOperator"
+], function (AbstractController, Formatter, FHIRFilter, FHIRFilterType, FHIRFilterOperator, MedicationSearchProvider, Item, MessageToast, MessageBox, ColumnListItem, ChangeReason, Filter, FilterType, FilterOperator) {
     "use strict";
 
     return AbstractController.extend("medunited.care.SharedBlocks.medication.MedicationBlockController", {
@@ -298,6 +301,48 @@ sap.ui.define([
             oBinding.aKeysServerState = aKeys;
             oBinding._fireChange({reason: ChangeReason.Change});
 
+        },
+        onSearchForDoctor: function(oEvent) {
+            const oMedicationTable = this.byId("medicationTable");
+            //const oBindingContext = oMedicationTable.getBindingContext();
+            const sQuery = oEvent.getParameter("query");
+            if (sQuery && sQuery.length > 0) {
+                this.getView().byId("medicationTable").attachModelContextChange(this.fnFilteringByDoctor(sQuery).bind(this));
+            }
+            else {
+                console.log("empty search")
+                this.getView().byId("medicationTable").attachModelContextChange(this.fnInitialFiltering(oMedicationTable).bind(this));
+            }
+        },
+        fnInitialFiltering: function(oMedicationTable) {
+            const sPatientId = oMedicationTable.getBindingContext().getPath().split("/")[2];
+            this.filterMedicationTableToPatient(sPatientId);
+        },
+        fnFilteringByDoctor: function(sQuery) {
+            const sPractitionerId = this.findPractitionerIdByName(sQuery);
+            this.filterMedicationTableToDoctor(sPractitionerId);
+            console.log("done")
+        },
+        findPractitionerIdByName: function(practitionerName) {
+            const oModel = this.getView().getModel();
+            console.log("oModel:", oModel);
+            let practitioners = oModel.getProperty("/Practitioner");
+            for (let pract in practitioners) {
+				if (oModel.getProperty("/Practitioner/" + pract + "/name/0/given/0") == practitionerName) {
+					console.log("FOUND");
+                    return oModel.getProperty("/Practitioner/" + pract + "/id")
+				}
+			}
+        },
+        filterMedicationTableToDoctor: function (sPractitionerId) {
+            const sPatientId = this.byId("medicationTable").getBindingContext().getPath().split("/")[2];
+            console.log("patient ID", sPatientId)
+            var aFilters = [];
+            aFilters.push(new FHIRFilter({ path: "source", operator: FHIRFilterOperator.StartsWith, value1: "Practitioner/" + sPractitionerId, valueType: FHIRFilterType.string }));
+            aFilters.push(new FHIRFilter({ path: "subject", operator: FHIRFilterOperator.StartsWith, value1: "Patient/" + sPatientId, valueType: FHIRFilterType.string }));
+            const oTable = this.getView().byId("medicationTable");
+            const oBinding = oTable.getBinding("items");
+            oBinding.filter(aFilters);
         }
     });
 });
