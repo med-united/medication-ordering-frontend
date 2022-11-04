@@ -26,10 +26,10 @@ sap.ui.define([
 			this.getModel().setSizeLimit(25);
 
 
-			var oRouter = this.getRouter();
+			let oRouter = this.getRouter();
 			const keycloak = new Keycloak();
 
-			var oJwtModel = new JSONModel();
+			let oJwtModel = new JSONModel();
 			this.setModel(oJwtModel, "JWT");
 
 			const me = this;
@@ -53,7 +53,7 @@ sap.ui.define([
 				console.log('failed to initialize');
 			});
 
-			var oModel = new JSONModel();
+			let oModel = new JSONModel();
 			this.setModel(oModel, "Layout");
 
 			keycloak.onTokenExpired = () => {
@@ -70,7 +70,7 @@ sap.ui.define([
 			}
 		},
 
-		afterAuthenticated: function() {
+		afterAuthenticated: function () {
 		},
 
 		fixPagingAndAggregateSameQueriesOfFhirModel: function () {
@@ -94,8 +94,8 @@ sap.ui.define([
 					this.iLength = this.oModel.iSizeLimit;
 				}
 
-				var mParameters = this._buildParameters(this.iLength);
-				var fnSuccess = function (oData) {
+				let mParameters = this._buildParameters(this.iLength);
+				let fnSuccess = function (oData) {
 					if (oData.total === undefined) {
 						throw new Error("FHIR Server error: The \"total\" property is missing in the response for the requested FHIR resource " + this.sPath);
 					}
@@ -107,10 +107,10 @@ sap.ui.define([
 						iStartIndex = this.aKeys.length;
 					}
 					if (oData.entry && oData.entry.length) {
-						var oResource;
-						var oBindingInfo = this.oModel.getBindingInfo(this.sPath, this.oContext, this.bUnique);
-						var sBindingResType = oBindingInfo.getResourceType();
-						for (var i = 0; i < oData.entry.length; i++) {
+						let oResource;
+						let oBindingInfo = this.oModel.getBindingInfo(this.sPath, this.oContext, this.bUnique);
+						let sBindingResType = oBindingInfo.getResourceType();
+						for (let i = 0; i < oData.entry.length; i++) {
 							oResource = oData.entry[i].resource;
 							oBindingInfo = this.oModel.getBindingInfo(this.sPath, this.oContext, this.bUnique, oResource);
 							if (oResource.resourceType === sBindingResType) {
@@ -198,8 +198,8 @@ sap.ui.define([
 				return this.aContexts;
 			};
 
-			FHIRRequestor.prototype._request = function(sMethod, sPath, bForceDirectCall, mParameters, sGroupId, mHeaders, oPayload, fnSuccess, fnError, oBinding, bManualSubmit) {
-				if (!FHIRUtils.isRequestable(sPath) && !bForceDirectCall){
+			FHIRRequestor.prototype._request = function (sMethod, sPath, bForceDirectCall, mParameters, sGroupId, mHeaders, oPayload, fnSuccess, fnError, oBinding, bManualSubmit) {
+				if (!FHIRUtils.isRequestable(sPath) && !bForceDirectCall) {
 					return undefined;
 				}
 				var oRequestHandle;
@@ -207,34 +207,34 @@ sap.ui.define([
 				if (!bForceDirectCall && this._getGroupSubmitMode(sGroupId) !== SubmitMode.Direct) {
 					var oFHIRBundle = this._getBundleByGroup(sGroupId);
 					var oUri = this._getGroupUri(sGroupId);
-					
+
 					var oFHIRBundleEntry = this._createBundleEntry(sMethod, sPath, mParameters, oPayload, fnSuccess, fnError, oBinding, oUri);
 
 					let bFound = false;
-					if(sMethod === "GET") {
+					if (sMethod === "GET") {
 						// try to find if there is already a request for this resource
 						var aBundleEntriesData = [];
 						for (var i = 0; i < oFHIRBundle._aBundleEntries.length; i++) {
 							const oFHIRBundleEntryInQueue = oFHIRBundle._aBundleEntries[i];
-							if(oFHIRBundleEntryInQueue.getRequest()._sMethod === "GET" && oFHIRBundleEntryInQueue.getRequest()._sUrl === oFHIRBundleEntry.getRequest()._sUrl) {
+							if (oFHIRBundleEntryInQueue.getRequest()._sMethod === "GET" && oFHIRBundleEntryInQueue.getRequest()._sUrl === oFHIRBundleEntry.getRequest()._sUrl) {
 								bFound = true;
 								const oldSuccess = oFHIRBundleEntryInQueue.getRequest()._fnSuccess;
-								oFHIRBundleEntryInQueue.getRequest()._fnSuccess = function() {
+								oFHIRBundleEntryInQueue.getRequest()._fnSuccess = function () {
 									oldSuccess.apply(this, arguments);
 									oFHIRBundleEntry.getRequest().executeSuccessCallback.apply(oFHIRBundleEntry.getRequest(), arguments);
 								}
 							}
 						}
 					}
-					if(!bFound) {
+					if (!bFound) {
 						oFHIRBundle.addBundleEntry(oFHIRBundleEntry);
 					}
-					if (bManualSubmit){
+					if (bManualSubmit) {
 						this._mBundleQueue[sGroupId] = oFHIRBundle;
 						return oFHIRBundle;
 					} else {
 						oRequestHandle = this._mBundleQueue[sGroupId];
-						if (oRequestHandle && oRequestHandle instanceof RequestHandle){
+						if (oRequestHandle && oRequestHandle instanceof RequestHandle) {
 							oRequestHandle.getRequest().abort();
 						}
 						oRequestHandle = this._sendBundle(oFHIRBundle);
@@ -242,7 +242,7 @@ sap.ui.define([
 						return oRequestHandle;
 					}
 				}
-		
+
 				// it's a direct call
 				oRequestHandle = this._sendRequest(sMethod, sPath, mParameters, mHeaders, sMethod === HTTPMethod.PUT || sMethod == HTTPMethod.POST ? oPayload : undefined, fnSuccess, fnError, oBinding);
 				return oRequestHandle;

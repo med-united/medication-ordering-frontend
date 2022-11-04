@@ -38,21 +38,21 @@ sap.ui.define([
             for (let aPart of aQueryParts) {
                 let sField = aPart[0];
                 let sValue = aPart[1];
-                aFilters.push(new Filter({path: sField, operator: FilterOperator.EQ, value1: sValue}));
+                aFilters.push(new Filter({ path: sField, operator: FilterOperator.EQ, value1: sValue }));
             }
             this.byId(this.getEntityName().toLowerCase() + "Table").getBinding("items").filter(aFilters, FilterType.Application);
         },
         onListItemPress: function (oEvent) {
-            var oNextUIState = this.getOwnerComponent().getHelper().getNextUIState(1),
+            let oNextUIState = this.getOwnerComponent().getHelper().getNextUIState(1),
                 entityPath = oEvent.getSource().getBindingContext().getPath(),
                 entity = entityPath.split("/").slice(-1).pop();
 
-            var oParams = {layout: oNextUIState.layout};
+            let oParams = { layout: oNextUIState.layout };
             oParams[this.getEntityName().toLowerCase()] = entity;
             this.oRouter.navTo(this.getEntityName().toLowerCase() + "-detail", oParams);
         },
         onSearch: function (oEvent) {
-            var oTableSearchState = [],
+            let oTableSearchState = [],
                 sQuery = oEvent.getParameter("query");
 
             if (sQuery && sQuery.length > 0) {
@@ -67,7 +67,7 @@ sap.ui.define([
             this.oRouter.navTo(this.getEntityName().toLowerCase() + "-add");
         },
         onRouteAddMatched: function (oEvent) {
-            var oView = this.getView();
+            let oView = this.getView();
             const me = this;
             // create dialog lazily
             if (!this.byId("createDialog")) {
@@ -77,7 +77,7 @@ sap.ui.define([
                     name: "medunited.care.view." + this.getEntityName().toLowerCase() + ".CreateDialog",
                     controller: this
                 }).then(function (oDialog) {
-                    me.onAfterCreateOpenDialog({"dialog": oDialog});
+                    me.onAfterCreateOpenDialog({ "dialog": oDialog });
                     // connect dialog to the root view of this component (models, lifecycle)
                     oView.addDependent(oDialog);
                     this._openCreateDialog(oDialog);
@@ -142,7 +142,7 @@ sap.ui.define([
             this.sort();
         },
         sort: function () {
-            var oView = this.getView(),
+            let oView = this.getView(),
                 oTable = oView.byId(this.getEntityName().toLowerCase() + "Table"),
                 oBinding = oTable.getBinding("items"),
                 oSorter = new Sorter(this.getSortField(), this._bDescendingSort);
