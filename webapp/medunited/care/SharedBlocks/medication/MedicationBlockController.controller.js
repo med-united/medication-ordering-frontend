@@ -169,39 +169,52 @@ sap.ui.define([
             });*/
         },
         onSuggestMedicationName: function (oEvent) {
-            var sTerm = oEvent.getParameter("suggestValue");
-            var oController = this.getView().getController();
+            const sTerm = oEvent.getParameter("suggestValue");
+            const oController = this.getView().getController();
 
             this._oMedicationSearchProvider.suggest(sTerm, function (sValue, aSuggestions) {
                 this.destroySuggestionItems();
 
-                for (var i = 0; i < aSuggestions.length; i++) {
-                    this.addSuggestionItem(new Item({
-                        text: oController.cleanMedicationNameResults(aSuggestions[i].name) + " (" + aSuggestions[i].pzn + ")"
-                    }));
+                for (const suggestion of aSuggestions) {
+                    if (suggestion.packaging.standardPackage != null) {
+                        this.addSuggestionItem(new Item({
+                            text: oController.cleanMedicationNameResults(suggestion.name) + " - " + suggestion.packaging.standardPackage + " (" + suggestion.pzn + ")"
+                        }));
+                    } else {
+                        this.addSuggestionItem(new Item({
+                            text: oController.cleanMedicationNameResults(suggestion.name) + " (" + suggestion.pzn + ")"
+                        }));
+                    }
                 }
             }.bind(oEvent.getSource()));
         },
         cleanMedicationNameResults: function (medicationNameFromSearchProvider) {
-            let htmlTagsRegex = /<\/?[^>]+>/g;
+            const htmlTagsRegex = /<\/?[^>]+>/g;
             return medicationNameFromSearchProvider.replace(htmlTagsRegex, '');
         },
         onSuggestionMedicationNameSelected: function (oEvent) {
             const oItem = oEvent.getParameter("selectedItem");
-            let itemSelected = oItem.getText();
-            let pznRegex = new RegExp(/\([0-9]*\)/, "g");
-            let allNumbersBetweenParenthesisMatches = itemSelected.match(pznRegex);
-            let lastMatch = allNumbersBetweenParenthesisMatches.length - 1;
+            const itemSelected = oItem.getText();
+            const pznRegex = new RegExp(/\(\d*\)$/, "g");
+            const allNumbersBetweenParenthesisMatches = itemSelected.match(pznRegex);
+            const lastMatch = allNumbersBetweenParenthesisMatches.length - 1;
 
-            let medicationPZN = allNumbersBetweenParenthesisMatches[lastMatch].replace(/\(/, '').replace(/\)/, '');
-            let medicationName = itemSelected.replace("\(" + medicationPZN + "\)", "");
+            const medicationPZN = allNumbersBetweenParenthesisMatches[lastMatch].replace(/\(/, '').replace(/\)/, '');
+            let medicationName = itemSelected.replace(" \(" + medicationPZN + "\)", "");
 
-            var source = oEvent.getSource();
+            let source = oEvent.getSource();
+            if (this.medicationNameHasPackageSize(medicationName)) {
+                const medicationPackageSize = this.getPackageSizeFromMedicationName(medicationName);
+                medicationName = medicationName.replace(" - " + medicationPackageSize, "");
+                source.getModel().setProperty(source.getBindingContext().getPath("extension/1/valueString"), medicationPackageSize);
+            } else {
+                source.getModel().setProperty(source.getBindingContext().getPath("extension/1/valueString"), "");
+            }
             source.getModel().setProperty(source.getBindingContext().getPath("medicationCodeableConcept/text"), medicationName);
             source.getModel().setProperty(source.getBindingContext().getPath("identifier/0/value"), medicationPZN);
         },
         onSuggestPZN: function (oEvent) {
-            let sTerm = oEvent.getParameter("suggestValue");
+            const sTerm = oEvent.getParameter("suggestValue");
             let leadingZeros;
             if (sTerm.match(/^0+/) != null) {
                 leadingZeros = sTerm.match(/^0+/)[0];
@@ -209,38 +222,62 @@ sap.ui.define([
             else {
                 leadingZeros = "";
             }
-            let oController = this.getView().getController();
+            const oController = this.getView().getController();
             this._oMedicationSearchProvider.suggest(sTerm, function (sValue, aSuggestions) {
                 this.destroySuggestionItems();
 
-                for (let i = 0; i < aSuggestions.length; i++) {
-                    this.addSuggestionItem(new Item({
-                        text: leadingZeros + aSuggestions[i].pzn + " (" + oController.cleanMedicationNameResults(aSuggestions[i].name) + ")"
-                    }));
+                for (const suggestion of aSuggestions) {
+                    console.log(suggestion)
+                    console.log(suggestion.packaging.standardPackage)
+                    if (suggestion.packaging.standardPackage != null) {
+                        this.addSuggestionItem(new Item({
+                            text: leadingZeros + suggestion.pzn + " (" + oController.cleanMedicationNameResults(suggestion.name) + " - " + suggestion.packaging.standardPackage + ")"
+                        }));
+                    } else {
+                        this.addSuggestionItem(new Item({
+                            text: leadingZeros + suggestion.pzn + " (" + oController.cleanMedicationNameResults(suggestion.name) + ")"
+                        }));
+                    }
                 }
             }.bind(oEvent.getSource()));
         },
         onSuggestionPZNSelected: function (oEvent) {
             const oItem = oEvent.getParameter("selectedItem");
-            let itemSelected = oItem.getText();
-            let pznRegex = new RegExp(/\d*\s/);
-            let pznMatch = itemSelected.match(pznRegex)[0];
+            const itemSelected = oItem.getText();
+            const pznRegex = new RegExp(/\d*\s/);
+            const pznMatch = itemSelected.match(pznRegex)[0];
 
-            let medicationPZN = pznMatch.trim();
+            const medicationPZN = pznMatch.trim();
             let medicationName = itemSelected.replace(pznRegex, "").slice(1, -1);
 
-            var source = oEvent.getSource();
+            let source = oEvent.getSource();
+            if (this.medicationNameHasPackageSize(medicationName)) {
+                const medicationPackageSize = this.getPackageSizeFromMedicationName(medicationName);
+                medicationName = medicationName.replace(" - " + medicationPackageSize, "");
+                source.getModel().setProperty(source.getBindingContext().getPath("extension/1/valueString"), medicationPackageSize);
+            } else {
+                source.getModel().setProperty(source.getBindingContext().getPath("extension/1/valueString"), "");
+            }
             source.getModel().setProperty(source.getBindingContext().getPath("medicationCodeableConcept/text"), medicationName);
             source.getModel().setProperty(source.getBindingContext().getPath("identifier/0/value"), medicationPZN);
         },
+        medicationNameHasPackageSize: function (medicationName) {
+            const packageSizeRegex = new RegExp(/ - N\d$/);
+            return medicationName.match(packageSizeRegex) != null;
+        },
+        getPackageSizeFromMedicationName: function (medicationNameWithPackageSize) {
+            const packageSizeRegex = new RegExp(/ - N\d$/);
+            const packageSizeMatch = medicationNameWithPackageSize.match(packageSizeRegex)[0];
+            return packageSizeMatch.replace(" - ", "");
+        },
         onDropSelectedMedicationTable: function(oEvent) {
-            var oDraggedItem = oEvent.getParameter("draggedControl");
-			var oDraggedItemContext = oDraggedItem.getBindingContext();
+            const oDraggedItem = oEvent.getParameter("draggedControl");
+			const oDraggedItemContext = oDraggedItem.getBindingContext();
 			if (!oDraggedItemContext) {
 				return;
 			}
 
-			var oRanking = {
+			const oRanking = {
                 Initial: 0,
                 Default: 1024,
                 Before: function(iRank) {
