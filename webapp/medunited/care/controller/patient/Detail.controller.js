@@ -74,7 +74,7 @@ sap.ui.define([
 						};
 						for (let i = 0; i < aDosage.length; i++) {
 							if(parseFloat(aDosage[i].replaceAll(/,/g, ".")) > 0) {
-								sXML += mDosage[i] + "=\"" + aDosage[i].replaceAll(/,/g, ".") + "\" ";
+								sXML += mDosage[i] + "=\"" + aDosage[i] + "\" ";
 							}
 						}
 					}
