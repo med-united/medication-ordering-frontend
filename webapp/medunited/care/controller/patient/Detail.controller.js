@@ -215,6 +215,15 @@ sap.ui.define([
 			}
 			alert("Das folgende XML wurde in die Zwischenablage kopiert:\n\n" + XMLOfDataMatrixCode)
 		},
+		cleanFraction: function (fraction) {
+			const myArray = fraction.split("/");
+			let numerator = myArray[0];
+			let denominator = myArray[1];
+			if ((/^0+$/.test(numerator) && !(/^0+$/.test(denominator))) || /^0*1$/.test(denominator)) {
+				return numerator;
+			}
+			return numerator.replace(/^0+(?!$)/, "") + "/" + denominator.replace(/^0+(?!$)/, ""); // remove leading zeros
+		},
 		validateResource: function () {
 			const oModel = this.getView().getModel();
 			let medicationStatementsOfPatient = this.getMedicationStatementsOfPatient(this._entity);
@@ -241,24 +250,37 @@ sap.ui.define([
 					let mittagsDosage = dosageValue.split("-")[1].replace(/\s/g, "");
 					let abendsDosage = dosageValue.split("-")[2].replace(/\s/g, "");
 					let nachtsDosage = dosageValue.split("-")[3].replace(/\s/g, "");
+
 					if (morgensDosage == "") {
 						morgensDosage = "0";
+					} else if (/^\d+\/\d+$/.test(morgensDosage.trim())) {
+						morgensDosage = this.cleanFraction(morgensDosage.trim());
 					}
 					if (mittagsDosage == "") {
 						mittagsDosage = "0";
+					} else if (/^\d+\/\d+$/.test(mittagsDosage.trim())) {
+						mittagsDosage = this.cleanFraction(mittagsDosage.trim());
 					}
 					if (abendsDosage == "") {
 						abendsDosage = "0";
+					} else if (/^\d+\/\d+$/.test(abendsDosage.trim())) {
+						abendsDosage = this.cleanFraction(abendsDosage.trim());
 					}
 					if (nachtsDosage == "") {
 						nachtsDosage = "0";
+					} else if (/^\d+\/\d+$/.test(nachtsDosage.trim())) {
+						nachtsDosage = this.cleanFraction(nachtsDosage.trim());
 					}
-					if (/^\d+(,\d+)?$/.test(morgensDosage.trim()) && /^\d+(,\d+)?$/.test(mittagsDosage.trim()) && /^\d+(,\d+)?$/.test(abendsDosage.trim()) && /^\d+(,\d+)?$/.test(nachtsDosage.trim())) {
+
+					if (((/^\d+(,\d+)?$/.test(morgensDosage.trim())) || (/^\d+\/\d+$/.test(morgensDosage.trim()))) && !(/^\d+\/0+$/.test(morgensDosage.trim())) &&
+						((/^\d+(,\d+)?$/.test(mittagsDosage.trim())) || (/^\d+\/\d+$/.test(mittagsDosage.trim()))) && !(/^\d+\/0+$/.test(mittagsDosage.trim())) &&
+						((/^\d+(,\d+)?$/.test(abendsDosage.trim())) || (/^\d+\/\d+$/.test(abendsDosage.trim()))) && !(/^\d+\/0+$/.test(abendsDosage.trim())) &&
+						((/^\d+(,\d+)?$/.test(nachtsDosage.trim())) || (/^\d+\/\d+$/.test(nachtsDosage.trim()))) && !(/^\d+\/0+$/.test(nachtsDosage.trim()))) {
 						let newDosageValue = morgensDosage.trim() + "-" + mittagsDosage.trim() + "-" + abendsDosage.trim() + "-" + nachtsDosage.trim();
 						oModel.setProperty("/MedicationStatement/" + i + "/dosage/0/text", newDosageValue);
 					}
 					else {
-						MessageBox.error(this.translate("msgAtLeastOneOfTheDosagesContainsCharactersThatAreNotDigits"), {
+						MessageBox.error(this.translate("msgAtLeastOneOfTheDosagesContainsCharactersThatAreNotAllowed"), {
 							title: this.translate("msgErrorTitle"),
 							onClose: null,
 							styleClass: "",
