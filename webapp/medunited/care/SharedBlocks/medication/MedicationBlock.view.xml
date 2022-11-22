@@ -52,13 +52,7 @@
                     <Input value="{identifier/0/value}" showSuggestion="true" suggest=".onSuggestPZN" suggestionItemSelected=".onSuggestionPZNSelected" enabled="{appState>/editMode}" />
                     <Input value="{dosage/0/text}" enabled="{appState>/editMode}" />
                     <Input value="{extension/0/valueString}" enabled="{appState>/editMode}" />
-                    <ComboBox selectedKey="{extension/1/valueString}" enabled="{appState>/editMode}">
-                        <items>
-                            <core:Item key="N1" text="N1" id="N1"/>
-                            <core:Item key="N2" text="N2" id="N2"/>
-                            <core:Item key="N3" text="N3" id="N3"/>
-                        </items>
-                    </ComboBox>
+                    <Input value="{extension/1/valueString}" enabled="false" />
                     <Input value="{note/0/text}" enabled="{appState>/editMode}" />
                     <ComboBox items="{/Practitioner}" selectedKey="{informationSource/reference}" enabled="{appState>/editMode}">
                         <core:Item key="Practitioner/{id}" text="{name/0/given/0} {name/0/family}" />
