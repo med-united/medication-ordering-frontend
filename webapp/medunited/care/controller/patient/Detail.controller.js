@@ -44,7 +44,25 @@ sap.ui.define([
 			if (oPatient && oPatient.name && oPatient.name.length > 0 && oPatient.name[0].given) {
 				sXML += "  <P g=\"" + oPatient.name[0].given[0] + "\" f=\"" + oPatient.name[0].family + "\" b=\"" + (oPatient.birthDate ? oPatient.birthDate.replaceAll("-", "") : "") + "\" />\n";
 			}
-			sXML += "  <A n=\"med.united " + this.getNameFromLoggedPerson() + "\" s=\"" + this.getStreetFromLoggedPerson() + "\" z=\"" + this.getPostalCodeFromLoggedPerson() + "\" c=\"" + this.getCityFromLoggedPerson() + "\" p=\"" + this.getPhoneNumberFromLoggedPerson() + "\" e=\"" + this.getEmailFromLoggedPerson() + "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
+			if (this.getNameFromLoggedPerson()) {
+				sXML += "  <A n=\"med.united " + this.getNameFromLoggedPerson();
+			}
+			if (this.getStreetFromLoggedPerson()) {
+				sXML += "\" s=\"" + this.getStreetFromLoggedPerson();
+			}
+			if (this.getPostalCodeFromLoggedPerson()) {
+				sXML += "\" z=\"" + this.getPostalCodeFromLoggedPerson();
+			}
+			if (this.getCityFromLoggedPerson()) {
+				sXML += "\" c=\"" + this.getCityFromLoggedPerson();
+			}
+			if (this.getPhoneNumberFromLoggedPerson()) {
+				sXML += "\" p=\"" + this.getPhoneNumberFromLoggedPerson();
+			}
+			if (this.getEmailFromLoggedPerson()) {
+				sXML += "\" e=\"" + this.getEmailFromLoggedPerson();
+			}
+			sXML += "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
 			sXML += "  <S>\n";
 			for (let oMedicationStatement of aMedicationStatementForPatient) {
 				try {
