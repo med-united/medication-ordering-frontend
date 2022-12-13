@@ -162,17 +162,47 @@ sap.ui.define([
 					.map(sPZN => fetch("https://medication.med-united.health/ajax/search/drugs/auto/?query=" + sPZN)
 						.then(r => r.json())
 						.then(oMedication => {
+							console.log("ONE MEDICATION");
+							console.log(oMedication.results.length);
+							console.log(oMedication);
+							console.log("---------------------------")
 							if (oMedication.results.length > 0) {
+								console.log("sPZN:");
+								console.log(sPZN);
+								console.log("oMedication:");
+								console.log(oMedication);
+								console.log("oEMP:");
+								console.log(oEMP);
 								mPZN2Name[sPZN] = oMedication.results[0].name;
+							}
+							else if (oMedication.results.length == 0) {
+								console.log("zero results");
+								console.log(oMedication.results.length);
+								console.log(oEMP.querySelectorAll("W"));
+								console.log(oEMP.querySelectorAll("W").length);
+								for (const element of oEMP.querySelectorAll("W")) {
+									console.log("inside for")
+									console.log(element);
+									console.log(element.getAttribute("w"))
+									const fetchPromise = fetch("https://medication.med-united.health/ajax/search/drugs/auto/?query=" + element.getAttribute("w"))
+									fetchPromise.then(response => response.json()).then(results => {
+										mPZN2Name[sPZN] = this.cleanMedicationNameResults(results.results[0].name);
+									});
+								}
 							}
 							return true;
 						})
 					)).then(() => {
+						console.log("inside then");
 						this.createMedicationStatementWithNames(oEMP, mPZN2Name);
 					});
 
 
 		},
+		cleanMedicationNameResults: function (medicationNameFromSearchProvider) {
+            const htmlTagsRegex = /<\/?[^>]+>/g;
+            return medicationNameFromSearchProvider.replace(htmlTagsRegex, '');
+        },
 		createMedicationStatementWithNames: function (oEMP, mPZN2Name) {
 			try {
 				// <MP v="025" U="02BD2867FB024401A590D59D94E1FFAE" l="de-DE"><P g="Jürgen" f="Wernersen" b="19400324"/><A n="Praxis Dr. Michael Müller" s="Schloßstr. 22" z="10555" c="Berlin" p="030-1234567" e="dr.mueller@kbv-net.de" t="2018-07-01T12:00:00"/><S><M p="230272" m="1" du="1" r="Herz/Blutdruck"/><M p="2223945" m="1" du="1" r="Blutdruck"/><M p="558736" m="20" v="20" du="p" i="Wechseln der Injektionsstellen, unmittelbar vor einer Mahlzeit spritzen" r="Diabetes"/><M p="9900751" v="1" du="1" r="Blutfette"/></S><S t="zu besonderen Zeiten anzuwendende Medikamente"><M p="2239828" t="alle drei Tage 1" du="1" i="auf wechselnde Stellen aufkleben" r="Schmerzen"/></S><S c="418"><M p="2455874" m="1" du="1" r="Stimmung"/></S></MP>
@@ -335,40 +365,86 @@ sap.ui.define([
 
 				const medicationName = mPZN2Name[sPZN];
 
-				let oMedicationStatement = undefined;
+				console.log("///////////////////////////");
+				if (sPZN == null) {
+					console.log("pzn is null");
+					let fetchPromise = fetch("https://medication.med-united.health/ajax/search/drugs/auto/?query=" + medicationName)
+					fetchPromise.then(response => response.json()).then(results => {
+						sPZN = results.results[0].pzn;
+						console.log("afterr");
+						console.log(sPZN);
+						let oMedicationStatement = undefined;
 
-				if (sPatientId) {
-					oMedicationStatement = {
-						identifier: [{ "value": sPZN }],
-						medicationCodeableConcept: { "text": medicationName },
-						dosage: [
-							{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
-						],
-						subject: { "reference": "urn:uuid:" + sPatientId },
-						note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
-					};
-				} else if (alreadyExistingPatientId) {
-					oMedicationStatement = {
-						identifier: [{ "value": sPZN }],
-						medicationCodeableConcept: { "text": medicationName },
-						dosage: [
-							{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
-						],
-						subject: { "reference": "Patient/" + alreadyExistingPatientId },
-						note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
-					};
-				}
+						if (sPatientId) {
+							oMedicationStatement = {
+								identifier: [{ "value": sPZN }],
+								medicationCodeableConcept: { "text": medicationName },
+								dosage: [
+									{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+								],
+								subject: { "reference": "urn:uuid:" + sPatientId },
+								note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
+							};
+						} else if (alreadyExistingPatientId) {
+							oMedicationStatement = {
+								identifier: [{ "value": sPZN }],
+								medicationCodeableConcept: { "text": medicationName },
+								dosage: [
+									{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+								],
+								subject: { "reference": "Patient/" + alreadyExistingPatientId },
+								note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
+							};
+						}
 
-				if (sPractitionerId) {
-					oMedicationStatement.informationSource = {
-						reference: "urn:uuid:" + sPractitionerId
-					};
-				} else if (alreadyExistingPractitionerId) {
-					oMedicationStatement.informationSource = {
-						reference: "Practitioner/" + alreadyExistingPractitionerId
-					};
+						if (sPractitionerId) {
+							oMedicationStatement.informationSource = {
+								reference: "urn:uuid:" + sPractitionerId
+							};
+						} else if (alreadyExistingPractitionerId) {
+							oMedicationStatement.informationSource = {
+								reference: "Practitioner/" + alreadyExistingPractitionerId
+							};
+						}
+						oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
+					});
 				}
-				oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
+				else {   // TO BE REFACTORED
+					let oMedicationStatement = undefined;
+
+					if (sPatientId) {
+						oMedicationStatement = {
+							identifier: [{ "value": sPZN }],
+							medicationCodeableConcept: { "text": medicationName },
+							dosage: [
+								{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+							],
+							subject: { "reference": "urn:uuid:" + sPatientId },
+							note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
+						};
+					} else if (alreadyExistingPatientId) {
+						oMedicationStatement = {
+							identifier: [{ "value": sPZN }],
+							medicationCodeableConcept: { "text": medicationName },
+							dosage: [
+								{ text: sDosierschemaMorgens + "-" + sDosierschemaMittags + "-" + sDosierschemaAbends + "-" + sDosierschemaNachts }
+							],
+							subject: { "reference": "Patient/" + alreadyExistingPatientId },
+							note: "Grund: " + sReason + " Hinweis: " + sAdditionalInformation
+						};
+					}
+
+					if (sPractitionerId) {
+						oMedicationStatement.informationSource = {
+							reference: "urn:uuid:" + sPractitionerId
+						};
+					} else if (alreadyExistingPractitionerId) {
+						oMedicationStatement.informationSource = {
+							reference: "Practitioner/" + alreadyExistingPractitionerId
+						};
+					}
+					oModel.create("MedicationStatement", oMedicationStatement, "patientDetails");
+				}
 			}
 		}
 	});
