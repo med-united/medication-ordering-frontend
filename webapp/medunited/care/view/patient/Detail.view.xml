@@ -68,8 +68,14 @@
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
                             <uxap:ObjectPageSubSection id="dataMatrixSubSection" title="{i18n>titleSectionMedicationDataMatrix}">
+                                <uxap:ObjectPageSubSection id="informationOnDatamatrixCode" title="{i18n>informationOnTheDatamatrixCode}">
+                                    <ComboBox id="groupMedicationsInXML" selectedKey="optionJustTheMedications" selectionChange="onChangeInfoOnDatamatrixCode">
+                                        <core:Item key="optionJustTheMedications" text="{i18n>optionJustTheMedications}"/>
+                                        <core:Item key="optionMedicationsSortedByDoctors" text="{i18n>optionMedicationsSortedByDoctors}"/>
+                                    </ComboBox>
+                                    <Button id="copyXMLOfDataMatrixCode" text="{i18n>btnCopyXMLOfDataMatrixCode}" press="copyXMLOfDataMatrixCodeToClipboard"></Button>
+                                </uxap:ObjectPageSubSection>
                                 <medunited:DataMatrixCode id="medicationPlanDataMatrixCode" msg="{path: 'id', formatter: '.formatPatientDataMatrix'}" backgroundColor="#f7f7f7" />
-                                <Button id="copyXMLOfDataMatrixCode" text="{i18n>btnCopyXMLOfDataMatrixCode}" press="copyXMLOfDataMatrixCodeToClipboard"></Button>
                             </uxap:ObjectPageSubSection>
                         </uxap:subSections>
                     </uxap:ObjectPageSection>
