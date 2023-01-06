@@ -3,8 +3,9 @@ sap.ui.define([
 	"../../utils/Formatter",
 	"sap/m/MessageBox",
 	"sap/ui/core/Fragment",
-	"sap/base/security/URLListValidator"
-], function (AbstractDetailController, Formatter, MessageBox, Fragment, URLListValidator, MedicationSearchProvider) {
+	"sap/base/security/URLListValidator",
+	'medunited/care/utils/PropertyExtractor'
+], function (AbstractDetailController, Formatter, MessageBox, Fragment, URLListValidator, PropertyExtractor) {
 	"use strict";
 
 	return AbstractDetailController.extend("medunited.care.controller.patient.Detail", {
@@ -39,8 +40,9 @@ sap.ui.define([
 			return this.getMedicationPlanXml(oPatient, aMedicationStatementForPatient, optionSelected);
 		},
 		getMedicationPlanXml: function (oPatient, aMedicationStatementForPatient, optionSelected) {
+			//https://update.kbv.de/ita-update/Verordnungen/Arzneimittel/BMP/EXT_ITA_VGEX_BMP_Anlage3_mitAend.pdf
 			if (optionSelected == "optionJustTheMedications" || optionSelected == undefined) {
-				//https://update.kbv.de/ita-update/Verordnungen/Arzneimittel/BMP/EXT_ITA_VGEX_BMP_Anlage3_mitAend.pdf
+				this.byId("groupMedicationsInXML").getSelectedItem().setKey("optionJustTheMedications");
 				let sXML = "<MP xmlns=\"http://ws.gematik.de/fa/amtss/AMTS_Document/v1.6\" v=\"025\" U=\"" + [...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('') + "\" l=\"de-DE\">\n";
 				if (oPatient && oPatient.name && oPatient.name.length > 0 && oPatient.name[0].given) {
 					sXML += "  <P g=\"" + oPatient.name[0].given[0] + "\" f=\"" + oPatient.name[0].family + "\" b=\"" + (oPatient.birthDate ? oPatient.birthDate.replaceAll("-", "") : "") + "\" />\n";
@@ -117,6 +119,7 @@ sap.ui.define([
 				sXML += "</MP>";
 				this.byId("medicationPlanDataMatrixCode").setMsg(sXML);
 				return sXML;
+
 			} else if (optionSelected == "optionMedicationsSortedByDoctors") {
 				let newXML = "<MP xmlns=\"http://ws.gematik.de/fa/amtss/AMTS_Document/v1.6\" v=\"025\" U=\"" + [...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('') + "\" l=\"de-DE\">\n";
 				if (oPatient && oPatient.name && oPatient.name.length > 0 && oPatient.name[0].given) {
@@ -125,12 +128,99 @@ sap.ui.define([
 				if (this.getNameFromLoggedPerson()) {
 					newXML += "  <A n=\"med.united " + this.getNameFromLoggedPerson();
 				}
-				let XMLOfDataMatrixCode = this.byId("medicationPlanDataMatrixCode").getMsg();
+				if (this.getStreetFromLoggedPerson()) {
+					newXML += "\" s=\"" + this.getStreetFromLoggedPerson();
+				}
+				if (this.getPostalCodeFromLoggedPerson()) {
+					newXML += "\" z=\"" + this.getPostalCodeFromLoggedPerson();
+				}
+				if (this.getCityFromLoggedPerson()) {
+					newXML += "\" c=\"" + this.getCityFromLoggedPerson();
+				}
+				if (this.getPhoneNumberFromLoggedPerson()) {
+					newXML += "\" p=\"" + this.getPhoneNumberFromLoggedPerson();
+				}
+				if (this.getEmailFromLoggedPerson()) {
+					newXML += "\" e=\"" + this.getEmailFromLoggedPerson();
+				}
+				newXML += "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
+				const structureWithMedicationsSortedByPractitioner = this.sortMedicationsByPractitioner(aMedicationStatementForPatient);
+				for (const aPractitioner of Object.entries(structureWithMedicationsSortedByPractitioner)) {
+					const oView = this.getView();
+					const practitionerFullName = PropertyExtractor.extractFullNameFromPractitioner(oView, aPractitioner[0]);
+					newXML += "  <S t= Dr. " + practitionerFullName + ">\n";
+					const medStatsOfPractitioner = aPractitioner[1];
+					for (const medStatOfPractitioner of Object.entries(medStatsOfPractitioner)) {
+						const medStat = medStatOfPractitioner[1];
+						const pzn = (medStat.identifier && medStat.identifier.length > 0) ? medStat.identifier[0].value : "";
+						newXML += "    <M"+ (pzn ? " p=\""+pzn+"\"" : "") + " ";
+						if(medStat && medStat.medicationCodeableConcept) {
+							const medicationName = medStat.medicationCodeableConcept.text;
+							if (medicationName) {
+								newXML += "a=\"" + this.escapeXml(medicationName) + "\" ";
+							} else {
+								newXML += "a=\"\" ";
+							}
+						} else {
+							newXML += "a=\"\" ";
+						}
+						const oDosage = medStat.dosage;
+						if (oDosage && oDosage.length > 0 && oDosage[0].text) {
+							const aDosage = oDosage[0].text.split(/-/);
+							const mDosage = {
+								0: "m",
+								1: "d",
+								2: "v",
+								3: "h"
+							};
+							for (let i = 0; i < aDosage.length; i++) {
+								if(parseFloat(aDosage[i].replaceAll(/,/g, ".")) > 0) {
+									newXML += mDosage[i] + "=\"" + aDosage[i] + "\" ";
+								}
+							}
+						}
+						const vNote = medStat.note;
+						if (typeof vNote === "string") {
+							newXML = this.extractReasonInfo(vNote, newXML);
+						} else if(typeof vNote === "object") {
+							for(let oItem in vNote) {
+								if("text" in vNote[oItem]) {
+									newXML = this.extractReasonInfo(vNote[oItem].text, newXML);
+									break;
+								}
+							}
+						}
+						newXML += "/>\n";
+					}
+					newXML += "   </S>\n";
+				}
+				newXML += "</MP>";
 				this.byId("medicationPlanDataMatrixCode").setMsg(newXML);
 				return newXML;
 			}
 		},
+		sortMedicationsByPractitioner: function(medicationStatements) {
 
+			// structure = { Practitioner : [ MedicationStatements ]}
+			const structure = {};
+
+			for (const aMedicationStatement of medicationStatements) {
+				const practitionerReference = aMedicationStatement.informationSource.reference;
+				console.log("practitionerReference", practitionerReference);
+
+				const aPractitioner = this.getView().getModel().getProperty("/" + practitionerReference);
+
+				if (practitionerReference in structure) {
+					structure[practitionerReference].push(aMedicationStatement);
+				}
+				else {
+					structure[practitionerReference] = [];
+					structure[practitionerReference].push(aMedicationStatement);
+				}
+			}
+			console.log("structure: ", structure);
+			return structure;
+		},
 		extractReasonInfo: function(sNote, sXML) {
 			if(!sNote) {
 				return sXML;
@@ -249,8 +339,8 @@ sap.ui.define([
 		},
 		onChangeInfoOnDatamatrixCode: function (oEvent) {
 			const sPatientId = this._entity;
-			const optionSelected = this.byId("groupMedicationsInXML").getSelectedItem().getKey();
-			this.formatPatientDataMatrix(sPatientId, optionSelected);
+			let optionSelected = this.byId("groupMedicationsInXML").getSelectedItem().getKey();
+			return this.formatPatientDataMatrix(sPatientId, optionSelected);
 		},
 		cleanFraction: function (fraction) {
 			const myArray = fraction.split("/");
