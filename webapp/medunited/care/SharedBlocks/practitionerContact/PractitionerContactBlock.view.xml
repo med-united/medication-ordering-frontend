@@ -20,7 +20,7 @@
             <Label text="{i18n>Phone}" labelFor="practitionerPhoneText"/>
             <Text id="practitionerPhoneText" text="{telecom/[system=phone]/value}" />
             <Label text="{i18n>Fax}" labelFor="practitionerFaxText"/>
-            <Text id="practitionerFaxText" text="{telecom/[system=fax]/value/value}" />
+            <Text id="practitionerFaxText" text="{telecom/[system=fax]/value}" />
         </form:content>
     </form:SimpleForm>
     <form:SimpleForm id="practitionerContactFormEdit"
