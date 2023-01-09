@@ -26,7 +26,7 @@ sap.ui.define([
         },
 
         extractDoctorEmailFromPlan: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/subject/reference/generalPractitioner/0/reference/telecom/1/value");
+            return oView.getModel().getProperty(plan + "/subject/reference/generalPractitioner/0/reference/telecom/[system=email]/value");
         },
 
         extractDoctorFirstNameFromPlan: function (oView, plan) {
@@ -90,11 +90,11 @@ sap.ui.define([
         },
 
         extractEmailFromPractitioner: function (oView, practitioner) {
-            return oView.getModel().getProperty('/' + practitioner + '/telecom/0/value');
+            return oView.getModel().getProperty('/' + practitioner + '/telecom/[system=email]/value');
         },
 
         extractPhoneFromPractitioner: function (oView, practitioner) {
-            return oView.getModel().getProperty('/' + practitioner + '/telecom/1/value');
+            return oView.getModel().getProperty('/' + practitioner + '/telecom/[system=phone]/value');
         }
 
     };

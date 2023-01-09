@@ -31,7 +31,7 @@ sap.ui.define([], function () {
             medicationPlansT2Med.forEach(plan => {
                 const doctor = plan.informationSource.reference.split("/")[1];
                 //extract the email address from the practitioner
-                const email = oFhirModel.getProperty("/Practitioner/" + doctor + "/telecom/0/value");
+                const email = oFhirModel.getProperty("/Practitioner/" + doctor + "/telecom/[system=email]/value");
                 const patient = plan.subject.reference.split("/")[1];
                 if (patientsAndMedications.has(patient)) {
                     const medications = patientsAndMedications.get(patient);
