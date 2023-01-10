@@ -6,7 +6,7 @@ sap.ui.define([
     'use strict';
 
     return {
-        sendFHIRBundlesToBroker: function (listOfBundles, pvs) {
+        sendFHIRBundlesToBroker: function (listOfBundles, prescriptionMode) {
 
             let client = this._establishConnectionToSTOMPWebSocket();
 
@@ -23,7 +23,7 @@ sap.ui.define([
                             transaction: tx.id,
                             'destination-type': 'ANYCAST',
                             priority: '1', address: "Prescriptions",
-                            practiceManagementTranslation: pvs,
+                            practiceManagementTranslation: prescriptionMode,
                             receiverPublicKeyFingerprint: bundle.publicKey
                         },
                     });

@@ -72,6 +72,7 @@ sap.ui.define([
         },
 
         // Extract property from Practitioner
+        // e.g.: extractFaxFromPractitioner(oView, "Practitioner/123")
 
         extractFullNameFromPractitioner: function (oView, practitioner) {
             return oView.getModel().getProperty('/' + practitioner + '/name/0/given/0') + ' ' + oView.getModel().getProperty('/' + practitioner + '/name/0/family');
@@ -95,6 +96,14 @@ sap.ui.define([
 
         extractPhoneFromPractitioner: function (oView, practitioner) {
             return oView.getModel().getProperty('/' + practitioner + '/telecom/[system=phone]/value');
+        },
+
+        extractFaxFromPractitioner: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/telecom/[system=fax]/value');
+        },
+
+        extractPrescriptionInterfaceFromPractitioner: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/extension/0/valueString');
         }
 
     };

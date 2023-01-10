@@ -44,10 +44,11 @@
         <form:content>
             <Label text="{i18n>prescriptionMode}" labelFor="prescriptionModeSelect"/>
             <Select id="prescriptionModeSelect" forceSelection="false" selectedKey="{extension/0/valueString}">
-                <core:Item key="t2med" text="T2Med"/>
                 <core:Item key="earztbrief" text="Earztbrief"/>
-                <core:Item key="isynet" text="Isynet"/>
                 <core:Item key="e-mail" text="E-mail"/>
+                <core:Item key="fax" text="Fax"/>
+                <core:Item key="isynet" text="Isynet"/>
+                <core:Item key="t2med" text="T2Med"/>
             </Select>
             <Label text="{i18n>publicKey}" labelFor="publicKeyInput"/>
             <Input id="publicKeyInput" value="{extension/1/valueString}"/>
