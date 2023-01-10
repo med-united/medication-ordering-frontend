@@ -16,11 +16,11 @@
         visible="{= !${appState>/editMode}}">
         <form:content>
             <Label text="{i18n>Email}" labelFor="practitionerEmailText"/>
-            <Text id="practitionerEmailText" text="{telecom/0/value}" />
+            <Text id="practitionerEmailText" text="{telecom/[system=email]/value}" />
             <Label text="{i18n>Phone}" labelFor="practitionerPhoneText"/>
-            <Text id="practitionerPhoneText" text="{telecom/1/value}" />
+            <Text id="practitionerPhoneText" text="{telecom/[system=phone]/value}" />
             <Label text="{i18n>Fax}" labelFor="practitionerFaxText"/>
-            <Text id="practitionerFaxText" text="{telecom/2/value}" />
+            <Text id="practitionerFaxText" text="{telecom/[system=fax]/value}" />
         </form:content>
     </form:SimpleForm>
     <form:SimpleForm id="practitionerContactFormEdit"
@@ -40,11 +40,11 @@
         visible="{appState>/editMode}">
         <form:content>
             <Label text="{i18n>Email}" labelFor="practitionerEmailInput"/>
-			<Input id="practitionerEmailInput" value="{telecom/0/value}" />
+			<Input id="practitionerEmailInput" value="{telecom/[system=email]/value}" />
             <Label text="{i18n>Phone}" labelFor="practitionerPhoneInput"/>
-			<Input id="practitionerPhoneInput" value="{telecom/1/value}" />
+			<Input id="practitionerPhoneInput" value="{telecom/[system=phone]/value}" />
             <Label text="{i18n>Fax}" labelFor="practitionerFaxInput"/>
-			<Input id="practitionerFaxInput" value="{telecom/2/value}" />
+			<Input id="practitionerFaxInput" value="{telecom/[system=fax]/value}" />
         </form:content>
     </form:SimpleForm>
 </mvc:View>

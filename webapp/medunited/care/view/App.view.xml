@@ -16,7 +16,7 @@
 			}
 			</html:style>
 			<customHeader>
-				<f:ShellBar title="{i18n>medicationsTitle}" secondTitle="Medikamentbeschaffung" homeIcon="./images/logo_med-united_white.png" showCopilot="false" showSearch="false" showNotifications="false" showProductSwitcher="true" productSwitcherPressed="goToAccountManagement" showNavButton="{= ${/layout} === 'EndColumnFullScreen'}" notificationsNumber="0" navButtonPressed="handleBackButtonPressed">
+				<f:ShellBar title="{i18n>medicationsTitle}" secondTitle="Medikamentenbeschaffung" homeIcon="./images/logo_med-united_white.png" showCopilot="false" showSearch="false" showNotifications="false" showProductSwitcher="true" productSwitcherPressed="goToAccountManagement" showNavButton="{= ${/layout} === 'EndColumnFullScreen'}" notificationsNumber="0" navButtonPressed="handleBackButtonPressed">
 					<f:profile>
 						<Avatar initials="{JWT>/sub}" tooltip="{
 							parts: [

@@ -15,7 +15,7 @@
 		columnsM="2"
 		visible="{= !${appState>/editMode}}">
 		<form:content>
-			<Label text="Firstname" labelFor="firstnameText"/>
+			<Label text="{i18n>labelPatientFirstname}" labelFor="firstnameText"/>
 			<Text id="firstnameText" text="{name/[use=official]/given/0}" />
 			<Label text="{i18n>labelPatientFamilyname}" labelFor="familynameText"/>
             <Text id="familynameText" text="{name/[use=official]/family}" />
@@ -37,7 +37,7 @@
 		columnsM="2"
 		visible="{appState>/editMode}">
 		<form:content>
-			<Label text="Firstname" labelFor="firstnameInput"/>
+			<Label text="{i18n>labelPatientFirstname}" labelFor="firstnameInput"/>
 			<Input id="firstnameInput" value="{name/[use=official]/given/0}" />
 			<Label text="{i18n>labelPatientFamilyname}" labelFor="familynameInput"/>
             <Input id="familynameInput" value="{name/[use=official]/family}" />
