@@ -48,8 +48,8 @@
 						<cells>
 							<Text text="{name/0/given}" />
 							<Text text="{name/0/family}" />
-							<Text text="{telecom/0/value}" />
-							<Text text="{telecom/1/value}" />
+							<Text text="{telecom/[system=email]/value}" />
+							<Text text="{telecom/[system=phone]/value}" />
 						</cells>
 					</ColumnListItem>
 				</items>

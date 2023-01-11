@@ -365,8 +365,8 @@ sap.ui.define([
 						title: this.translate("msgErrorTitle"),
 						onClose: null,
 						styleClass: "",
-						actions: sap.m.MessageBox.Action.CLOSE,
-						emphasizedAction: null,
+						actions: MessageBox.Action.OK,
+						emphasizedAction: MessageBox.Action.OK,
 						initialFocus: null,
 						textDirection: sap.ui.core.TextDirection.Inherit
 					});
@@ -411,8 +411,8 @@ sap.ui.define([
 							title: this.translate("msgErrorTitle"),
 							onClose: null,
 							styleClass: "",
-							actions: sap.m.MessageBox.Action.CLOSE,
-							emphasizedAction: null,
+							actions: MessageBox.Action.OK,
+							emphasizedAction: MessageBox.Action.OK,
 							initialFocus: null,
 							textDirection: sap.ui.core.TextDirection.Inherit
 						});
@@ -424,8 +424,8 @@ sap.ui.define([
 						title: this.translate("msgErrorTitle"),
 						onClose: null,
 						styleClass: "",
-						actions: sap.m.MessageBox.Action.CLOSE,
-						emphasizedAction: null,
+						actions: MessageBox.Action.OK,
+						emphasizedAction: MessageBox.Action.OK,
 						initialFocus: null,
 						textDirection: sap.ui.core.TextDirection.Inherit
 					});

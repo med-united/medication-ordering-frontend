@@ -33,17 +33,18 @@
 				<Label text="{i18n>City}" />
 				<Input type="Text" id="city" value="{address/[use=home]/city}" />
 				<Label text="{i18n>Email}" />
-				<Input type="Text" id="email" value="{telecom/0/value}" />
-                <Label text="{i18n>Phone}" />
-				<Input type="Text" id="phone" value="{telecom/1/value}" />
+				<Input type="Text" id="email" value="{telecom/[system=email]/value}" />
+				<Label text="{i18n>Phone}" />
+				<Input type="Text" id="phone" value="{telecom/[system=phone]/value}" />
 				<Label text="{i18n>Fax}" />
-				<Input type="Text" id="fax" value="{telecom/2/value}" />
+				<Input type="Text" id="fax" value="{telecom/[system=fax]/value}" />
 				<Label text="{i18n>prescriptionMode}" labelFor="prescriptionModeSelect"/>
 				<Select id="prescriptionModeSelect" forceSelection="false" selectedKey="{extension/0/valueString}">
-                	<core:Item key="t2med" text="T2Med"/>
                 	<core:Item key="earztbrief" text="Earztbrief"/>
-					<core:Item key="isynet" text="Isynet"/>
 					<core:Item key="e-mail" text="E-mail"/>
+					<core:Item key="fax" text="Fax"/>
+					<core:Item key="isynet" text="Isynet"/>
+					<core:Item key="t2med" text="T2Med"/>
 				</Select>
 			</form:content>
 		</form:SimpleForm>

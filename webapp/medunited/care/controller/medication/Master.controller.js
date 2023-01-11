@@ -130,40 +130,49 @@ sap.ui.define([
 
 		_requestPrescriptionsAccordingToPrescriptionInterface: function (selectedPlans) {
 
-			let prescriptionsRequestedUsing_t2med = [];
-			let prescriptionsRequestedUsing_isynet = [];
 			let prescriptionsRequestedUsing_email = [];
+			let prescriptionsRequestedUsing_fax = [];
+			let prescriptionsRequestedUsing_isynet = [];
+			let prescriptionsRequestedUsing_t2med = [];
 
 			for (const plan of selectedPlans) {
 				const practitioner = this.getView().getModel().getProperty(plan).informationSource.reference
 				const prescriptionInterface = this.getView().getModel().getProperty("/" + practitioner).extension[0].valueString
 				switch (prescriptionInterface) {
-					case "t2med":
-						prescriptionsRequestedUsing_t2med.push(plan);
+					case "e-mail":
+						prescriptionsRequestedUsing_email.push(plan);
+						break;
+					case "fax":
+						prescriptionsRequestedUsing_fax.push(plan);
 						break;
 					case "isynet":
 						prescriptionsRequestedUsing_isynet.push(plan);
 						break;
-					case "e-mail":
-						prescriptionsRequestedUsing_email.push(plan);
+					case "t2med":
+						prescriptionsRequestedUsing_t2med.push(plan);
 				}
 			}
 
-			if (prescriptionsRequestedUsing_t2med.length > 0) {
-				let listOfBundles = this._createBundles(prescriptionsRequestedUsing_t2med)
-				console.log(listOfBundles)
-				StompPrescriptionSender.sendFHIRBundlesToBroker(listOfBundles, "t2med")
+			if (prescriptionsRequestedUsing_email.length > 0) {
+				alert("Sending Brief");
+				// structure = { Practitioner : { Patient : [ MedicationStatements ]}}
+				const structure = this._populateStructure(prescriptionsRequestedUsing_email);
+				// BriefSender.sendEarztBrief(this.getView(), structure, this.eArztbriefModel);
+			}
+			if (prescriptionsRequestedUsing_fax.length > 0) {
+				let listOfBundles = this._createBundles(prescriptionsRequestedUsing_fax);
+				console.log(listOfBundles);
+				StompPrescriptionSender.sendFHIRBundlesToBroker(listOfBundles, "fax");
 			}
 			if (prescriptionsRequestedUsing_isynet.length > 0) {
 				let listOfBundles = this._createBundles(prescriptionsRequestedUsing_isynet);
 				console.log(listOfBundles);
 				StompPrescriptionSender.sendFHIRBundlesToBroker(listOfBundles, "isynet");
 			}
-			if (prescriptionsRequestedUsing_email.length > 0) {
-				alert("Sending Brief");
-				// structure = { Practitioner : { Patient : [ MedicationStatements ]}}
-				const structure = this._populateStructure(prescriptionsRequestedUsing_email);
-				// BriefSender.sendEarztBrief(this.getView(), structure, this.eArztbriefModel);
+			if (prescriptionsRequestedUsing_t2med.length > 0) {
+				let listOfBundles = this._createBundles(prescriptionsRequestedUsing_t2med)
+				console.log(listOfBundles)
+				StompPrescriptionSender.sendFHIRBundlesToBroker(listOfBundles, "t2med")
 			}
 			// PharmacyNotifier.notifyPharmacy(this.getView(), selectedPlans);
 		},

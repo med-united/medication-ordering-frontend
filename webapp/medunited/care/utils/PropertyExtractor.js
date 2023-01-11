@@ -26,7 +26,7 @@ sap.ui.define([
         },
 
         extractDoctorEmailFromPlan: function (oView, plan) {
-            return oView.getModel().getProperty(plan + "/subject/reference/generalPractitioner/0/reference/telecom/1/value");
+            return oView.getModel().getProperty(plan + "/subject/reference/generalPractitioner/0/reference/telecom/[system=email]/value");
         },
 
         extractDoctorFirstNameFromPlan: function (oView, plan) {
@@ -72,6 +72,7 @@ sap.ui.define([
         },
 
         // Extract property from Practitioner
+        // e.g.: extractFaxFromPractitioner(oView, "Practitioner/123")
 
         extractFullNameFromPractitioner: function (oView, practitioner) {
             return oView.getModel().getProperty('/' + practitioner + '/name/0/given/0') + ' ' + oView.getModel().getProperty('/' + practitioner + '/name/0/family');
@@ -90,11 +91,19 @@ sap.ui.define([
         },
 
         extractEmailFromPractitioner: function (oView, practitioner) {
-            return oView.getModel().getProperty('/' + practitioner + '/telecom/0/value');
+            return oView.getModel().getProperty('/' + practitioner + '/telecom/[system=email]/value');
         },
 
         extractPhoneFromPractitioner: function (oView, practitioner) {
-            return oView.getModel().getProperty('/' + practitioner + '/telecom/1/value');
+            return oView.getModel().getProperty('/' + practitioner + '/telecom/[system=phone]/value');
+        },
+
+        extractFaxFromPractitioner: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/telecom/[system=fax]/value');
+        },
+
+        extractPrescriptionInterfaceFromPractitioner: function (oView, practitioner) {
+            return oView.getModel().getProperty('/' + practitioner + '/extension/0/valueString');
         }
 
     };
