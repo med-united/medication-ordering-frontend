@@ -86,6 +86,22 @@ sap.ui.define([
 		},
 		enableEditMode: function (bEditMode) {
 			this.getView().getModel("appState").setProperty("/editMode", bEditMode);
+			console.log("entity: ", this.getEntityName())
+			if (this.getEntityName() == "Patient") {
+				if (bEditMode == true) {
+					this.byId("groupMedicationsInXML").setVisible(false);
+					this.byId("medicationPlanDataMatrixCode").setVisible(false);
+					this.byId("dataMatrixSubSection").setShowTitle(false);
+					this.byId("informationOnDatamatrixCode").setShowTitle(false);
+					this.byId("copyXMLOfDataMatrixCode").setVisible(false);
+				} else if (bEditMode == false) {
+					this.byId("groupMedicationsInXML").setVisible(true);
+					this.byId("medicationPlanDataMatrixCode").setVisible(true);
+					this.byId("dataMatrixSubSection").setShowTitle(true);
+					this.byId("informationOnDatamatrixCode").setShowTitle(true);
+					this.byId("copyXMLOfDataMatrixCode").setVisible(true);
+				}
+			}
 		}
 	});
 }, true);

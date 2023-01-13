@@ -3,8 +3,9 @@ sap.ui.define([
 	"../../utils/Formatter",
 	"sap/m/MessageBox",
 	"sap/ui/core/Fragment",
-	"sap/base/security/URLListValidator"
-], function (AbstractDetailController, Formatter, MessageBox, Fragment, URLListValidator, MedicationSearchProvider) {
+	"sap/base/security/URLListValidator",
+	'medunited/care/utils/PropertyExtractor'
+], function (AbstractDetailController, Formatter, MessageBox, Fragment, URLListValidator, PropertyExtractor) {
 	"use strict";
 
 	return AbstractDetailController.extend("medunited.care.controller.patient.Detail", {
@@ -17,7 +18,7 @@ sap.ui.define([
 				groupId: "patientDetails"
 			};
 		},
-		formatPatientDataMatrix: function (sId) {
+		formatPatientDataMatrix: function (sId, optionSelected) {
 			const oPatient = this.getView().getModel().getProperty("/Patient/" + sId);
 			const oMedicationStatement = this.getView().getModel().getProperty("/MedicationStatement");
 			if (!oMedicationStatement) {
@@ -36,87 +37,191 @@ sap.ui.define([
 					}
 					return bValueDecimal - aValueDecimal;
 				});
-			return this.getMedicationPlanXml(oPatient, aMedicationStatementForPatient);
+			return this.getMedicationPlanXml(oPatient, aMedicationStatementForPatient, optionSelected);
 		},
-		getMedicationPlanXml: function (oPatient, aMedicationStatementForPatient) {
+		getMedicationPlanXml: function (oPatient, aMedicationStatementForPatient, optionSelected) {
 			//https://update.kbv.de/ita-update/Verordnungen/Arzneimittel/BMP/EXT_ITA_VGEX_BMP_Anlage3_mitAend.pdf
-			let sXML = "<MP xmlns=\"http://ws.gematik.de/fa/amtss/AMTS_Document/v1.6\" v=\"025\" U=\"" + [...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('') + "\" l=\"de-DE\">\n";
-			if (oPatient && oPatient.name && oPatient.name.length > 0 && oPatient.name[0].given) {
-				sXML += "  <P g=\"" + oPatient.name[0].given[0] + "\" f=\"" + oPatient.name[0].family + "\" b=\"" + (oPatient.birthDate ? oPatient.birthDate.replaceAll("-", "") : "") + "\" />\n";
-			}
-			if (this.getNameFromLoggedPerson()) {
-				sXML += "  <A n=\"med.united " + this.getNameFromLoggedPerson();
-			}
-			if (this.getStreetFromLoggedPerson()) {
-				sXML += "\" s=\"" + this.getStreetFromLoggedPerson();
-			}
-			if (this.getPostalCodeFromLoggedPerson()) {
-				sXML += "\" z=\"" + this.getPostalCodeFromLoggedPerson();
-			}
-			if (this.getCityFromLoggedPerson()) {
-				sXML += "\" c=\"" + this.getCityFromLoggedPerson();
-			}
-			if (this.getPhoneNumberFromLoggedPerson()) {
-				sXML += "\" p=\"" + this.getPhoneNumberFromLoggedPerson();
-			}
-			if (this.getEmailFromLoggedPerson()) {
-				sXML += "\" e=\"" + this.getEmailFromLoggedPerson();
-			}
-			sXML += "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
-			sXML += "  <S>\n";
-			for (let oMedicationStatement of aMedicationStatementForPatient) {
-				try {
-					if(!oMedicationStatement) {
-						continue;
-					}
-					const pzn = (oMedicationStatement.identifier && oMedicationStatement.identifier.length > 0) ? oMedicationStatement.identifier[0].value : "";
-					sXML += "    <M"+ (pzn ? " p=\""+pzn+"\"" : "") + " ";
-					if(oMedicationStatement && oMedicationStatement.medicationCodeableConcept) {
-						const medicationName = oMedicationStatement.medicationCodeableConcept.text;
-						if (medicationName) {
-							sXML += "a=\"" + this.escapeXml(medicationName) + "\" ";
+			if (optionSelected == "optionJustTheMedications" || optionSelected == undefined) {
+				this.byId("groupMedicationsInXML").getSelectedItem().setKey("optionJustTheMedications");
+				let sXML = "<MP xmlns=\"http://ws.gematik.de/fa/amtss/AMTS_Document/v1.6\" v=\"025\" U=\"" + [...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('') + "\" l=\"de-DE\">\n";
+				if (oPatient && oPatient.name && oPatient.name.length > 0 && oPatient.name[0].given) {
+					sXML += "  <P g=\"" + oPatient.name[0].given[0] + "\" f=\"" + oPatient.name[0].family + "\" b=\"" + (oPatient.birthDate ? oPatient.birthDate.replaceAll("-", "") : "") + "\" />\n";
+				}
+				if (this.getNameFromLoggedPerson()) {
+					sXML += "  <A n=\"med.united " + this.getNameFromLoggedPerson();
+				}
+				if (this.getStreetFromLoggedPerson()) {
+					sXML += "\" s=\"" + this.getStreetFromLoggedPerson();
+				}
+				if (this.getPostalCodeFromLoggedPerson()) {
+					sXML += "\" z=\"" + this.getPostalCodeFromLoggedPerson();
+				}
+				if (this.getCityFromLoggedPerson()) {
+					sXML += "\" c=\"" + this.getCityFromLoggedPerson();
+				}
+				if (this.getPhoneNumberFromLoggedPerson()) {
+					sXML += "\" p=\"" + this.getPhoneNumberFromLoggedPerson();
+				}
+				if (this.getEmailFromLoggedPerson()) {
+					sXML += "\" e=\"" + this.getEmailFromLoggedPerson();
+				}
+				sXML += "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
+				sXML += "  <S>\n";
+				for (let oMedicationStatement of aMedicationStatementForPatient) {
+					try {
+						if(!oMedicationStatement) {
+							continue;
+						}
+						const pzn = (oMedicationStatement.identifier && oMedicationStatement.identifier.length > 0) ? oMedicationStatement.identifier[0].value : "";
+						sXML += "    <M"+ (pzn ? " p=\""+pzn+"\"" : "") + " ";
+						if(oMedicationStatement && oMedicationStatement.medicationCodeableConcept) {
+							const medicationName = oMedicationStatement.medicationCodeableConcept.text;
+							if (medicationName) {
+								sXML += "a=\"" + this.escapeXml(medicationName) + "\" ";
+							} else {
+								sXML += "a=\"\" ";
+							}
 						} else {
 							sXML += "a=\"\" ";
 						}
-					} else {
-						sXML += "a=\"\" ";
-					}
-					const oDosage = oMedicationStatement.dosage;
-					if (oDosage && oDosage.length > 0 && oDosage[0].text) {
-						const aDosage = oDosage[0].text.split(/-/);
-						const mDosage = {
-							0: "m",
-							1: "d",
-							2: "v",
-							3: "h"
-						};
-						for (let i = 0; i < aDosage.length; i++) {
-							if(parseFloat(aDosage[i].replaceAll(/,/g, ".")) > 0) {
-								sXML += mDosage[i] + "=\"" + aDosage[i] + "\" ";
+						const oDosage = oMedicationStatement.dosage;
+						if (oDosage && oDosage.length > 0 && oDosage[0].text) {
+							const aDosage = oDosage[0].text.split(/-/);
+							const mDosage = {
+								0: "m",
+								1: "d",
+								2: "v",
+								3: "h"
+							};
+							for (let i = 0; i < aDosage.length; i++) {
+								if(parseFloat(aDosage[i].replaceAll(/,/g, ".")) > 0) {
+									sXML += mDosage[i] + "=\"" + aDosage[i] + "\" ";
+								}
 							}
 						}
-					}
-					const vNote = oMedicationStatement.note;
-					if (typeof vNote === "string") {
-						sXML = this.extractReasonInfo(vNote, sXML);
-					} else if(typeof vNote === "object") {
-						for(let oItem in vNote) {
-							if("text" in vNote[oItem]) {
-								sXML = this.extractReasonInfo(vNote[oItem].text, sXML);
-								break;
+						const vNote = oMedicationStatement.note;
+						if (typeof vNote === "string") {
+							sXML = this.extractReasonInfo(vNote, sXML);
+						} else if(typeof vNote === "object") {
+							for(let oItem in vNote) {
+								if("text" in vNote[oItem]) {
+									sXML = this.extractReasonInfo(vNote[oItem].text, sXML);
+									break;
+								}
 							}
 						}
+						sXML += "/>\n";
+					} catch (e) {
+						console.error(e);
 					}
-					sXML += "/>\n";
-				} catch (e) {
-					console.error(e);
+				}
+				sXML += "   </S>\n";
+				sXML += "</MP>";
+				this.byId("medicationPlanDataMatrixCode").setMsg(sXML);
+				return sXML;
+
+			} else if (optionSelected == "optionMedicationsSortedByDoctors") {
+				let newXML = "<MP xmlns=\"http://ws.gematik.de/fa/amtss/AMTS_Document/v1.6\" v=\"025\" U=\"" + [...Array(32)].map(() => 'ABCDEF0123456789'.charAt(Math.floor(Math.random() * 16))).join('') + "\" l=\"de-DE\">\n";
+				if (oPatient && oPatient.name && oPatient.name.length > 0 && oPatient.name[0].given) {
+					newXML += "  <P g=\"" + oPatient.name[0].given[0] + "\" f=\"" + oPatient.name[0].family + "\" b=\"" + (oPatient.birthDate ? oPatient.birthDate.replaceAll("-", "") : "") + "\" />\n";
+				}
+				if (this.getNameFromLoggedPerson()) {
+					newXML += "  <A n=\"med.united " + this.getNameFromLoggedPerson();
+				}
+				if (this.getStreetFromLoggedPerson()) {
+					newXML += "\" s=\"" + this.getStreetFromLoggedPerson();
+				}
+				if (this.getPostalCodeFromLoggedPerson()) {
+					newXML += "\" z=\"" + this.getPostalCodeFromLoggedPerson();
+				}
+				if (this.getCityFromLoggedPerson()) {
+					newXML += "\" c=\"" + this.getCityFromLoggedPerson();
+				}
+				if (this.getPhoneNumberFromLoggedPerson()) {
+					newXML += "\" p=\"" + this.getPhoneNumberFromLoggedPerson();
+				}
+				if (this.getEmailFromLoggedPerson()) {
+					newXML += "\" e=\"" + this.getEmailFromLoggedPerson();
+				}
+				newXML += "\" t=\"" + new Date().toISOString().substring(0, 19) + "\" />\n";
+				const structureWithMedicationsSortedByPractitioner = this.sortMedicationsByPractitioner(aMedicationStatementForPatient);
+				for (const aPractitioner of Object.entries(structureWithMedicationsSortedByPractitioner)) {
+					const oView = this.getView();
+					let practitionerFullName = "Dr. " + PropertyExtractor.extractFullNameFromPractitioner(oView, aPractitioner[0]);
+					if (practitionerFullName == "Dr. undefined undefined" || practitionerFullName == "Dr. undefined") {
+						practitionerFullName = this.translate("practitionerNameNotDefined");
+					}
+					newXML += "  <S t=\"" + practitionerFullName + "\">\n";
+					const medStatsOfPractitioner = aPractitioner[1];
+					for (const medStatOfPractitioner of Object.entries(medStatsOfPractitioner)) {
+						const medStat = medStatOfPractitioner[1];
+						const pzn = (medStat.identifier && medStat.identifier.length > 0) ? medStat.identifier[0].value : "";
+						newXML += "    <M"+ (pzn ? " p=\""+pzn+"\"" : "") + " ";
+						if(medStat && medStat.medicationCodeableConcept) {
+							const medicationName = medStat.medicationCodeableConcept.text;
+							if (medicationName) {
+								newXML += "a=\"" + this.escapeXml(medicationName) + "\" ";
+							} else {
+								newXML += "a=\"\" ";
+							}
+						} else {
+							newXML += "a=\"\" ";
+						}
+						const oDosage = medStat.dosage;
+						if (oDosage && oDosage.length > 0 && oDosage[0].text) {
+							const aDosage = oDosage[0].text.split(/-/);
+							const mDosage = {
+								0: "m",
+								1: "d",
+								2: "v",
+								3: "h"
+							};
+							for (let i = 0; i < aDosage.length; i++) {
+								if(parseFloat(aDosage[i].replaceAll(/,/g, ".")) > 0) {
+									newXML += mDosage[i] + "=\"" + aDosage[i] + "\" ";
+								}
+							}
+						}
+						const vNote = medStat.note;
+						if (typeof vNote === "string") {
+							newXML = this.extractReasonInfo(vNote, newXML);
+						} else if(typeof vNote === "object") {
+							for(let oItem in vNote) {
+								if("text" in vNote[oItem]) {
+									newXML = this.extractReasonInfo(vNote[oItem].text, newXML);
+									break;
+								}
+							}
+						}
+						newXML += "/>\n";
+					}
+					newXML += "   </S>\n";
+				}
+				newXML += "</MP>";
+				this.byId("medicationPlanDataMatrixCode").setMsg(newXML);
+				return newXML;
+			}
+		},
+		sortMedicationsByPractitioner: function(medicationStatements) {
+
+			// structure = { Practitioner : [ MedicationStatements ]}
+			const structure = {};
+
+			for (const aMedicationStatement of medicationStatements) {
+				const practitionerReference = aMedicationStatement.informationSource.reference;
+
+				const aPractitioner = this.getView().getModel().getProperty("/" + practitionerReference);
+
+				if (practitionerReference in structure) {
+					structure[practitionerReference].push(aMedicationStatement);
+				}
+				else {
+					structure[practitionerReference] = [];
+					structure[practitionerReference].push(aMedicationStatement);
 				}
 			}
-			sXML += "   </S>\n";
-			sXML += "</MP>";
-			return sXML;
+			return structure;
 		},
-
 		extractReasonInfo: function(sNote, sXML) {
 			if(!sNote) {
 				return sXML;
@@ -185,7 +290,7 @@ sap.ui.define([
 			fetch("https://medicationplan.med-united.health/medicationPlanPdf", {
 				method: "POST",
 				mode: "cors",
-				body: this.formatPatientDataMatrix(sPatientId),
+				body: this.formatPatientDataMatrix(sPatientId, "optionJustTheMedications"),
 				headers: {
 					"Accept": "application/pdf",
 					"Content-Type": "application/xml"
@@ -232,6 +337,11 @@ sap.ui.define([
 				text = await navigator.clipboard.readText();
 			}
 			alert("Das folgende XML wurde in die Zwischenablage kopiert:\n\n" + XMLOfDataMatrixCode)
+		},
+		onChangeInfoOnDatamatrixCode: function (oEvent) {
+			const sPatientId = this._entity;
+			let optionSelected = this.byId("groupMedicationsInXML").getSelectedItem().getKey();
+			return this.formatPatientDataMatrix(sPatientId, optionSelected);
 		},
 		cleanFraction: function (fraction) {
 			const myArray = fraction.split("/");
