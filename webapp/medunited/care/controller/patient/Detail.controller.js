@@ -209,7 +209,6 @@ sap.ui.define([
 
 			for (const aMedicationStatement of medicationStatements) {
 				const practitionerReference = aMedicationStatement.informationSource.reference;
-				console.log("practitionerReference", practitionerReference);
 
 				const aPractitioner = this.getView().getModel().getProperty("/" + practitionerReference);
 
@@ -221,7 +220,6 @@ sap.ui.define([
 					structure[practitionerReference].push(aMedicationStatement);
 				}
 			}
-			console.log("structure: ", structure);
 			return structure;
 		},
 		extractReasonInfo: function(sNote, sXML) {
