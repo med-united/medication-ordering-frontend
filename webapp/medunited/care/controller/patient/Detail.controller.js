@@ -147,8 +147,11 @@ sap.ui.define([
 				const structureWithMedicationsSortedByPractitioner = this.sortMedicationsByPractitioner(aMedicationStatementForPatient);
 				for (const aPractitioner of Object.entries(structureWithMedicationsSortedByPractitioner)) {
 					const oView = this.getView();
-					const practitionerFullName = PropertyExtractor.extractFullNameFromPractitioner(oView, aPractitioner[0]);
-					newXML += "  <S t= Dr. " + practitionerFullName + ">\n";
+					let practitionerFullName = "Dr. " + PropertyExtractor.extractFullNameFromPractitioner(oView, aPractitioner[0]);
+					if (practitionerFullName == "Dr. undefined undefined" || practitionerFullName == "Dr. undefined") {
+						practitionerFullName = this.translate("practitionerNameNotDefined");
+					}
+					newXML += "  <S t=\"" + practitionerFullName + "\">\n";
 					const medStatsOfPractitioner = aPractitioner[1];
 					for (const medStatOfPractitioner of Object.entries(medStatsOfPractitioner)) {
 						const medStat = medStatOfPractitioner[1];
