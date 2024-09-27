@@ -27,47 +27,52 @@ sap.ui.define([
 
 
 			let oRouter = this.getRouter();
-			const keycloak = new Keycloak();
 
 			let oJwtModel = new JSONModel();
 			this.setModel(oJwtModel, "JWT");
 
 			const me = this;
-
-			keycloak.init({ "onLoad": "login-required", "checkLoginIframe": false }).then(function (authenticated) {
-				console.log(authenticated ? 'authenticated' : 'not authenticated');
-				if (authenticated) {
-					// Add JWT token to all jQuery ajax requests
-					// This will work with the FHIR Model
-					// https://github.com/SAP/openui5-fhir/blob/v2.3.0/src/sap/fhir/model/r4/lib/FHIRRequestor.js#L324
-					$.ajaxSetup({
-						headers: { 'Authorization': 'Bearer ' + keycloak.token }
-					});
-					oJwtModel.setData(me.parseJwt(keycloak.token));
-					oRouter.initialize();
-					me.jwtToken = keycloak.token;
-					me.keycloak = keycloak;
-					me.afterAuthenticated();
-				}
-			}).catch(function (e) {
-				console.log('failed to initialize');
-			});
-
-			let oModel = new JSONModel();
-			this.setModel(oModel, "Layout");
-
-			keycloak.onTokenExpired = () => {
-				keycloak.updateToken(50).success((refreshed) => {
-					if (refreshed) {
+			try {
+				const keycloak = new Keycloak();
+				keycloak.init({ "onLoad": "login-required", "checkLoginIframe": false }).then(function (authenticated) {
+					console.log(authenticated ? 'authenticated' : 'not authenticated');
+					if (authenticated) {
+						// Add JWT token to all jQuery ajax requests
+						// This will work with the FHIR Model
+						// https://github.com/SAP/openui5-fhir/blob/v2.3.0/src/sap/fhir/model/r4/lib/FHIRRequestor.js#L324
 						$.ajaxSetup({
 							headers: { 'Authorization': 'Bearer ' + keycloak.token }
 						});
 						oJwtModel.setData(me.parseJwt(keycloak.token));
+						oRouter.initialize();
+						me.jwtToken = keycloak.token;
+						me.keycloak = keycloak;
+						me.afterAuthenticated();
 					}
-				}).error(() => {
-					console.error('Failed to refresh token ' + new Date());
-				});
+				}).catch(function (e) {
+					console.log('failed to initialize: '+e);
+			});
+
+				keycloak.onTokenExpired = () => {
+					keycloak.updateToken(50).success((refreshed) => {
+						if (refreshed) {
+							$.ajaxSetup({
+								headers: { 'Authorization': 'Bearer ' + keycloak.token }
+							});
+							oJwtModel.setData(me.parseJwt(keycloak.token));
+						}
+					}).error(() => {
+						console.error('Failed to refresh token ' + new Date());
+					});
+				}
+			} catch (e) {
+				console.error(e);
+				oRouter.initialize();
+				me.afterAuthenticated();
 			}
+			let oModel = new JSONModel();
+			this.setModel(oModel, "Layout");
+
 		},
 
 		afterAuthenticated: function () {

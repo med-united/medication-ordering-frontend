@@ -9,7 +9,7 @@
 		"title": "{{appTitle}}",
 		"dataSources": {
 			"fhir": {
-				"uri": "https://fhir.med-united.health/fhir",
+				"uri": "https://hapi.fhir.org/baseR4/",
 				"type": "FHIR",
 				"settings": {
 					"groupProperties": {
